@@ -1,0 +1,23 @@
+steps:
+  - input: "Cluster to deploy"
+    fields:
+    - select: "Cluster"
+      key: "selected_cluster"
+      required: true
+      default: "default"
+      options:
+        - label: "default"
+          value: "default"
+    plugins:
+      - monorepo-diff#v1.2.0:
+          watch:
+            # Trigger for grok-in-xai-build-and-deploy
+            - path:
+                - searchai/grok_chat
+                - searchai/libs/langfuse-python
+              config:
+                trigger: "test"
+                build:
+                  commit: "HEAD"
+                  branch: "main"
+                  selected_cluster: "default"
