@@ -3,4 +3,5 @@ steps:
     fields:
       - text: "What is the current month?"
         key: "month"
+  - wait: ~
   - trigger: should-work
