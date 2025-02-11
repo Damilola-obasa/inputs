@@ -1,2 +1,6 @@
 steps:
+  - input: "Information please"
+    fields:
+      - text: "What is the current month?"
+        key: "month"
   - trigger: should-work
