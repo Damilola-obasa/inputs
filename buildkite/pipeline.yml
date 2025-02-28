@@ -1,5 +1,5 @@
 steps:
   - label: "test secrets"
     commands:
-      - echo $PATH now run this 
+      - echo $PATH now run this is
   
