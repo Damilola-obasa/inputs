@@ -1,5 +1,5 @@
 steps:
   - label: "test secrets"
     commands:
-      - echo test me
+      - echo test me again
   
