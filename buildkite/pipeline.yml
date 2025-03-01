@@ -1,5 +1,5 @@
 steps:
   - label: "test secrets"
     commands:
-      - echo $BUILDKITE_JOB_ID
+      - echo test me
   
