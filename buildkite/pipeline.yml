@@ -1,9 +1,4 @@
 steps:
-  - label: "Generate build.log"
-    command: |
-      mkdir -p logs
-      echo "Builds log content" > logs/build.log
-  
   - label: "Upload build.log"
     command: buildkite-agent artifacts upload logs/build.log
 
