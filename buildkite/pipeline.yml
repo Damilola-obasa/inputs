@@ -1,12 +1,6 @@
 steps:
-  - label: "Generate build.log"
-    command: |
-      mkdir -p logs
-      echo "Build log content" > logs/build.log
-  
-  - label: "Upload build.log"
-    command: buildkite-agent artifact upload log/build.log
-
+  - label: "Upload Artifact"
+    command: buildkite-agent artifacts upload /opt/homebrew/var/buildkite-agent/builds/Damilolas-MacBook-Pro-local-1/micheals-sandbox/inputs/buildkite/pipeline.yaml
 
 
 
