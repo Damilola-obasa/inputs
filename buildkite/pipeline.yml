@@ -1,5 +1,5 @@
 steps:
-  - label: "Upload Artifacts"
+  - label: "Upload Artifact"
     command: buildkite-agent artifact upload log/test.log
 
 
