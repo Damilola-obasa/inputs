@@ -1,5 +1,10 @@
 steps:
-  - label: "test secrets"
-    commands:
-      - echo test me again and again and now again and again work now ana now
-  
+  - label: "Simulate 20 minute job"
+    command: |
+      echo "Starting 20-minute task..."
+      sleep 1200  # Sleep for 1200 seconds (20 minutes)
+      echo "Completed 20-minute task."
+    timeout_in_minutes: 30  # Ensures the job does not exceed 30 minutes
+    agents:
+      queue: "default"  # Specify the queue if needed
+
