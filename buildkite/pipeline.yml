@@ -1,6 +1,11 @@
 steps:
-  - label: "Upload Artifact"
-    command: buildkite-agent artifacts upload /buildkite/pipeline.yml
+  - label: "Generate build.log"
+    command: |
+      mkdir -p logs
+      echo "Build log content" > logs/build.log
+  
+  - label: "Upload build.log"
+    command: buildkite-agent artifacts upload logs/build.log
 
 
 
