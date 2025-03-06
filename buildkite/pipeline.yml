@@ -1,7 +1,11 @@
 steps:
-  - label: "Upload Artifact"
-    command: buildkite-agent artifact upload /opt/homebrew/var/buildkite-agent/builds/Damilolas-MacBook-Pro-local-1/micheals-sandbox/inputs/new/news
-
+  - command: build.sh
+    artifact_paths: "build.log"
+steps:
+  - command: 
+buildkite-agent artifact upload “build.log” 
+ cat  << EOF | buildkite-agent annotate –style “warning’ –context ‘ctx-error’
+    artifact_paths: "build.log"
 
 
 
