@@ -4,10 +4,6 @@ steps:
     artifact_paths:
       - "/opt/homebrew/var/buildkite-agent/builds/Damilolas-MacBook-Pro-local-1/micheals-sandbox/inputs/buildkite/pipeline.yml"
 
-steps:
-  - label: "🔨 Tests"
-    command: buildkite-agent artifact download "/opt/homebrew/var/buildkite-agent/builds/Damilolas-MacBook-Pro-local-1/micheals-sandbox/inputs/buildkite/pipeline.yml" 
-
 
 
 
