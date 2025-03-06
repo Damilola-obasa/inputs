@@ -1,6 +1,6 @@
 steps:
   - label: "test secrets"
     commands:
-      - echo test me again and again and now again and again work now ana now and now
+      - echo test me again and again and now again and again work now ana now 
       - sleep 100
   
