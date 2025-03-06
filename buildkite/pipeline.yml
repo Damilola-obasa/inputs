@@ -1,8 +1,7 @@
 steps:
-  - label: "Check for build.log"
-    command: |
-      echo "Current directory: $(pwd)"
-      ls -l buildkite  # List the file to see if it existsf
+  - label: "Upload Artifact"
+    command: buildkite-agent artifacts upload $(pwd)/buildkite/pipeline.yml
+
 
 
 
