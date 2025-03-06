@@ -4,7 +4,6 @@ steps:
       echo "Current directory: $(pwd)"
       ls -l build.log  # List the file to see if it exists
 
-
 steps:
   - command: build.sh
     artifact_paths: "build.log"
