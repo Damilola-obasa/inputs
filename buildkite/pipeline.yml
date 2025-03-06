@@ -2,7 +2,7 @@ steps:
   - label: "Check for build.log"
     command: |
       echo "Current directory: $(pwd)"
-      ls -l work  # List the file to see if it existsf
+      ls -l buildkite  # List the file to see if it existsf
 
 
 
