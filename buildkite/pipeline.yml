@@ -1,6 +1,10 @@
 steps:
-  - label: "Upload Artifact"
-    command: buildkite-agent artifacts upload /opt/homebrew/var/buildkite-agent/builds/Damilolas-MacBook-Pro-local-1/micheals-sandbox/inputs/buildkite/pipeline.yaml
+  - label: "🔨 Tests"
+    command:
+      - "npm install"
+      - "tests.sh"
+    artifact_paths:
+      - "/opt/homebrew/var/buildkite-agent/builds/Damilolas-MacBook-Pro-local-1/micheals-sandbox/inputs/buildkite"
 
 
 
