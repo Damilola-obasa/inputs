@@ -5,7 +5,7 @@ steps:
     key: step-b
     depends_on:
       - step: step-a
-  - command: echo "step-c runs even whens step-b does not"
+  - command: echo "step-c runs even when step-b does not"
     key: step-c
     depends_on:
       - step: step-b
