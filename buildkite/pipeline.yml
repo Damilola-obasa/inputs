@@ -1,13 +1,7 @@
 steps:
-  - label: ":pipeline: Build"
+  - label: ":hourglass_flowing_sand: Stuck waiting for agent"
     commands:
-      - echo "Building..."
-
-  - block: "Manual approval – waiting"
-    prompt: "Click to continue after review"
-    key: "wait_step"
-
-  - label: ":rocket: Deploy"
-    commands:
-      - echo "Deploying..."
+      - echo "This will wait for an agent with queue=my-special-queue"
+    agents:
+      queue: default
 
