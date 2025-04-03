@@ -1,7 +1,7 @@
 steps:
   - label: ":hourglass_flowing_sand: Stuck waiting for agent"
     commands:
-      - echo "This will wait for an agent with queue=my-special-queue"
+      - echo "This will wait for an agent with queue=my-special-queues"
     agents:
       queue: default
 
