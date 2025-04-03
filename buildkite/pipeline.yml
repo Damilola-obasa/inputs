@@ -1,7 +1,7 @@
 steps:
   - label: ":alarm_clock: Wait 10 minutes"
     commands:
-      - sleep 600
+      - sleep 800
 
 
 
