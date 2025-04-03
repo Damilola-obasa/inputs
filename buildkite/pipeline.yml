@@ -1,8 +1,13 @@
 steps:
-  - label: ":alarm_clock: Wait 11 minutes"
+  - label: ":pipeline: Build"
     commands:
-      - sleep 800
+      - echo "Building..."
 
+  - block: "Manual approval – waiting"
+    prompt: "Click to continue after review"
+    key: "wait_step"
 
-
+  - label: ":rocket: Deploy"
+    commands:
+      - echo "Deploying..."
 
