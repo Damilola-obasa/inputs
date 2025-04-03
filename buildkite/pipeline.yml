@@ -3,5 +3,5 @@ steps:
     commands:
       - echo "This will wait for an agent with queue=my-special-queue"
     agents:
-      queue: defaul
+      queue: default
 
