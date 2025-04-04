@@ -1,7 +1,4 @@
 steps:
-  - label: ":hourglass_flowing_sand: Stuck waiting for agent"
-    commands:
-      - echo "This will wait for an agent with queue=my-special-queu"
-    agents:
-      queue: default
+  - label": "puppet",
+    commands: "sudo puppet agent -t || [[ $? -eq 2 ]] && next-command"
 
