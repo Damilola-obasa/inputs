@@ -1,4 +1,4 @@
-steps:
-  - label": "puppet",
-    commands: "sudo puppet agent -t || [[ $? -eq 2 ]] && next-command"
-
+{
+  "label": "puppet",
+  "command": "sudo puppet agent -t || [[ \\$? -eq 2 ]] && next-command"
+}
