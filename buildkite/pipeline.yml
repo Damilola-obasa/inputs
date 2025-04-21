@@ -1,5 +1,5 @@
 steps:
-  - label: ":console: Annotation Test"
+  - label: ":console: Annotations Test"
     command: |
       buildkite-agent annotate 'Example `default` style' --context 'ctx-default'
       buildkite-agent annotate 'Example `info` style' --style 'info' --context 'ctx-info'
