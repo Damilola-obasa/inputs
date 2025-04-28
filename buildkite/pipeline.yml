@@ -9,7 +9,7 @@ steps:
       buildkite-agent annotate '<p style="color: #1e90ff;">This is blue text</p>' --style "info"
       buildkite-agent annotate '<span class="yellow">this is yellows</span>' --style "info"
       buildkite-agent annotate "This is info-level annotation (blue background)" --style "info"
-      buildkite-agent annotate '<span style="color: blue;">This is blue text</span>' --style info
+      buildkite-agent annotate '<span style="color: blue;">This is blue text</span>' --style sinfo
       buildkite-agent annotate '<span class="yellow">Norma</span>'
 
 
