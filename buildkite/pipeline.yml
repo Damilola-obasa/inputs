@@ -1,7 +1,11 @@
 steps:
-  - label: "Wait for 3 minutes33s"
-    command: "sleep 180"
-
+  - label: "Generate Logs"
+    command: |
+      echo "Starting log output..."
+      for i in {1..1000}; do
+        echo "Log line number $i"
+      done
+      echo "Finished generating logs."
 
 
 
