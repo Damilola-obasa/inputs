@@ -1,11 +1,12 @@
 steps:
-  - label: "Generate Logs"
+  - label: "Long Running Log Generator"
     command: |
-      echo "Starting log output..."
-      for i in {1..1000}; do
-        echo "Log line number $i"
+      echo "Starting 10-minute log output..."
+      for i in {1..600}; do
+        echo "Minute $((i / 60)) - Second $i: Log line number $i"
+        sleep 1
       done
-      echo "Finished generating logs."
+      echo "Finished 10-minute log output."
 
 
 
