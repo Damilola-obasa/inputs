@@ -1,5 +1,5 @@
 steps:
-  - label: "Long Running Log Generator"
+  - label: "Long Running Log Generators"
     command: |
       echo "Starting 10-minute log output..."
       for i in {1..600}; do
