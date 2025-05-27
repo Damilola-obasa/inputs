@@ -1,7 +1,7 @@
 steps:
   - label: "🔍 Environment Setup"
     command: |
-      echo "Setting up environment..."
+      echo "Setting up environments..."
       echo "Installing dependencies..."
       sleep 60
       echo "Environment setup complete!"
