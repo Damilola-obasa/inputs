@@ -1,7 +1,5 @@
 steps:
   - label: "Show build messages"
-    command: |
-      echo ${BUILDKITE_MESSAGE}
   - build:
       branch: ${BUILDKITE_BRANCH}
       commit: ${BUILDKITE_COMMIT}
