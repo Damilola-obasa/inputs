@@ -1,5 +1,4 @@
 steps:
-  - label: "Show build messages"
   - build:
       branch: ${BUILDKITE_BRANCH}
       commit: ${BUILDKITE_COMMIT}
