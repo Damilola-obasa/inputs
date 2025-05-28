@@ -1,5 +1,5 @@
 steps:
-- build:
-    branch: ${BUILDKITE_BRANCH}
-    commit: ${BUILDKITE_COMMIT}
-    message: ${BUILDKITE_MESSAGE}
+  - label: "Show build message"
+    command: |
+      echo "This build was triggered with the following message:"
+      echo "$BUILDKITE_MESSAGE"
