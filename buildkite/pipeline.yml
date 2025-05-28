@@ -1,52 +1,5 @@
 steps:
-  - label: "🔍 Environment Setup"
-    command: |
-      echo "Setting up environment..."
-      echo "Installing dependencies..."
-      sleep 60
-      echo "Environment setup complete!"
-    timeout_in_minutes: 5
-
-  - label: "🧪 Running Tests"
-    command: |
-      echo "Starting test suite..."
-      echo "Running unit tests..."
-      sleep 70
-      echo "Running integration tests..."
-      sleep 20
-      echo "All tests passed!"
-    timeout_in_minutes: 5
-
-  - label: "🔨 Building Application"
-    command: |
-      echo "Starting build process..."
-      echo "Compiling source code..."
-      sleep 80
-      echo "Creating artifacts..."
-      sleep 10
-      echo "Build completed successfully!"
-    timeout_in_minutes: 5
-
-  - label: "📊 Security Scan"
-    command: |
-      echo "Initializing security scanner..."
-      echo "Scanning for vulnerabilities..."
-      sleep 90
-      echo "Generating security report..."
-      sleep 15
-      echo "Security scan complete - no issues found!"
-    timeout_in_minutes: 5
-
-  - label: "🚀 Deployment Preparation"
-    command: |
-      echo "Preparing deployment artifacts..."
-      echo "Validating configuration..."
-      sleep 75
-      echo "Creating deployment package..."
-      sleep 30
-      echo "Deployment preparation finished!"
-    timeout_in_minutes: 5
-
-
-
-
+- build:
+    branch: ${BUILDKITE_BRANCH}
+    commit: ${BUILDKITE_COMMIT}
+    message: ${BUILDKITE_MESSAGE}
