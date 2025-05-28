@@ -1,5 +1,5 @@
 steps:
   - label: "Show build message"
     command: |
-      echo "This build was triggered with the following message:"
-      echo "$BUILDKITE_MESSAGE"
+      echo $BUILDKITE_MESSAGE
+    
