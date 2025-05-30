@@ -4,4 +4,4 @@ steps:
 
   - label: "Conditional step"
     command: echo "This step only runs if the env var is set to true."
-    if: build.env("INCLUDE_CONDITIONAL_STEP") == "false"
+    if: build.env("INCLUDE_CONDITIONAL_STEP") == "true"
