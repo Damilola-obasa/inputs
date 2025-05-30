@@ -1,7 +1,10 @@
 steps:
-  - label: "Always runs"
-    command: echo "This step always runs."
+  - label: "Set environment and upload dynamic pipeline"
+    command: ./buildkite/generate-pipeline.sh
 
-  - label: "Conditional step"
-    command: echo "This step only runs if the env var is set to true."
-    if: build.env("INCLUDE_CONDITIONAL_STEP") == "true"
+  - label: "Run in Docker"
+    plugins:
+      - docker#v5.10.0:
+          image: "alpine:3.19"
+          command: ["sh", "-c", "echo MY_DYNAMIC_VAR is $MY_DYNAMIC_VAR, ANOTHER_VAR is $ANOTHER_VAR"]
+          env-file: buildkite/.env
