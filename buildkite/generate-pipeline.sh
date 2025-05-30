@@ -7,10 +7,6 @@ export MY_DYNAMIC_VAR="hello-world"
 export ANOTHER_VAR=$(date +%Y-%m-%d)
 # You can add more logic here as needed
 
-# --- Output environment variables to a .env file for Docker step ---
-echo "MY_DYNAMIC_VAR=$MY_DYNAMIC_VAR" > buildkite/.env
-echo "ANOTHER_VAR=$ANOTHER_VAR" >> buildkite/.env
-
 # --- Generate the dynamic pipeline YAML, passing env vars to the Docker plugin step ---
 cat <<EOF > buildkite/dynamic-pipeline.yml
 steps:
