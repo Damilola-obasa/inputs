@@ -1,5 +1,7 @@
 steps:
-  - label: "Show build message"
-    command: |
-      echo "Testing the message variable"
-      echo "$BUILDKITE_MESSAGE"
+  - label: "Always runs"
+    command: echo "This step always runs."
+
+  - label: "Conditional step"
+    command: echo "This step only runs if the env var is set to true."
+    if: build.env("INCLUDE_CONDITIONAL_STEP") == "true"
