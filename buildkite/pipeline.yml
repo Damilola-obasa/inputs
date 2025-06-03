@@ -6,13 +6,13 @@ steps:
         default: "production"
         options:
           - label: "Staging"
-            value: "staging"
+            value: "s"
           - label: "Production"
-            value: "production"
+            value: "p"
           - label: "Development"
-            value: "development"
+            value: "d"
           - label: "Testing"
-            value: "testing"
+            value: "t"
 
   - command: "deploy.sh"
     env:
