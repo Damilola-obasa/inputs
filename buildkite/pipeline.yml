@@ -6,7 +6,7 @@ steps:
         default: "sandbox-3rdparty"
         options:
           - label: 'sandbox-3rdparty'
-            value: 'sandbox-3rdparty'
+            value: 'sandbox-3rdpart'
           - label: '3rdparty'
             value: '3rdparty'
 
