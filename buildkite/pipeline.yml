@@ -14,6 +14,17 @@ steps:
           - label: "Testing"
             value: "t"
 
+  - block: ":squirrel::cheese_wedge::wheel: Upload the wheels?"
+    fields:
+      - select: "Upload Registry?"
+        key: 'upload-registry'
+        default: "sandbox-3rdparty"
+        options:
+          - label: 'sandbox-3rdparty'
+            value: 'sandbox-3rdparty'
+          - label: '3rdparty'
+            value: '3rdparty''
+
   - command: "deploy.sh"
     env:
       DEPLOY_ENV: "$(buildkite-agent meta-data get environment)"
