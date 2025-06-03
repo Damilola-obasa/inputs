@@ -3,7 +3,7 @@ steps:
     fields:
       - select: "Choose deployment target"
         key: "environment"
-        default: "prodution"
+        default: "production"
         options:
           - label: "Staging"
             value: "staging"
