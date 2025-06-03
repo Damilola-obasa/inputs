@@ -4,7 +4,7 @@ steps:
     fields:
       - select: "Upload Registry?"
         key: 'upload-registry'
-        default: "https://sandbox-3rdparty.example.com/upload"
+        default: "https://external-registry.com/upload"
         options:
           - label: 'Sandbox 3rd Party'
             value: 'https://sandbox-3rdparty.example.com/upload'
