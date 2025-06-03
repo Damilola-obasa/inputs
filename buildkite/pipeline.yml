@@ -1,3 +1,19 @@
 steps:
-  - label: "Set environment and upload dynamic pipeline"
-    command: ./buildkite/generate-pipeline.sh
+  - block: "Select Environment"
+    fields:
+      - select: "Choose deployment target"
+        key: "environment"
+        default: "staging"
+        options:
+          - label: "Staging"
+            value: "staging"
+          - label: "Production"
+            value: "production"
+          - label: "Development"
+            value: "development"
+          - label: "Testing"
+            value: "testing"
+
+  - command: "deploy.sh"
+    env:
+      DEPLOY_ENV: "$(buildkite-agent meta-data get environment)"
