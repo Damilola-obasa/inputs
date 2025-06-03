@@ -1,5 +1,5 @@
 steps:
-- block: ":squirrel::cheese_wedge::wheel: Upload the wheels?"
+  - block: ":squirrel::cheese_wedge::wheel: Upload the wheels?"
     fields:
       - select: "Upload Registry?"
         key: 'upload-registry'
