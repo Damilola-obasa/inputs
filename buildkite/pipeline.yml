@@ -13,7 +13,7 @@ steps:
   - block: "Manual approval to continue"
     prompt: "Click to proceed to the main build"
 
-  - label: "Main build that passes"
+  - label: "Main build that passess"
     command: "echo 'Build successful!' && exit 0"
 
 
