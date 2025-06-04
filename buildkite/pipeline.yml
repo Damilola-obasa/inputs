@@ -2,6 +2,10 @@ steps:
   - label: "Optional tests that fails"
     command: "exit 1"
     soft_fail: true
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
     
   - wait: ~
     continue_on_failure: true
