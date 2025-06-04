@@ -13,7 +13,20 @@ steps:
   - block: "Manual approval to continue"
     prompt: "Click to proceed to the main build"
 
-  - label: "Main build that passeseeer"
-    command: "echo 'Build successful!' && exit 0"
+  - label: "Main build that fails first, then passes"
+    command: |
+      if [ ! -f retry_flag ]; then
+        echo "First run, failing and creating flag file."
+        touch retry_flag
+        exit 1
+      else
+        echo "Second run, passing!"
+        rm retry_flag
+        exit 0
+      fi
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
 
