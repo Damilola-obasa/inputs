@@ -1,5 +1,5 @@
 steps:
-  - label: "Optional tests that fails"
+  - label: "Optional test that fails"
     command: "exit 1"
     soft_fail: true
     retry:
