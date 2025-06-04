@@ -1,6 +1,6 @@
 steps:
   - label: "Step 1"
-    command: "echo 'Step 1: Success'"
+    command: "echo 'Step 1: Successss'"
 
   - label: "Step 2"
     command: "echo 'Step 2: Success'"
