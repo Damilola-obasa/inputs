@@ -10,6 +10,9 @@ steps:
   - wait: ~
     continue_on_failure: true
 
+  - block: "Manual approval to continue"
+    prompt: "Click to proceed to the main build"
+
   - label: "Main build that fails first, then passes"
     command: |
       if [ ! -f retry_flag ]; then
