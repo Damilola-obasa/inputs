@@ -1,20 +1,14 @@
 steps:
-  - label: "Optional test that fails"
-    command: "exit 1"
-    soft_fail: true
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 2
-    
-  - wait: ~
-    continue_on_failure: true
+  - label: "Step 1"
+    command: "echo 'Step 1: Success'"
 
-  - label: "Soft fail step"
-    command: "exit 1"
-    soft_fail: true
+  - label: "Step 2"
+    command: "echo 'Step 2: Success'"
 
-  - label: "Main build that fails first, then passes"
+  - label: "Step 3"
+    command: "echo 'Step 3: Success'"
+
+  - label: "Fail first, then pass"
     command: |
       if [ ! -f retry_flag ]; then
         echo "First run, failing and creating flag file."
@@ -29,6 +23,5 @@ steps:
       automatic:
         - exit_status: "*"
           limit: 1
-    continue_on_failure: true
 
 
