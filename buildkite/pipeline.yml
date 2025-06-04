@@ -1,20 +1,12 @@
 steps:
-steps:
-  - block: ":squirrel::cheese_wedge::wheel: Upload the wheels?"
-    fields:
-      - select: "Upload Registry?"
-        key: 'upload-registry'
-        default: "https://external-registry.com/upload"
-        options:
-          - label: 'Sandbox 3rd Party'
-            value: 'https://sandbox-3rdparty.example.com/upload'
-          - label: '3rd Party Production'
-            value: 'https://3rdparty.example.com/upload'
-          - label: 'External Registry'
-            value: 'https://external-registry.com/upload'
-
-  - command: "deploy.sh"
-    env:
-      DEPLOY_ENV: "$(buildkite-agent meta-data get environment)"
+  - label: "Optional test that fails"
+    command: "exit 1"
+    soft_fail: true
+    
+  - wait: ~
+    continue_on_failure: true
+    
+  - label: "Main build that passes"
+    command: "echo 'Build successful!' && exit 0"
 
 
