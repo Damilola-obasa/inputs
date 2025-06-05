@@ -8,7 +8,7 @@ steps:
 
   - wait
 
-  - label: "List All Artifacts"
+  - label: "List All Artifacts (including retried jobs)"
     command: |
-      echo "Listing all artifacts for this build:"
-      buildkite-agent artifact search "*"
+      echo "Listing all artifacts for this build (including retried jobs):"
+      buildkite-agent artifact search "*" --include-retried-jobs
