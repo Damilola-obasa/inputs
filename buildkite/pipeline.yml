@@ -1,34 +1,8 @@
 steps:
-  - label: "Step 1"
-    command: "echo 'Step 1: Successss'"
-
-  - label: "Step 2"
-    command: "echo 'Step 2: Success'"
-
-  - label: "Step 3"
-    command: "echo 'Step 3: Success'"
-
-  - label: "Soft fail step"
-    command: "exit 1"
-    soft_fail: true
-
-  - label: "Pass step"
-    command: "echo 'This step always passes!' && exit 0"
-
-  - label: "Fail first, then pass"
+  - label: ":art: Chromatic Dry Run"
     command: |
-      if [ ! -f retry_flag ]; then
-        echo "First run, failing and creating flag file."
-        touch retry_flag
-        exit 1
-      else
-        echo "Second run, passing!"
-        rm retry_flag
-        exit 0
-      fi
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
-
-
+      npx chromatic \
+        --project-token=$CHROMATIC_PROJECT_TOKEN \
+        --storybook-build-dir=./storybook-static \
+        --dry-run \
+        --debug
