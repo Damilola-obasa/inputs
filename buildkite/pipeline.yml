@@ -1,38 +1,16 @@
 steps:
-  # Create files
-  - label: ":package: Create Files"
-    command: |
-      mkdir -p build
-      echo "Hello World" > build/output.txt
-      echo "Build completed at $(date)" > build/info.txt
-      echo "Files created:"
-      ls -l build
-
-  # Upload artifacts
-  - label: ":arrow_up: Upload Artifacts"
-    command: |
-      echo "Files in build directory before upload:"
-      ls -l build
-      buildkite-agent artifact upload "build/**/*"
-
-  # Wait for upload to complete
-  - wait
-
-  # Download and use artifacts
-  - label: ":arrow_down: Use Files"
-    command: |
-      buildkite-agent artifact download "build/**/*" .
-      echo "After download, current directory structure:"
-      find .
-      if [ -f build/output.txt ]; then
-        echo "output.txt found:"
-        cat build/output.txt
-      else
-        echo "output.txt not found"
-      fi
-      if [ -f build/info.txt ]; then
-        echo "info.txt found:"
-        cat build/info.txt
-      else
-        echo "info.txt not found"
-      fi
+ - label: "step 1"
+   retry:
+      automatic: true
+   key: "step-1"
+   commands:
+      - "mkdir apple"
+      - "touch apple/text.txt"
+      - "buildkite-agent artifact upload apple/text.txt"
+      - "exit -1"
+ - wait: ~
+   continue_on_failure: true
+   
+ - label: "Artifact Download with step key"
+   commands:
+      - buildkite-agent artifact download "apple/*.txt" . -—step "step-1" --include-retried-jobs
