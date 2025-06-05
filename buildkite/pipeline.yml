@@ -2,13 +2,5 @@ steps:
   - label: ":package: Install Dependencies"
     command: |
       npm install --save-dev chromatic
-      npm ci
-      
-  - label: ":building_construction: Build Storybook"
-    command: npm run build-storybook
-    
-  - label: ":art: Run Chromatic"
-    command: |
-      npx chromatic \
-        --project-token=$CHROMATIC_PROJECT_TOKEN \
-        --storybook-build-dir=./storybook-static
+      npm install
+      npm run build-storybook
