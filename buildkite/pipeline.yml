@@ -1,12 +1,14 @@
 steps:
-  # Create and upload artifacts
+  # Create files
   - label: ":package: Create Files"
     command: |
       mkdir -p build
       echo "Hello World" > build/output.txt
       echo "Build completed at $(date)" > build/info.txt
-    artifact_paths:
-      - "build/**/*"
+
+  # Upload artifacts
+  - label: ":arrow_up: Upload Artifacts"
+    command: buildkite-agent artifact upload "build/**/*"
 
   # Wait for upload to complete
   - wait
@@ -14,10 +16,7 @@ steps:
   # Download and use artifacts
   - label: ":arrow_down: Use Files"
     command: |
-      # Download the artifacts
       buildkite-agent artifact download "build/**/*" .
-      
-      # Use them
       echo "Downloaded files:"
       cat build/output.txt
       cat build/info.txt
