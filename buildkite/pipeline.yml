@@ -1,6 +1,15 @@
 steps:
-  - label: ":package: Install Dependencies"
+  - label: ":building_construction: Build Project"
     command: |
-      npm install --save-dev chromatic
-      npm install
       npm run build-storybook
+
+  - label: ":package: Upload Artifacts"
+    command: |
+      buildkite-agent artifact upload "storybook-static/**/*"
+
+  - wait
+
+  - label: ":mag: Download Artifacts Example"
+    command: |
+      buildkite-agent artifact download "storybook-static/**/*" .
+      echo "Artifacts downloaded to workspace"
