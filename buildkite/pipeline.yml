@@ -1,15 +1,23 @@
 steps:
-  - label: ":building_construction: Build Project"
+  # Create and upload artifacts
+  - label: ":package: Create Files"
     command: |
-      npm run build-storybook
+      mkdir -p build
+      echo "Hello World" > build/output.txt
+      echo "Build completed at $(date)" > build/info.txt
+    artifact_paths:
+      - "build/**/*"
 
-  - label: ":package: Upload Artifacts"
-    command: |
-      buildkite-agent artifact upload "storybook-static/**/*"
-
+  # Wait for upload to complete
   - wait
 
-  - label: ":mag: Download Artifacts Example"
+  # Download and use artifacts
+  - label: ":arrow_down: Use Files"
     command: |
-      buildkite-agent artifact download "storybook-static/**/*" .
-      echo "Artifacts downloaded to workspace"
+      # Download the artifacts
+      buildkite-agent artifact download "build/**/*" .
+      
+      # Use them
+      echo "Downloaded files:"
+      cat build/output.txt
+      cat build/info.txt
