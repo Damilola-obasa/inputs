@@ -1,16 +1,14 @@
 steps:
- - label: "step 1"
-   retry:
-      automatic: true
-   key: "step-1"
-   commands:
-      - "mkdir apple"
-      - "touch apple/text.txt"
-      - "buildkite-agent artifact upload apple/text.txt"
-      - "exit -1"
- - wait: ~
-   continue_on_failure: true
-   
- - label: "Artifact Download with step key"
-   commands:
-      - buildkite-agent artifact download "apple/*.txt" . -—step "step-1" --include-retried-jobs
+  - label: "Create Artifacts"
+    command: |
+      mkdir -p apple
+      echo "Hello" > apple/hello.txt
+      echo "World" > apple/world.txt
+      buildkite-agent artifact upload "apple/*.txt"
+
+  - wait
+
+  - label: "List All Artifacts"
+    command: |
+      echo "Listing all artifacts for this build:"
+      buildkite-agent artifact search "*"
