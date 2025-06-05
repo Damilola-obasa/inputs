@@ -21,6 +21,7 @@ steps:
   # Download and use artifacts
   - label: ":arrow_down: Use Files"
     command: |
+      mkdir -p build
       buildkite-agent artifact download "build/**/*" .
       echo "Downloaded files:"
       ls -l build
