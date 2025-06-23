@@ -1,13 +1,28 @@
 steps:
-  - label: "Build"
+  - label: "Install Dependencies"
+    command: "npm install"
+
+  - label: "Lint Code"
+    command: "npm run lint"
+
+  - label: "Unit Tests"
+    command: "npm test"
+    if: build.branch != "docs/*"
+
+  - label: "Build Application"
     command: "npm run build"
 
-  - label: "Test"
-    command: "npm test"
+  - label: "Integration Tests"
+    command: "npm run test:integration"
+    if: build.branch == "main"
 
-  - label: "Security Scan"
+  - label: "Security Audit"
     command: "npm audit"
     if: build.branch == "main"
 
-  - label: "Deploy"
-    command: "./deploy.sh"
+  - label: "Deploy to Staging"
+    command: "./deploy-staging.sh"
+    branches: "main develop"
+
+  - label: "Deploy to Production"
+    command: "./deploy-p
