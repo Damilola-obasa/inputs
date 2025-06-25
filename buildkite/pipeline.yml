@@ -1,6 +1,6 @@
 steps:
   - label: "Build"
-    command: "echo 'Building...'"
+    command: "echo 'Building. ..'"
 
   - label: "Test"
     command: "echo 'Testing...'"
