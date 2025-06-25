@@ -8,4 +8,4 @@ steps:
     skip: "Tests are currently browwken"
 
   - label: "Deploy" 
-    command: "echo 'Deploying...5jds.d'"
+    command: "echo 'Deploying...5jdsdsd.d'"
