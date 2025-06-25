@@ -4,7 +4,7 @@ steps:
 
   - label: "Test"
     command: "echo 'Testing...'"
-    skip: "Tests are currently broken"
+    skip: "Tests are currently bro ken"
 
   - label: "Deploy" 
     command: "echo 'Deploying..c..'"
