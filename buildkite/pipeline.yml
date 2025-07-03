@@ -1,11 +1,16 @@
 # Test commit to verify author email
 steps:
-  - label: "Build"
-    command: "echo 'Building...'"
+  - label: "Stage 1: Setup"
+    command: "echo 'Setting up environment...'"
 
-  - label: "Test"
-    command: "echo 'Testing...'"
-    skip: "Tests are currently browwken"
+  - label: "Stage 2: Install Dependencies"
+    command: "echo 'Installing dependencies...'"
 
-  - label: "Deploy" 
-    command: "echo 'Deploying...5jdsdsd.d'"
+  - label: "Stage 3: Run Tests"
+    command: "echo 'Running tests...'"
+
+  - label: "Stage 4: Build"
+    command: "echo 'Building the project...'"
+
+  - label: "Stage 5: Deploy"
+    command: "echo 'Deploying application...'"
