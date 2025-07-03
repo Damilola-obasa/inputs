@@ -12,5 +12,6 @@ steps:
   - label: "Stage 4: Build"
     command: "echo 'Building the project...'"
 
+  # This is the deploy step
   - label: "Stage 5: Deploy"
     command: "echo 'Deploying application...'"
