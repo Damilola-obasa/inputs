@@ -29,3 +29,18 @@ steps:
 
   - label: "Stage 10: Deploy to Production"
     command: "echo 'Deploying to production...'"
+
+  - label: "Stage 11: Smoke Test"
+    command: "echo 'Running smoke tests...'"
+
+  - label: "Stage 12: Notify Team"
+    command: "echo 'Notifying the team...'"
+
+  - label: "Stage 13: Clean Up"
+    command: "echo 'Cleaning up resources...'"
+
+  - label: "Stage 14: Archive Logs"
+    command: "echo 'Archiving logs...'"
+
+  - label: "Stage 15: Finish"
+    command: "echo 'Pipeline finished!'"
