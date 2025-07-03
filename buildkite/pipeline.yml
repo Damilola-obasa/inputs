@@ -6,12 +6,26 @@ steps:
   - label: "Stage 2: Install Dependencies"
     command: "echo 'Installing dependencies...'"
 
-  - label: "Stage 3: Run Tests"
-    command: "echo 'Running tests...'"
+  - label: "Stage 3: Lint"
+    command: "echo 'Linting code...'"
 
-  - label: "Stage 4: Build"
+  - label: "Stage 4: Run Unit Tests"
+    command: "echo 'Running unit tests...'"
+
+  - label: "Stage 5: Run Integration Tests"
+    command: "echo 'Running integration tests...'"
+
+  - label: "Stage 6: Build"
     command: "echo 'Building the project...'"
 
-  # This is the deploy step
-  - label: "Stage 5: Deploy"
-    command: "echo 'Deploying application...'"
+  - label: "Stage 7: Package"
+    command: "echo 'Packaging the build...'"
+
+  - label: "Stage 8: Upload Artifacts"
+    command: "echo 'Uploading artifacts...'"
+
+  - label: "Stage 9: Deploy to Staging"
+    command: "echo 'Deploying to staging...'"
+
+  - label: "Stage 10: Deploy to Production"
+    command: "echo 'Deploying to production...'"
