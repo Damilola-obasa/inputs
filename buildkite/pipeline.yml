@@ -3,14 +3,9 @@ steps:
     command: |
       echo "Running flaky command..."
       
-      # Fail 50% of the time
-      if [ $((RANDOM % 2)) -eq 0 ]; then
-        echo "Failed!"
-        exit 1
-      else
-        echo "Success!"
-        exit 0
-      fi
+      # Always fail to trigger retries
+      echo "This step always fails!"
+      exit 1
     
     retry:
       automatic:
