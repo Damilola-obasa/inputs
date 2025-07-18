@@ -1,11 +1,18 @@
 steps:
-  - label: "Generate Long Log"
+  - label: "Flaky Step"
     command: |
-      echo "Starting long log generation..."
+      echo "Running flaky command..."
       
-      # Print 1000 numbered lines
-      for i in {1..1000}; do
-        echo "Log entry $i: This is a test log message with timestamp $(date)"
-      done
-      
-      echo "Long log generation completed!"
+      # Fail 50% of the time
+      if [ $((RANDOM % 2)) -eq 0 ]; then
+        echo "Failed!"
+        exit 1
+      else
+        echo "Success!"
+        exit 0
+      fi
+    
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
