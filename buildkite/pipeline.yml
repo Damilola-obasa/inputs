@@ -1,13 +1,9 @@
 steps:
-  - label: "Flaky Step"
+  - label: "Build {{matrix.os}}"
     command: |
-      echo "Running flaky command..."
-      
-      # Always fail to trigger retries
-      echo "This step always fails!"
-      exit 1
-    
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 2
+      make build-{{matrix.os}}
+      echo "Build complete for {{matrix.os}}"
+    artifact_paths: "dist/{{matrix.os}}/**/*"
+    matrix:
+      setup:
+        os: ["linux", "windows", "macos"]
