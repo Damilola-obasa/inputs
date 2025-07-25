@@ -20,7 +20,6 @@ steps:
     depends_on:
       - step: "build1"
         allow_failure: true
-    if: build.jobs.build1.state == "canceled" || build.jobs.build1.state == "passed"
 
   - wait: ~
 
@@ -33,4 +32,3 @@ steps:
     depends_on:
       - step: "build2"
         allow_failure: true
-    if: build.jobs.build2.state == "canceled" || build.jobs.build2.state == "passed"
