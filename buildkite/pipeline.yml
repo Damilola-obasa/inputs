@@ -1,9 +1,36 @@
 steps:
-  - label: "Build {{matrix.os}}"
+  - label: "Build 1"
+    key: "build1"
     command: |
-      make build-{{matrix.os}}
-      echo "Build complete for {{matrix.os}}"
-    artifact_paths: "dist/{{matrix.os}}/**/*"
-    matrix:
-      setup:
-        os: ["linux", "windows", "macos"]
+      echo "Starting Build 1..."
+      sleep 120
+      echo "Build 1 completed"
+    concurrency_group: "my-builds"
+    concurrency: 1
+
+  - wait: ~
+    continue_on_failure: true
+
+  - label: "Build 2 (if Build 1 cancelled)"
+    key: "build2"
+    command: |
+      echo "Starting Build 2..."
+      sleep 120
+      echo "Build 2 completed"
+    depends_on:
+      - step: "build1"
+        allow_failure: true
+    if: build.jobs.build1.state == "canceled" || build.jobs.build1.state == "passed"
+
+  - wait: ~
+
+  - label: "Build 3 (if Build 2 cancelled)"
+    key: "build3"
+    command: |
+      echo "Starting Build 3..."
+      sleep 120
+      echo "Build 3 completed"
+    depends_on:
+      - step: "build2"
+        allow_failure: true
+    if: build.jobs.build2.state == "canceled" || build.jobs.build2.state == "passed"
