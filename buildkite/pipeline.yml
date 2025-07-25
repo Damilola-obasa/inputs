@@ -8,27 +8,20 @@ steps:
     concurrency_group: "my-builds"
     concurrency: 1
 
-  - wait: ~
-    continue_on_failure: true
-
-  - label: "Build 2 (if Build 1 cancelled)"
+  - label: "Build 2 (waits for Build 1 to be cancelled)"
     key: "build2"
     command: |
       echo "Starting Build 2..."
       sleep 120
       echo "Build 2 completed"
-    depends_on:
-      - step: "build1"
-        allow_failure: true
+    concurrency_group: "my-builds"
+    concurrency: 1
 
-  - wait: ~
-
-  - label: "Build 3 (if Build 2 cancelled)"
+  - label: "Build 3 (waits for Build 2 to be cancelled)"
     key: "build3"
     command: |
       echo "Starting Build 3..."
       sleep 120
       echo "Build 3 completed"
-    depends_on:
-      - step: "build2"
-        allow_failure: true
+    concurrency_group: "my-builds"
+    concurrency: 1
