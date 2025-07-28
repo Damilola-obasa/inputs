@@ -17,7 +17,7 @@ steps:
     concurrency_group: "my-builds"
     concurrency: 1
 
-  - label: "Build 3 (waits for Build 2 to be cancelled)"
+  - label: "Build 4 (waits for Build 2 to be cancelled)"
     key: "build3"
     command: |
       echo "Starting Build 3..."
@@ -25,3 +25,5 @@ steps:
       echo "Build 3 completed"
     concurrency_group: "my-builds"
     concurrency: 1
+
+    
