@@ -1,5 +1,7 @@
 steps:
   - label: "Test merge commit (like github.sha)"
+    plugins:
+      - JuliaCI/merge-commit#v1
     command: |
       echo "Testing merge commit: $BUILDKITE_COMMIT"
       echo "This is equivalent to github.sha in GitHub Actions"
