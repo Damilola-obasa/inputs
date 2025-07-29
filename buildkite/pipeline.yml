@@ -1,5 +1,5 @@
 steps:
   - label: "Test merge commit (like github.sha)"
-    commands:
-      - echo "Testing merge commit: $BUILDKITE_COMMIT"
-      - echo "This is equivalent to github.sha in GitHub Actions"
+    command: |
+      echo "Testing merge commit: $BUILDKITE_COMMIT"
+      echo "This is equivalent to github.sha in GitHub Actions"
