@@ -1,4 +1,11 @@
 steps:
+  - label: "Test merge commit (like github.sha)"
+    plugins:
+      - JuliaCI/merge-commit#v1
+    command: |
+      echo "Testing merge commit: $BUILDKITE_COMMIT"
+      echo "This is equivalent to github.sha in GitHub Actions"
+
   - label: "Build 1"
     key: "build1"
     command: |
@@ -25,5 +32,3 @@ steps:
       echo "Build 3 completed"
     concurrency_group: "my-builds"
     concurrency: 1
-
-    
