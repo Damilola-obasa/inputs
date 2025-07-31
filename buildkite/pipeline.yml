@@ -1,6 +1,3 @@
-env:
-  BUILDKITE_GIT_MIRRORS_PATH: "/tmp/buildkite-git-mirrors"
-
 steps:
   - label: "Test Step"
     command: "echo 'this is working'"
