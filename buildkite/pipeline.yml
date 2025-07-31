@@ -1,3 +1,14 @@
 steps:
-  - label: "Test Step"
-    command: "echo 'this is working'"
+  - label: "Test Checkout Failure"
+    command: |
+      echo "Attempting to checkout a non-existent commit..."
+      git checkout 0000000000000000000000000000000000000000
+      echo "This should not be reached if checkout fails"
+    plugins:
+      - checkout#v4:
+          ref: "0000000000000000000000000000000000000000"
+
+  - label: "Normal Step (should not run if checkout fails)"
+    command: |
+      echo "This step should not run if the previous checkout failed"
+      echo "If you see this, the checkout failure test didn't work as expected"
