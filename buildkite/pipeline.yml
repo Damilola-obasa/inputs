@@ -1,14 +1,29 @@
 steps:
-  - label: "Test Checkout Failure"
+  - label: "Test Post-Checkout Hook Failure"
     command: |
-      echo "Attempting to checkout a non-existent commit..."
-      git checkout 0000000000000000000000000000000000000000
-      echo "This should not be reached if checkout fails"
-    plugins:
-      - checkout#v4:
-          ref: "0000000000000000000000000000000000000000"
+      echo "Setting up a scenario to test post-checkout hook..."
+      
+      # First, do a normal checkout
+      git checkout main
+      
+      # Now simulate a checkout failure by corrupting the repository
+      echo "Simulating checkout failure by corrupting git state..."
+      rm -f .git/HEAD
+      
+      # Try to checkout again - this should trigger the post-checkout hook
+      git checkout main
+      
+      echo "If you see this, the post-checkout hook didn't catch the failure"
 
-  - label: "Normal Step (should not run if checkout fails)"
+  - label: "Alternative Test - Direct Hook Execution"
     command: |
-      echo "This step should not run if the previous checkout failed"
-      echo "If you see this, the checkout failure test didn't work as expected"
+      echo "Testing post-checkout hook directly..."
+      
+      # Simulate a failed checkout exit code
+      (exit 1)
+      
+      # Run the post-checkout hook manually
+      echo "Running post-checkout hook with simulated failure..."
+      bash hooks/post-checkout
+      
+      echo "Hook execution completed"
