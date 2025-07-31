@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Check if checkout failed by examining exit code
+if [ $? -ne 0 ]; then
+    echo "❌ Checkout failed! Running git status for debugging..."
+    
+    # Run git status to see what's wrong
+    git status || echo "git status also failed"
+    
+    # Additional debugging info
+    echo "--- Git repository state ---"
+    git branch -a 2>/dev/null || echo "Cannot list branches"
+    git remote -v 2>/dev/null || echo "Cannot list remotes"
+    git log --oneline -5 2>/dev/null || echo "Cannot show recent commits"
+    
+    # Show working directory
+    echo "--- Working directory ---"
+    ls -la
+    
+    exit 1  # Ensure build fails
+fi
+
+echo "✅ Checkout successful"

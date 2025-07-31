@@ -1,34 +1,3 @@
 steps:
-  - label: "Test merge commit (like github.sha)"
-    plugins:
-      - JuliaCI/merge-commit#v1
-    command: |
-      echo "Testing merge commit: $BUILDKITE_COMMIT"
-      echo "This is equivalent to github.sha in GitHub Actions"
-
-  - label: "Build 1"
-    key: "build1"
-    command: |
-      echo "Starting Build 1..."
-      sleep 120
-      echo "Build 1 completed"
-    concurrency_group: "my-builds"
-    concurrency: 1
-
-  - label: "Build 2 (waits for Build 1 to be cancelled)"
-    key: "build2"
-    command: |
-      echo "Starting Build 2..."
-      sleep 120
-      echo "Build 2 completed"
-    concurrency_group: "my-builds"
-    concurrency: 1
-
-  - label: "Build 4 (waits for Build 2 to be cancelled)"
-    key: "build3"
-    command: |
-      echo "Starting Build 3..."
-      sleep 120
-      echo "Build 3 completed"
-    concurrency_group: "my-builds"
-    concurrency: 1
+  - label: "Test Step"
+    command: "echo 'this is working'"
