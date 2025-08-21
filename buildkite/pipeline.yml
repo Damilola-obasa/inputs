@@ -1,6 +1,6 @@
 steps:
   - label: "Builds"
-    command: "sleep 65"
+    command: "sleep 300"
     timeout_in_minutes: 1
     notify:
       - slack:
