@@ -2,3 +2,9 @@ steps:
   - label: "Build"
     command: "sleep 300"
     timeout_in_minutes: 1
+    notify:
+      - slack:
+          channels:
+            - 'testmike#general'
+          message: ':failed'
+        if: step.outcome == "failed" && build.branch != "main"
