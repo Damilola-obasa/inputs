@@ -1,6 +1,6 @@
 steps:
   - label: "Builds"
-    command: "nonexistent-command-that-will-cause-error"
+    command: "sleep 100"
     timeout_in_minutes: 1
     notify:
       - slack:
