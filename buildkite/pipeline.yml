@@ -5,5 +5,5 @@ steps:
     notify:
       - slack:
           channels:
-            - "testmike#social"
-          message: ':failed'
+            - "#social"
+          message: 'failed'
