@@ -5,6 +5,6 @@ steps:
     notify:
       - slack:
           channels:
-            - 'testmike#general'
+            - 'testmike#social'
           message: ':failed'
         if: step.outcome == "failed" && build.branch != "main"
