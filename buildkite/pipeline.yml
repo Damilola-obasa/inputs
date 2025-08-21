@@ -3,8 +3,9 @@ steps:
     command: "sleep 300"
     timeout_in_minutes: 1
     notify:
-      - slack:
-          channels:
-            - "#social"
-          message: 'failed'
-        if: step.outcome == "errored" && build.branch != "main"
+    - slack:
+        channels:
+        - "#social"
+        message: 'failed'
+      if: step.outcome == "errored" && build.branch != "main"
+
