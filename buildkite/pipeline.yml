@@ -7,4 +7,4 @@ steps:
           channels:
             - "#social"
           message: 'failed'
-if: step.outcome == "errored" && build.branch = "master"
+if: step.outcome == "errored" && build.branch != "mast"
