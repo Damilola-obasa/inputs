@@ -1,10 +1,10 @@
 steps:
   - label: "Builds"
-    command: "exit 1"
+    command: "nonexistent-command-that-will-cause-error"
     timeout_in_minutes: 1
     notify:
       - slack:
           channels:
             - "#social"
           message: 'failed'
-        if: build.state == "failed"
+        if: build.state == "errored"
