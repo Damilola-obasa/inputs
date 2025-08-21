@@ -7,4 +7,4 @@ steps:
           channels:
             - "#social"
           message: 'failed'
-        if: build.state == "errored" && build.branch == "main"
+        if: step.outcome == "errored" && build.branch == "main"
