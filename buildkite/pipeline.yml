@@ -1,3 +1,4 @@
 steps:
-  - label: "Test Step"
-    command: "echo 'this is working'"
+  - label: "Build"
+    command: "sleep 300"
+    timeout_in_minutes: 1
