@@ -1,31 +1,11 @@
 steps:
-  - label: ":rocket: Generate Deploy Target Name"
+  - label: "Generate Name"
     command: |
-      echo "--- :rocket: Generating deploy target name"
-      DEPLOY_TARGET_NAME=$(./.buildkite/gen_name.sh)
-      echo "Generated deploy target name: $DEPLOY_TARGET_NAME"
-      buildkite-agent meta-data set "deploy-target-name" "$DEPLOY_TARGET_NAME"
+      NAME=$(./.buildkite/gen_name.sh)
+      buildkite-agent meta-data set "generated-name" "$NAME"
     
-  - label: ":rocket: Deploy Frontend"
-    trigger: "frontend-deploy-pipeline"
+  - label: "Deploy"
+    trigger: "deploy-pipeline"
     build:
-      branch: main
       env:
-        DEPLOY_TARGET_NAME: ${BUILDKITE_META_DATA_deploy-target-name}
-        ENVIRONMENT: "production"
-    
-  - label: ":rocket: Deploy Backend"
-    trigger: "backend-deploy-pipeline"
-    build:
-      branch: main
-      env:
-        DEPLOY_TARGET_NAME: ${BUILDKITE_META_DATA_deploy-target-name}
-        ENVIRONMENT: "production"
-    
-  - label: ":rocket: Run Tests"
-    command: |
-      echo "--- :test_tube: Running tests with deploy target: ${BUILDKITE_META_DATA_deploy-target-name}"
-      echo "Deploy target name: $DEPLOY_TARGET_NAME"
-      echo "Environment: $ENVIRONMENT"
-      # Your test commands here
-      echo "Tests completed successfully!"
+        DEPLOY_NAME: ${BUILDKITE_META_DATA_generated-name}
