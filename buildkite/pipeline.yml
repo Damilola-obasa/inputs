@@ -1,8 +1,8 @@
 steps:
   - label: "Generate Name"
     command: |
-      echo "=== Using inline command ==="
-      NAME="app-$(date +%Y%m%d-%H%M%S)"
+      echo "=== Using hardcoded value ==="
+      NAME="app-test-123"
       echo "Generated name: $NAME"
       buildkite-agent meta-data set "generated-name" "$NAME"
     
