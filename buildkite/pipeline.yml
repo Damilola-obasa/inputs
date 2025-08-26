@@ -1,9 +1,8 @@
 steps:
   - label: "Generate Name"
     command: |
-      echo "=== Using hardcoded value ==="
-      NAME="app-test-123"
-      echo "Generated name: $NAME"
+      ./buildkite/gen_name.sh
+      NAME=$(./buildkite/gen_name.sh)
       buildkite-agent meta-data set "generated-name" "$NAME"
     
   - label: "Deploy"
