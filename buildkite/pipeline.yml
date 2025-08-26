@@ -1,7 +1,7 @@
 steps:
   - label: "Generate Name"
     command: |
-      NAME=$(./.buildkite/gen_name.sh)
+      NAME=$(./buildkite/gen_name.sh)
       echo "Generated name: '$NAME'"
       if [ -z "$NAME" ]; then
         echo "Error: Script output is empty"
