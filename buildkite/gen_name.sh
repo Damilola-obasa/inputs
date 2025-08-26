@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "deploy-$(date +%s)"
+TIMESTAMP=$(date +%s 2>/dev/null || echo "1234567890")
+echo "deploy-${TIMESTAMP}"
