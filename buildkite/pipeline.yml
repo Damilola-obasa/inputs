@@ -2,8 +2,11 @@ steps:
   - label: "Generate and Deploy"
     command: |
       ./buildkite/gen_name.sh
+      echo "=== Capturing script output ==="
       NAME=$(./buildkite/gen_name.sh)
-      echo "Script output: $NAME"
+      echo "=== Variable NAME value ==="
+      echo "NAME: '$NAME'"
+      echo "=== Script output: $NAME ==="
       
   - label: "Deploy"
     trigger: "deploy-pipeline"
