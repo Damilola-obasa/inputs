@@ -8,7 +8,7 @@ steps:
       NAME=$(./buildkite/gen_name.sh)
       echo "Script exit code: $?"
       echo "Script output: '$NAME'"
-      echo "Script output length: ${#NAME}"
+      echo "Script output length: $(echo -n "$NAME" | wc -c)"
       if [ -z "$NAME" ]; then
         echo "Error: Script output is empty"
         exit 1
