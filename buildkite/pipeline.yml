@@ -1,12 +1,14 @@
 steps:
   - label: "Generate Name"
     command: |
-      NAME=$(./buildkite/gen_name.sh)
-      echo "Generated name: '$NAME'"
+      echo "--- :rocket: Running script to generate name"
+      NAME=$(./buildkite/gen_name.sh 2>&1)
+      echo "Script output: '$NAME'"
       if [ -z "$NAME" ]; then
         echo "Error: Script output is empty"
         exit 1
       fi
+      echo "Setting metadata with value: '$NAME'"
       buildkite-agent meta-data set "generated-name" "$NAME"
     
   - label: "Deploy"
