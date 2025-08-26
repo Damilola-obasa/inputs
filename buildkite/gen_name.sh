@@ -1,2 +1,2 @@
 #!/bin/bash
-printf "micheal\n"
+echo "app-$(date +%Y%m%d-%H%M%S)"
