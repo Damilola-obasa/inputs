@@ -6,8 +6,12 @@ steps:
       ls -la buildkite/
       echo "=== Script content ==="
       cat buildkite/gen_name.sh
-      echo "=== Running script ==="
-      NAME=$(cat buildkite/gen_name.sh | bash)
+      echo "=== Running script directly ==="
+      bash buildkite/gen_name.sh > output.txt
+      echo "Script exit code: $?"
+      echo "Output file content:"
+      cat output.txt
+      NAME=$(cat output.txt)
       echo "Script output: '$NAME'"
       echo "Output length: $(echo -n "$NAME" | wc -c)"
       if [ -z "$NAME" ]; then
