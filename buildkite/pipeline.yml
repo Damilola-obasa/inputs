@@ -1,19 +1,7 @@
 steps:
   - label: "Generate Name"
     command: |
-      echo "Running script..."
-      if [ ! -f "./buildkite/gen_name.sh" ]; then
-        echo "Error: Script file not found"
-        exit 1
-      fi
-      chmod +x ./buildkite/gen_name.sh
       NAME=$(./buildkite/gen_name.sh)
-      echo "Script output: '$NAME'"
-      if [ -z "$NAME" ]; then
-        echo "Error: Script output is empty, using fallback"
-        NAME="micheal-fallback"
-      fi
-      echo "Setting metadata with: $NAME"
       buildkite-agent meta-data set "generated-name" "$NAME"
     
   - label: "Deploy"
