@@ -1,11 +1,11 @@
 steps:
   - label: "Generate Name"
     command: |
-      NAME=$(./buildkite/gen_name.sh)
+      NAME=$(bash -c './buildkite/gen_name.sh')
       buildkite-agent meta-data set "generated-name" "$NAME"
     
   - label: "Deploy"
     trigger: "deploy-pipeline"
     build:
       env:
-        DEPLOY_TARGET_NAME: $BUILDKITE_META_DATA_generated-name_NAME
+        DEPLOY_TARGET_NAME: $BUILDKITE_META_DATA_generated-name
