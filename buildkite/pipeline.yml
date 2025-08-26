@@ -13,4 +13,4 @@ steps:
     trigger: "deploy-pipeline"
     build:
       env:
-        DEPLOY_NAME: I
+        DEPLOY_TARGET_NAME: ${BUILDKITE_META_DATA_generated-name}
