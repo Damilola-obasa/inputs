@@ -9,4 +9,4 @@ steps:
     trigger: "deploy-pipeline"
     build:
       env:
-        DEPLOY_TARGET_NAME: $(buildkite-agent meta-data get "generated-name")
+        DEPLOY_TARGET_NAME: $NAME
