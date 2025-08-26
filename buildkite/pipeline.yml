@@ -2,9 +2,12 @@ steps:
   - label: "Generate and Deploy"
     command: |
       ./buildkite/gen_name.sh
-      echo "=== Capturing script output ==="
-      NAME=$(./buildkite/gen_name.sh)
-      echo "=== Variable NAME value ==="
+      echo "=== Capturing script output to file ==="
+      ./buildkite/gen_name.sh > output.txt
+      echo "=== File content ==="
+      cat output.txt
+      echo "=== Reading from file ==="
+      NAME=$(cat output.txt)
       echo "NAME: '$NAME'"
       echo "=== Script output: $NAME ==="
       
