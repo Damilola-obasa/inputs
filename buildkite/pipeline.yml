@@ -1,10 +1,9 @@
 steps:
-  - label: "Generate Name"
+  - label: "Generate and Deploy"
     command: |
       NAME=$(./buildkite/gen_name.sh)
       echo "Script output: $NAME"
-
-    
+      
   - label: "Deploy"
     trigger: "deploy-pipeline"
     build:
