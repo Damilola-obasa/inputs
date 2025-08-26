@@ -1,6 +1,7 @@
 steps:
   - label: "Generate and Deploy"
     command: |
+      ./buildkite/gen_name.sh
       NAME=$(./buildkite/gen_name.sh)
       echo "Script output: $NAME"
       
