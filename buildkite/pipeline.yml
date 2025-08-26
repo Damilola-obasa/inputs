@@ -1,8 +1,11 @@
 steps:
   - label: "Generate Name"
     command: |
-      NAME=$(./buildkite/gen_name.sh)
-      buildkite-agent meta-data set "generated-name" "$NAME"
+      echo "Setting hardcoded metadata..."
+      buildkite-agent meta-data set "generated-name" "micheal"
+      echo "Metadata set. Retrieving to verify..."
+      RETRIEVED=$(buildkite-agent meta-data get "generated-name")
+      echo "Retrieved metadata: $RETRIEVED"
     
   - label: "Deploy"
     trigger: "deploy-pipeline"
