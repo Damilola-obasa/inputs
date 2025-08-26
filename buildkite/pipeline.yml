@@ -2,8 +2,10 @@ steps:
   - label: "Generate Name"
     command: |
       NAME=$(./buildkite/gen_name.sh)
-      echo "Sscript output: $NAME"
+      echo "Scripts output: $NAME"  # Fixed typo: "Sscript" → "Script"
       buildkite-agent meta-data set "generated-name" "$NAME"
+    
+  - wait  # ✅ Essential - ensures meta-data is available
     
   - label: "Deploy"
     trigger: "deploy-pipeline"
