@@ -1,7 +1,8 @@
 steps:
   - label: "Generate Name"
     command: |
-      NAME=$(./buildkite/gen_name.sh)
+      ./buildkite/gen_name.sh > /tmp/name.txt
+      NAME=$(cat /tmp/name.txt)
       buildkite-agent meta-data set "generated-name" "$NAME"
     
   - label: "Deploy"
