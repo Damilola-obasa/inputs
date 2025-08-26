@@ -1,9 +1,20 @@
 steps:
   - label: "Generate Name"
     command: |
+      echo "=== Debugging ==="
       pwd
       ls -la buildkite/
+      echo "=== Script content ==="
+      cat buildkite/gen_name.sh
+      echo "=== Running script ==="
       NAME=$(cat buildkite/gen_name.sh | bash)
+      echo "Script output: '$NAME'"
+      echo "Output length: $(echo -n "$NAME" | wc -c)"
+      if [ -z "$NAME" ]; then
+        echo "ERROR: Script output is empty!"
+        exit 1
+      fi
+      echo "Setting metadata: $NAME"
       buildkite-agent meta-data set "generated-name" "$NAME"
     
   - label: "Deploy"
