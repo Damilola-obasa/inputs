@@ -2,10 +2,15 @@ steps:
   - label: "Generate Name"
     command: |
       NAME=$(./.buildkite/gen_name.sh)
+      echo "Generated name: '$NAME'"
+      if [ -z "$NAME" ]; then
+        echo "Error: Script output is empty"
+        exit 1
+      fi
       buildkite-agent meta-data set "generated-name" "$NAME"
     
   - label: "Deploy"
     trigger: "deploy-pipeline"
     build:
       env:
-        DEPLOY_NAME: ${BUILDKITE_META_DATA_generated-name}
+        DEPLOY_NAME: I
