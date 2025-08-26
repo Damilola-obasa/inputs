@@ -1,8 +1,14 @@
 steps:
   - label: "Generate Name"
     command: |
+      echo "Current directory: $(pwd)"
+      echo "Script exists: $(ls -la ./buildkite/gen_name.sh)"
+      echo "Script permissions: $(ls -la ./buildkite/gen_name.sh)"
+      echo "Running script..."
       NAME=$(./buildkite/gen_name.sh)
+      echo "Script exit code: $?"
       echo "Script output: '$NAME'"
+      echo "Script output length: ${#NAME}"
       if [ -z "$NAME" ]; then
         echo "Error: Script output is empty"
         exit 1
