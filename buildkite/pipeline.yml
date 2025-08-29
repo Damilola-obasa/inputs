@@ -16,8 +16,6 @@ steps:
   - label: "Job 5 - Fast"
     command: "echo '⚡ Job 5 - Fast and furious!'"
 
-  - wait: ~
-
   - label: "Job 6 - Rapid"
     command: "echo '⚡ Job 6 - Rapid execution!' && sleep 10"
     soft_fail: true
@@ -35,8 +33,6 @@ steps:
   - label: "Job 10 - Fast"
     command: "echo '⚡ Job 10 - Fast track!'"
 
-  - wait: ~
-
   - label: "Job 11 - Speed"
     command: "echo '⚡ Job 11 - Speed racer!'"
 
@@ -51,8 +47,6 @@ steps:
 
   - label: "Job 15 - Instant"
     command: "echo '⚡ Job 15 - Instant gratification!'"
-
-  - wait: ~
 
   - label: "Job 16 - Quick"
     command: "echo '⚡ Job 16 - Quick response!'"
