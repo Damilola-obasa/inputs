@@ -4,7 +4,7 @@ steps:
       ./buildkite/gen_name.sh
       echo "=== Captu ng script output to file ==="
       ./buildkite/gen_name.sh > output.txt
-      echo "=== File content ==="
+      echo "=== File coewentent ==="
       cat output.txt
       echo "=== Reading from file ==="
       NAME=$(cat output.txt)
@@ -15,4 +15,4 @@ steps:
     trigger: "deploy-pipeline"
     build:
       env:
-        DEPLOY_TARGET_NAME: $NAME
+        DEPLOY_TARGET_NAME: $NAMEs
