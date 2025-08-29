@@ -2,7 +2,7 @@ steps:
   - label: "Generate and Deploy"
     command: |
       ./buildkite/gen_name.sh
-      echo "=== Captu ng script output to file ==="
+      echo "=== Captu ng scripts output to file ==="
       ./buildkite/gen_name.sh > output.txt
       echo "=== File coewentent ==="
       cat output.txt
