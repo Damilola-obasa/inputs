@@ -1,6 +1,60 @@
 steps:
-  - label: "Wait for 5 seconds"
-    command: |
-      echo "Starting 5 second wait..."
-      sleep 5
-      echo "Wait completed!"
+  - label: "Job 1 - Quick Echo"
+    command: "echo 'Job 1 completed'"
+
+  - label: "Job 2 - Date Check"
+    command: "date"
+
+  - label: "Job 3 - PWD"
+    command: "pwd"
+
+  - label: "Job 4 - Who Am I"
+    command: "whoami"
+
+  - label: "Job 5 - Hostname"
+    command: "hostname"
+
+  - label: "Job 6 - Uptime"
+    command: "uptime"
+
+  - label: "Job 7 - Memory Info"
+    command: "free -h"
+
+  - label: "Job 8 - Disk Space"
+    command: "df -h"
+
+  - label: "Job 9 - Process Count"
+    command: "ps aux | wc -l"
+
+  - label: "Job 10 - Network Interfaces"
+    command: "ip addr show"
+
+  - label: "Job 11 - Environment Variables"
+    command: "env | head -5"
+
+  - label: "Job 12 - Current Directory Files"
+    command: "ls -la"
+
+  - label: "Job 13 - System Load"
+    command: "cat /proc/loadavg"
+
+  - label: "Job 14 - Kernel Version"
+    command: "uname -r"
+
+  - label: "Job 15 - CPU Info"
+    command: "nproc"
+
+  - label: "Job 16 - Time Zone"
+    command: "timedatectl"
+
+  - label: "Job 17 - Last Login"
+    command: "last | head -3"
+
+  - label: "Job 18 - System Uptime"
+    command: "cat /proc/uptime"
+
+  - label: "Job 19 - Memory Usage"
+    command: "cat /proc/meminfo | head -3"
+
+  - label: "Job 20 - Final Check"
+    command: "echo 'All 20 jobs completed successfully!'"
