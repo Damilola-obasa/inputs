@@ -1,6 +1,11 @@
 steps:
-  - label: "Single Job - 20 Second Run"
+  - label: "First Job - 15 Second Run"
     command: |
-      echo "🚀 Starting 20 second job..."
-      sleep 20
-      echo "✅ Job completed after 20 seconds!"
+      echo "🚀 Starting first job for 15 seconds..."
+      sleep 15
+      echo "✅ First job completed after 15 seconds!"
+
+  - label: "Second Job - Quick Run"
+    command: |
+      echo "🚀 Starting second job..."
+      echo "✅ Second job completed!"
