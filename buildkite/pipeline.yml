@@ -1,18 +1,6 @@
 steps:
-  - label: "Generate and Deploy"
+  - label: "Wait for 5 seconds"
     command: |
-      ./buildkite/gen_name.sh
-      echo "=== Captu ng scripts output to file ==="
-      ./buildkite/gen_name.sh > output.txt
-      echo "=== File coewentent ==="
-      cat output.txt
-      echo "=== Reading from file ==="
-      NAME=$(cat output.txt)
-      echo "NAME: '$NAME'"
-      echo "=== Script output: $NAME ==="
-      
-  - label: "Deploy"
-    trigger: "deploy-pipeline"
-    build:
-      env:
-        DEPLOY_TARGET_NAME: $NAMEs
+      echo "Starting 5 second wait..."
+      sleep 5
+      echo "Wait completed!"
