@@ -3,14 +3,14 @@ steps:
     command: "echo '⚡ Job 1 - Instant!'"
 
   - label: "Job 2 - Lightning"
-    command: "echo '⚡ Job 2 - Lightning fast!'"
+    command: "echo '⚡ Job 2 - Lightning fast!' && sleep 10"
     soft_fail: true
 
   - label: "Job 3 - Speed"
     command: "echo '⚡ Job 3 - Speed demon!'"
 
   - label: "Job 4 - Quick"
-    command: "echo '⚡ Job 4 - Quick as lightning!'"
+    command: "echo '⚡ Job 4 - Quick as lightning!' && sleep 10"
     soft_fail: true
 
   - label: "Job 5 - Fast"
@@ -19,7 +19,7 @@ steps:
   - wait: ~
 
   - label: "Job 6 - Rapid"
-    command: "echo '⚡ Job 6 - Rapid execution!'"
+    command: "echo '⚡ Job 6 - Rapid execution!' && sleep 10"
     soft_fail: true
 
   - label: "Job 7 - Swift"
@@ -29,7 +29,7 @@ steps:
     command: "echo '⚡ Job 8 - Instant success!'"
 
   - label: "Job 9 - Quick"
-    command: "echo '⚡ Job 9 - Quick win!'"
+    command: "echo '⚡ Job 9 - Quick win!' && sleep 10"
     soft_fail: true
 
   - label: "Job 10 - Fast"
@@ -64,7 +64,7 @@ steps:
     command: "echo '⚡ Job 18 - Speed of light!'"
 
   - label: "Job 19 - Lightning"
-    command: "echo '⚡ Job 19 - Lightning strike!'"
+    command: "echo '⚡ Job 19 - Lightning strike!' && sleep 10"
     soft_fail: true
 
   - label: "Job 20 - Final Sprint"
