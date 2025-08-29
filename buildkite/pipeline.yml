@@ -1,60 +1,66 @@
 steps:
   - label: "Job 1 - Quick Echo"
-    command: "echo 'Job 1 completed'"
+    command: "echo '🚀 Job 1 completed'"
 
   - label: "Job 2 - Date Check"
-    command: "date"
+    command: "date && echo '📅 Current time captured'"
 
   - label: "Job 3 - PWD"
-    command: "pwd"
+    command: "pwd && echo '📍 Working directory'"
 
   - label: "Job 4 - Who Am I"
-    command: "whoami"
+    command: "whoami && echo '👤 User identity'"
 
   - label: "Job 5 - Hostname"
-    command: "hostname"
+    command: "hostname && echo '🖥️  Machine name'"
+
+  - wait: ~
 
   - label: "Job 6 - Uptime"
-    command: "uptime"
+    command: "uptime && echo '⏱️  System uptime'"
 
   - label: "Job 7 - Memory Info"
-    command: "free -h"
+    command: "free -h && echo '💾 Memory status'"
 
   - label: "Job 8 - Disk Space"
-    command: "df -h"
+    command: "df -h && echo '💿 Disk usage'"
 
   - label: "Job 9 - Process Count"
-    command: "ps aux | wc -l"
+    command: "echo '🔢 Process count:' && ps aux | wc -l"
 
   - label: "Job 10 - Network Interfaces"
-    command: "ip addr show"
+    command: "echo '🌐 Network info:' && ip addr show | head -10"
+
+  - wait: ~
 
   - label: "Job 11 - Environment Variables"
-    command: "env | head -5"
+    command: "echo '🔧 Environment:' && env | head -5"
 
   - label: "Job 12 - Current Directory Files"
-    command: "ls -la"
+    command: "echo '📁 Files in directory:' && ls -la"
 
   - label: "Job 13 - System Load"
-    command: "cat /proc/loadavg"
+    command: "echo '⚡ System load:' && cat /proc/loadavg"
 
   - label: "Job 14 - Kernel Version"
-    command: "uname -r"
+    command: "echo '🐧 Kernel:' && uname -r"
 
   - label: "Job 15 - CPU Info"
-    command: "nproc"
+    command: "echo '🖥️  CPU cores:' && nproc"
+
+  - wait: ~
 
   - label: "Job 16 - Time Zone"
-    command: "timedatectl"
+    command: "echo '🌍 Timezone:' && timedatectl | head -3"
 
   - label: "Job 17 - Last Login"
-    command: "last | head -3"
+    command: "echo '👥 Recent logins:' && last | head -3"
 
   - label: "Job 18 - System Uptime"
-    command: "cat /proc/uptime"
+    command: "echo '⏰ System uptime:' && cat /proc/uptime"
 
   - label: "Job 19 - Memory Usage"
-    command: "cat /proc/meminfo | head -3"
+    command: "echo '🧠 Memory details:' && cat /proc/meminfo | head -3"
 
   - label: "Job 20 - Final Check"
-    command: "echo 'All 20 jobs completed successfully!'"
+    command: "echo '🎉 All 20 jobs completed successfully!' && echo '✨ Pipeline execution finished'"
