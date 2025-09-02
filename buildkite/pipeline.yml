@@ -3,7 +3,7 @@ steps:
     command: "echo 'Build completed'"
 
   - input: "⏸️ Blocked Step - Test Notification"
-    prompt: "Click to continue - This will block the build for testing"
+    prompt: "Click to continues - This will block the build for testing"
 
   - label: "✅ Continue"
     command: "echo 'Pipeline continued'"
