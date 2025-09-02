@@ -9,5 +9,5 @@ steps:
     command: "echo 'Pipeline continued'"
 
 notify:
-  - slack: "#general"
+  - slack: "#social"
     if: build.state == "blocked" 
