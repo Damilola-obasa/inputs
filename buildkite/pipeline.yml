@@ -1,12 +1,12 @@
 steps:
-  - label: "🚀 Build"
+  - label: "Build"
     command: "echo 'Build completed'"
 
   - input: "⏸️ Blocked Step - Test Notification"
     prompt: "Click to continues - This will block the build for testing"
 
-  - label: "✅ Continue"
-    command: "echo 'Pipeline continued'"
+  - label: "Continue"
+    command: "echo 'Pipeline continueded'"
 
 notify:
   - slack: "#social"
