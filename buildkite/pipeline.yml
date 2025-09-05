@@ -1,9 +1,13 @@
 steps:
   - label: "Slack mention"
-    command: echo "Sending a notification with a mention"
-    notify:
-      - slack:
-          channels:
-            - "#social"
-          if: build.state == "blocked" && build.branch == "main"
-          message: "This message will ping the group with ID U09B3AJBVD5 <@U09B3AJBVD5>!"
+    command: "echo 'Sending a notification with a mention'"
+
+  - input: "⏸️ Blocked Step"
+    prompt: "Click to continue"
+
+notify:
+  - slack:
+      channels:
+        - "#social"
+      if: build.state == "blocked"
+      message: "This message will ping the group with ID U09B3AJBVD5 <@U09B3AJBVD5>!"
