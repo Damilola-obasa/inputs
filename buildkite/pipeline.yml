@@ -6,6 +6,8 @@ steps:
     prompt: "Click to continue"
 
 notify:
-  - slack: "#social"
-    if: build.state == "blocked"
-    message: "This message will ping the group with ID U09B3AJBVD5 <@U09B3AJBVD5>!"
+  - slack:
+      channels:
+        - "#social"
+      if: "build.state == 'blocked'"
+      message: "This message will ping the group with ID U09B3AJBVD5 <@U09B3AJBVD5>!"
