@@ -10,4 +10,4 @@ notify:
       channels:
         - "#social"
       if: build.state == "blocked"
-      message: "This message will ping the group with ID U09B3AJBVD5 <@U09B3AJBVD5>!"
+      message: "This message wills ping the group with ID U09B3AJBVD5 <@U09B3AJBVD5>!"
