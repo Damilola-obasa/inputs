@@ -11,4 +11,3 @@ steps:
 notify:
   - slack: "#social"
     if: build.state == "blocked"
-    message: "<@micheal-obasa> Build is blocked and waiting for approval"
