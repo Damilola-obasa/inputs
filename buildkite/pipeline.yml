@@ -1,10 +1,8 @@
 steps:
-  - label: "🚀 Build"
-    command: "echo 'Build completed'"
-
-  - label: "📱 Notify Build Passed"
-    command: |
-      curl -X POST -H 'Content-type: application/json' \
-        --data '{"text":"<@micheal-obasa> ✅ Build passed!"}' \
-        "$SLACK_WEBHOOK_URL"
-      echo "Build passed notification sent!"
+  - label: "Slack mention"
+    command: echo "Sending a notification with a mention"
+    notify:
+      - slack:
+          channels:
+            - "#social"
+          message: "This message will ping the group with ID U09B3AJBVD5 <@U09B3AJBVD5>!"
