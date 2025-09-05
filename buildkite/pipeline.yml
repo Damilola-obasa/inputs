@@ -2,9 +2,9 @@ steps:
   - label: "🚀 Build"
     command: "echo 'Build completed'"
 
-  - label: "📱 Notify micheal-obasa"
+  - label: "📱 Notify Build Passed"
     command: |
       curl -X POST -H 'Content-type: application/json' \
-        --data '{"text":"<@micheal-obasa> Job is done!"}' \
+        --data '{"text":"<@micheal-obasa> ✅ Build passed!"}' \
         "$SLACK_WEBHOOK_URL"
-      echo "Notification sent!"
+      echo "Build passed notification sent!"
