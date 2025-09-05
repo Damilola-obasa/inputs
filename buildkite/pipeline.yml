@@ -5,9 +5,54 @@ steps:
   - input: "⏸️ Blocked Step - Test Notification"
     prompt: "Click to continue - This will block the build for testing"
 
+  - label: "📱 Send Custom Slack Notification"
+    command: |
+      echo "Sending custom Slack notification..."
+      
+      PIPELINE_NAME="$BUILDKITE_PIPELINE_NAME"
+      BUILD_NUMBER="$BUILDKITE_BUILD_NUMBER"
+      BUILD_URL="$BUILDKITE_BUILD_URL"
+      BRANCH="$BUILDKITE_BRANCH"
+      
+      CUSTOM_MESSAGE="🔔 *Buildkite Pipeline Blocked*\\n\\n<@micheal-obasa> The build is blocked and waiting for your approval!\\n\\n*Pipeline:* $PIPELINE_NAME\\n*Build:* #$BUILD_NUMBER\\n*Branch:* $BRANCH\\n*Status:* ⏸️ Blocked - Manual approval required"
+      
+      SLACK_PAYLOAD="{
+        \"channel\": \"#social\",
+        \"text\": \"Buildkite Pipeline Blocked\",
+        \"blocks\": [
+          {
+            \"type\": \"section\",
+            \"text\": {
+              \"type\": \"mrkdwn\",
+              \"text\": \"$CUSTOM_MESSAGE\"
+            }
+          },
+          {
+            \"type\": \"actions\",
+            \"elements\": [
+              {
+                \"type\": \"button\",
+                \"text\": {
+                  \"type\": \"plain_text\",
+                  \"text\": \"View Build\"
+                },
+                \"url\": \"$BUILD_URL\",
+                \"style\": \"primary\"
+              }
+            ]
+          }
+        ]
+      }"
+      
+      if [ -n "$SLACK_WEBHOOK_URL" ]; then
+        curl -X POST -H 'Content-type: application/json' \
+          --data "$SLACK_PAYLOAD" \
+          "$SLACK_WEBHOOK_URL"
+        echo "✅ Custom Slack notification sent!"
+      else
+        echo "⚠️  SLACK_WEBHOOK_URL not set - skipping notification"
+        echo "To enable custom notifications, set SLACK_WEBHOOK_URL in your Buildkite pipeline settings"
+      fi
+
   - label: "✅ Continue"
     command: "echo 'Pipeline continued'"
-
-notify:
-  - slack: "#social"
-    if: build.state == "blocked"
