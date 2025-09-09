@@ -1,79 +1,20 @@
 steps:
-  - group: "🚀 Build Phase"
-    steps:
-      - label: "📦 Install Dependencies"
-        command: |
-          echo "Installing dependencies..."
-          sleep 2
-          echo "✅ Dependencies installed"
+  - label: 'Step 1'
+    command: "false"
+    key: 'one'
+  - label: 'Step 2'
+    command: "true"
+    key: 'two'
 
-      - label: "🔨 Build Application"
-        command: |
-          echo "Building application..."
-          sleep 3
-          echo "✅ Build completed"
+  - wait:
+    continue_on_failure: true
 
-  - group: "🧪 Test Phase"
-    steps:
-      - label: "🔍 Unit Tests"
-        command: |
-          echo "Running unit tests..."
-          sleep 2
-          echo "✅ Unit tests passed"
-
-      - label: "🔍 Integration Tests"
-        command: |
-          echo "Running integration tests..."
-          sleep 2
-          echo "✅ Integration tests passed"
-
-      - label: "❌ Hard Failed Test"
-        command: |
-          echo "Running critical test that will fail..."
-          sleep 1
-          echo "❌ Critical test failed!"
-          exit 1
-
-  - group: "📊 Analysis Phase"
-    steps:
-      - label: "📈 Code Coverage"
-        command: |
-          echo "Checking code coverage..."
-          sleep 1
-          echo "✅ Coverage: 85%"
-
-      - label: "🔍 Security Scan"
-        command: |
-          echo "Running security scan..."
-          sleep 2
-          echo "✅ Security scan passed"
-
-  - label: "📱 Check Step Outcomes"
+  - label: 'Step 3'
+    command: 'echo `buildkite-agent step get "outcome" --step "one"`'
+  - label: 'Step 4'
+    command: 'echo `buildkite-agent step get "outcome" --step "two"`'
+  - label: 'Step 5'
     command: |
-      echo "Checking step outcomes..."
-      
-      # Check if any steps failed
-      if buildkite-agent step get "outcome" --step "❌ Hard Failed Test" | grep -q "failed"; then
-        echo "❌ Hard Failed Test step failed as expected"
-        echo "Step outcome: $(buildkite-agent step get "outcome" --step "❌ Hard Failed Test")"
+      if [ $(buildkite-agent step get "outcome" --step "one") == "hard_failed" ]; then
+        buildkite-agent annotate 'this build failed' --style 'error'
       fi
-      
-      # Check build state
-      echo "Build state: $BUILDKITE_BUILD_STATE"
-      echo "Build outcome: $BUILDKITE_BUILD_OUTCOME"
-      
-      echo "✅ Step outcome analysis completed"
-
-notify:
-  - slack:
-      channels:
-        - "#social"
-      message: "🚨 Build failed on main branch! <@U09B3AJBVD5> please investigate the failure."
-    if: build.state == "failed" && build.branch == "main"
-  
-  - slack:
-      channels:
-        - "#social"
-      message: "✅ Build passed successfully on main branch! <@U09B3AJBVD5>"
-    if: build.state == "passed" && build.branch == "main"
-    
