@@ -10,6 +10,5 @@ steps:
       fi
     retry:
       automatic:
-        - exit_status: 1
+        - exit_status: "*"
           limit: 5
-          reason: "Test failed, retrying..."
