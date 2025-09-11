@@ -1,13 +1,9 @@
 steps:
   - label: "🔄 Flaky Test (Retry 5 times)"
     command: |
-      echo "Running test that might fail..."
-      if [ $((RANDOM % 10)) -lt 7 ]; then
-        echo "❌ Test failed"
-        exit 1
-      else
-        echo "✅ Test passed!"
-      fi
+      echo "Running test that will fail..."
+      echo "❌ Test failed"
+      exit 1
     retry:
       automatic:
         - exit_status: "*"
