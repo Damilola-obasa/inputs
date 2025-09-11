@@ -1,7 +1,7 @@
 steps:
-  - label: "🔄 Flaky Test (Retry 5 times)"
+  - label: "🔄 Flaky Test"
     command: |
-      echo "Running test that will fail..."
+      echo "Running tests that will fail..."
       echo "❌ Test failed"
       exit 1
     retry:
