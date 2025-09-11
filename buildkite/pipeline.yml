@@ -1,20 +1,104 @@
 steps:
-  - label: 'Step 1'
-    command: "false"
-    key: 'one'
-  - label: 'Step 2'
-    command: "true"
-    key: 'two'
+  - group: "🚀 Build Phase"
+    steps:
+      - label: "📦 Install Dependencies"
+        command: |
+          echo "Installing dependencies..."
+          sleep 2
+          echo "✅ Dependencies installed"
 
-  - wait:
-    continue_on_failure: true
+      - label: "🔨 Build Application"
+        command: |
+          echo "Building application..."
+          sleep 3
+          echo "✅ Build completed"
 
-  - label: 'Step 3'
-    command: 'echo `buildkite-agent step get outcome --step "one"`'
-  - label: 'Step 4'
-    command: 'echo `buildkite-agent step get outcome --step "two"`'
-  - label: 'Step 5'
+  - group: "🧪 Test Phase with Retries"
+    steps:
+      - label: "🔍 Unit Tests"
+        command: |
+          echo "Running unit tests..."
+          sleep 2
+          echo "✅ Unit tests passed"
+
+      - label: "🔍 Integration Tests"
+        command: |
+          echo "Running integration tests..."
+          sleep 2
+          echo "✅ Integration tests passed"
+
+      - label: "🔄 Flaky Test (Retry 5 times)"
+        command: |
+          echo "Running flaky test that might fail..."
+          sleep 1
+          
+          # Simulate a flaky test that fails 70% of the time
+          if [ $((RANDOM % 10)) -lt 7 ]; then
+            echo "❌ Test failed (this is expected to be flaky)"
+            exit 1
+          else
+            echo "✅ Test passed!"
+          fi
+        retry:
+          automatic:
+            - exit_status: 1
+              limit: 5
+              reason: "Test failed, retrying..."
+
+      - label: "🔄 Network Test (Retry 5 times)"
+        command: |
+          echo "Testing network connectivity..."
+          sleep 1
+          
+          # Simulate network issues
+          if [ $((RANDOM % 10)) -lt 6 ]; then
+            echo "❌ Network test failed (simulating network issues)"
+            exit 1
+          else
+            echo "✅ Network test passed!"
+          fi
+        retry:
+          automatic:
+            - exit_status: 1
+              limit: 5
+              reason: "Network test failed, retrying..."
+
+  - group: "📊 Analysis Phase"
+    steps:
+      - label: "📈 Code Coverage"
+        command: |
+          echo "Checking code coverage..."
+          sleep 1
+          echo "✅ Coverage: 85%"
+
+      - label: "🔍 Security Scan"
+        command: |
+          echo "Running security scan..."
+          sleep 2
+          echo "✅ Security scan passed"
+
+  - label: "📱 Check Retry Outcomes"
     command: |
-      if [ $(buildkite-agent step get outcome --step "one") == "hard_failed" ]; then
-        buildkite-agent annotate 'this build failed' --style 'error'
-      fi
+      echo "Checking retry outcomes..."
+      
+      # Check if any steps failed after retries
+      echo "Build state: $BUILDKITE_BUILD_STATE"
+      echo "Build outcome: $BUILDKITE_BUILD_OUTCOME"
+      
+      # Count retry attempts (this would be available in logs)
+      echo "Retry information available in step logs"
+      
+      echo "✅ Retry outcome analysis completed"
+
+notify:
+  - slack:
+      channels:
+        - "#social"
+      message: "🚨 Build failed on main branch after retries! <@U09B3AJBVD5> please investigate the failure."
+    if: build.state == "failed" && build.branch == "main"
+  
+  - slack:
+      channels:
+        - "#social"
+      message: "✅ Build passed successfully on main branch! <@U09B3AJBVD5>"
+    if: build.state == "passed" && build.branch == "main"
