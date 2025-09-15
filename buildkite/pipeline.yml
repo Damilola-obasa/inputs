@@ -2,18 +2,10 @@ steps:
   - label: "Validate & Test"
     key: "validate_test"
     command: |
-      echo "Starting validate and test stage..."
-      echo "This stage will retry on failure and recreate itself with the same key"
-      echo "❌ Simulating failure to test retry logic"
-      ./buildkite/generate-spinnaker-stage.sh
-      echo "Checking if step already exists before uploading..."
-      if ! buildkite-agent step get "key" --step "validate_spinnaker_applications"; then
+      echo "+++ :pipeline: Upload"
+      if ! buildkite-agent step get "key" --step "validate_spinnaker_applications"; then 
+        echo "step 'validate_spinnaker_applications' not found, continue..." 
         buildkite-agent pipeline upload .buildkite/deploy_manager/spinnaker-ci.yml
       else
-        echo "Step already exists, skipping upload"
+        echo "step 'validate_spinnaker_applications' found, skip..."
       fi
-      exit 1
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 3
