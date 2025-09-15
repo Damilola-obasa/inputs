@@ -3,17 +3,9 @@ steps:
     key: "validate_test"
     command: |
       echo "Starting validate and test stage..."
-      echo "This stage will retry on failure and recreate itself"
+      echo "This stage will retry on failure and recreate itself with the same key"
       echo "❌ Simulating failure to test retry logic"
-      echo "🔄 Calling script to recreate step with same key..."
-      ./buildkite/generate-test-stage.sh
-      echo "Checking if step already exists before uploading..."
-      if ! buildkite-agent step get "key" --step "validate_test"; then
-        echo "Step doesn't exist, uploading pipeline..."
-        buildkite-agent pipeline upload .buildkite/deploy_test/test.yml
-      else
-        echo "Step already exists, skipping upload"
-      fi
+      ./buildkite/generate-spinnaker-stage.sh
       exit 1
     retry:
       automatic:
