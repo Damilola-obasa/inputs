@@ -1,5 +1,6 @@
 steps:
   - label: "🔄 Flaky Test"
+    key: "simple-retry-pipeline"
     command: |
       echo "Running tests that will fail..."
       echo "❌ Test failed"
