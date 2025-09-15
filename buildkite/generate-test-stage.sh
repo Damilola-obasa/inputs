@@ -4,11 +4,17 @@ mkdir -p .buildkite/deploy_test
 
 cat <<EOF > .buildkite/deploy_test/test.yml
 steps:
-  - label: "🧪 Test Stage"
-    key: "test-stage-\${BUILDKITE_BUILD_NUMBER}"
+  - label: "🚀 Deploy Stage (Recreated)"
+    key: "deploy-stage-\${BUILDKITE_BUILD_NUMBER}"
     command: |
-      echo "Generated test stage"
+      echo "This is the recreated step with the same key!"
       echo "Build: \${BUILDKITE_BUILD_NUMBER}"
+      echo "Retry count: \${BUILDKITE_RETRY_COUNT}"
+      echo "✅ Recreated step completed successfully"
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 2
 EOF
 
-buildkite-agent pipeline upload .buildkite/deploy_test/test.yml
+echo "Generated test.yml pipeline file"
