@@ -4,7 +4,8 @@ steps:
     command: |
       echo "Starting deploy stage..."
       echo "This stage will retry on failure and generate another stage"
-      ./buildkite/generate-test-stage.sh
+      echo "❌ Simulating failure to test retry logic"
+      exit 1
     retry:
       automatic:
         - exit_status: "*"
