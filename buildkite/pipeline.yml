@@ -1,23 +1,11 @@
 steps:
-  - label: "🔄 Flaky Test"
-    key: "test-${BUILDKITE_RETRY_COUNT}"
+  - label: "🚀 Deploy Stage"
+    key: "deploy-stage-${BUILDKITE_BUILD_NUMBER}"
     command: |
-      echo "Running tests that will fail..."
-      echo "❌ Test failed"
-      exit 1
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 5
-
-  - label: "🔄 Another Flaky Test"
-    key: "another-test-${BUILDKITE_RETRY_COUNT}"
-    command: |
-      echo "This step has a dynamic key"
-      echo "❌ Test failed"
-      exit 1
+      echo "Starting deploy stage..."
+      echo "This stage will retry on failure and generate another stage"
+      ./buildkite/generate-test-stage.sh
     retry:
       automatic:
         - exit_status: "*"
           limit: 3
-
