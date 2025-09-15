@@ -1,6 +1,6 @@
 steps:
   - label: "🔄 Flaky Test"
-    key: "flaky-test-${BUILDKITE_BUILD_ID}"
+    key: "$(./buildkite/dynamic-key-generator.sh)"
     command: |
       echo "Running tests that will fail..."
       echo "❌ Test failed"
@@ -11,10 +11,10 @@ steps:
           limit: 5
 
   - label: "🔄 Another Flaky Test"
-    key: "another-test-${BUILDKITE_BUILD_ID}"
+    key: "$(./buildkite/dynamic-key-generator.sh)"
     command: |
-      echo "This step has the same key as the previous step"
-      echo "This will cause a 422 error"
+      echo "This step has a dynamic key"
+      echo "❌ Test failed"
       exit 1
     retry:
       automatic:
