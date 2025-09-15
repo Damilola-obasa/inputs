@@ -22,9 +22,4 @@ steps:
 EOF
 
 echo "📋 Generated spinnaker-ci.yml pipeline with duplicate key"
-echo "🚀 Uploading spinnaker stage..."
-
-# Upload the generated pipeline - this will cause the duplicate key error
-buildkite-agent pipeline upload .buildkite/deploy_manager/spinnaker-ci.yml
-
-echo "✅ Spinnaker stage uploaded successfully!"
+echo "✅ Spinnaker stage file created successfully!"
