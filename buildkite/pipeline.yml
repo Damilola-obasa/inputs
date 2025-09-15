@@ -1,6 +1,6 @@
 steps:
   - label: "🔄 Flaky Test"
-    key: "simple-retry-pipeline"
+    key: "flaky-test-$(date +%s)"
     command: |
       echo "Running tests that will fail..."
       echo "❌ Test failed"
@@ -11,7 +11,7 @@ steps:
           limit: 5
 
   - label: "🔄 Another Flaky Test"
-    key: "simple-retry-pipeline"
+    key: "simple-retry-pipeline-$(date +%s)"
     command: |
       echo "This step has the same key as the previous step"
       echo "This will cause a 422 error"
