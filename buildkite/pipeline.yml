@@ -1,6 +1,6 @@
 steps:
   - label: "🔄 Flaky Test"
-    key: "test-${BUILDKITE_RETRY_COUNT}"
+    key: "test-$(date +%s)"
     command: |
       echo "Running tests that will fail..."
       echo "❌ Test failed"
@@ -11,7 +11,7 @@ steps:
           limit: 5
 
   - label: "🔄 Another Flaky Test"
-    key: "test-${BUILDKITE_RETRY_COUNT}"
+    key: "test-$(date +%s)"
     command: |
       echo "This step has a dynamic key"
       echo "❌ Test failed"
