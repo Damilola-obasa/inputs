@@ -1,6 +1,6 @@
 steps:
   - label: "🚀 Deploy Stage"
-    key: "deploy-stage"
+    key: "deploy-stagetest-${BUILDKITE_RETRY_COUNT}"
     command: |
       echo "Starting deploy stage..."
       echo "This stage will retry on failure and generate another stage"
