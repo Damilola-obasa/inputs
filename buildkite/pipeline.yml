@@ -3,3 +3,4 @@ steps:
     command: echo "Hello!"
     notify:
       - slack: "U09B3AJBVD5"
+        message: "Pipeline completed successfully! Check the build logs for details."
