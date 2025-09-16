@@ -2,4 +2,4 @@ steps:
   - label: "Example Test - pass"
     command: echo "Hello!"
     notify:
-      - slack: "U09B3AJBVD5"
+      - slack: "@U09B3AJBVD5"
