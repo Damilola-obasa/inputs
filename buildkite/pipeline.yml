@@ -17,5 +17,5 @@ steps:
   - command: "npm run deploy"
     label: "Deploy to Staging"
     notify:
-      - slack: '#general'
+      - slack: '#all-testmike'
         if: step.outcome == "passed"
