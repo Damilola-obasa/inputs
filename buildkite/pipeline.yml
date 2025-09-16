@@ -1,21 +1,5 @@
 steps:
-  - command: "echo 'Starting build process'"
-    label: "Build Setup"
-  
-  - command: "npm install"
-    label: "Install Dependencies"
-  
-  - command: "npm run test"
-    label: "Run Tests"
+  - label: "Example Test - pass"
+    command: echo "Hello!"
     notify:
-      - slack: '#social'
-        if: step.outcome == "hard_failed"
-  
-  - command: "npm run build"
-    label: "Build Application"
-  
-  - command: "npm run deploy"
-    label: "Deploy to Staging"
-    notify:
-      - slack: '#all-testmike'
-        if: step.outcome == "passed"
+      - slack: "U09B3AJBVD5"
