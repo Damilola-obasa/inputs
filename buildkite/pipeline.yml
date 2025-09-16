@@ -1,11 +1,5 @@
 steps:
-  - label: "Validate & Test"
-    key: "validate_test"
-    command: |
-      echo "+++ :pipeline: Upload"
-      if ! buildkite-agent step get "key" --step "validate_spinnaker_applications"; then 
-        echo "step 'validate_spinnaker_applications' not found, continue..." 
-        buildkite-agent pipeline upload .buildkite/deploy_manager/spinnaker-ci.yml
-      else
-        echo "step 'validate_spinnaker_applications' found, skip..."
-      fi
+  - command: "false"
+    notify:
+      - slack: '#social'
+        if: step.outcome == "hard_failed"
