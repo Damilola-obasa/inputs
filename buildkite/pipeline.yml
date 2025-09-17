@@ -1,6 +1,25 @@
 steps:
-  - label: "Example Test - pass"
-    command: echo "Hello!"
-    notify:
-      - slack: "U09B3AJBVD5"
-        message: "Pipeline completed successfully! Check the build logs for details."
+  - label: "Test Matrix"
+    command: |
+      echo "Testing on {{ matrix.os }} with Node {{ matrix.node_version }}"
+      echo "Environment: {{ matrix.env }}"
+    matrix:
+      os: [ubuntu, macos, windows]
+      node_version: [16, 18, 20]
+      env: [development, staging]
+    
+  - label: "Build Matrix"
+    command: |
+      echo "Building for {{ matrix.arch }} with {{ matrix.build_type }}"
+      npm run build:{{ matrix.build_type }}
+    matrix:
+      arch: [x64, arm64]
+      build_type: [production, development]
+    
+  - label: "Deploy Matrix"
+    command: |
+      echo "Deploying to {{ matrix.region }} with {{ matrix.environment }}"
+      npm run deploy:{{ matrix.environment }}:{{ matrix.region }}
+    matrix:
+      region: [us-east-1, eu-west-1, ap-southeast-1]
+      environment: [staging, production]
