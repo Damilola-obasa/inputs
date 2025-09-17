@@ -2,10 +2,10 @@ steps:
   - label: "Test Matrix"
     command: |
       echo "Testing with Node {{ matrix.node_version }}"
-      echo "Environment: {{ matrix.env }}"
+      echo "Environment: {{ matrix.environment }}"
     matrix:
       node_version: [16, 18, 20]
-      env: [development, staging]
+      environment: [development, staging]
     
   - label: "Build Matrix"
     command: |
@@ -16,8 +16,8 @@ steps:
     
   - label: "Deploy Matrix"
     command: |
-      echo "Deploying to {{ matrix.region }} with {{ matrix.environment }}"
-      npm run deploy:{{ matrix.environment }}:{{ matrix.region }}
+      echo "Deploying to {{ matrix.region }} with {{ matrix.env }}"
+      npm run deploy:{{ matrix.env }}:{{ matrix.region }}
     matrix:
       region: [us-east-1, eu-west-1, ap-southeast-1]
-      environment: [staging, production]
+      env: [staging, production]
