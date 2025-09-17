@@ -1,5 +1,5 @@
 steps:
-- label: "💥 Matrix Build"
+- label: "💥 {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
   command: "echo {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
   matrix:
     setup:
