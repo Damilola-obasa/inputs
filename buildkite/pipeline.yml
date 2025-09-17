@@ -1,23 +1,16 @@
 steps:
-  - label: "Test Matrix"
-    command: |
-      echo "Testing with Node {{ matrix.node_version }}"
-      echo "Environment: {{ matrix.environment }}"
-    matrix:
-      node_version: [16, 18, 20]
-      environment: [development, staging]
-    
-  - label: "Build Matrix"
-    command: |
-      echo "Building with {{ matrix.build_type }}"
-      npm run build:{{ matrix.build_type }}
-    matrix:
-      build_type: [production, development]
-    
-  - label: "Deploy Matrix"
-    command: |
-      echo "Deploying to {{ matrix.region }} with {{ matrix.env }}"
-      npm run deploy:{{ matrix.env }}:{{ matrix.region }}
-    matrix:
-      region: [us-east-1, eu-west-1, ap-southeast-1]
-      env: [staging, production]
+- label: "💥 Matrix Build"
+  command: "echo {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
+  agents:
+    queue: "builder-{{matrix.arch}}"
+  matrix:
+    setup:
+      arch:
+        - "amd64"
+        - "arm64"
+      os:
+        - "windows"
+        - "linux"
+      test:
+        - "A"
+        - "B"
