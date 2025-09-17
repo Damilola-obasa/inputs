@@ -1,8 +1,6 @@
 steps:
 - label: "💥 Matrix Build"
   command: "echo {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
-  agents:
-    queue: "builder-{{matrix.arch}}"
   matrix:
     setup:
       arch:
