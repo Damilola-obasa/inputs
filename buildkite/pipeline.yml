@@ -1,14 +1,43 @@
 steps:
-- label: "💥 {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
-  command: "echo {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
-  matrix:
-    setup:
-      arch:
-        - "amd64"
-        - "arm64"
-      os:
-        - "windows"
-        - "linux"
-      test:
-        - "A"
-        - "B"
+  - input: "Deploy To"
+    fields:
+      - select: "Regions"
+        key: "deploy-regions"
+        hint: "Which regions should we deploy this to? :earth_asia:"
+        required: true
+        multiple: true
+        default:
+          - "na"
+          - "eur"
+          - "asia"
+          - "aunz"
+        options:
+          - label: "North America"
+            value: "na"
+          - label: "Europe"
+            value: "eur"
+          - label: "Asia"
+            value: "asia"
+          - label: "Oceania"
+            value: "aunz"
+
+
+
+
+
+
+# Matrix
+#steps:
+# - label: "💥 {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
+#   command: "echo {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
+#   matrix:
+#     setup:
+#       arch:
+#         - "amd64"
+#         - "arm64"
+#       os:
+#         - "windows"
+#         - "linux"
+#       test:
+#         - "A"
+#         - "B"
