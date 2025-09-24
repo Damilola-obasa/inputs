@@ -1,5 +1,5 @@
 steps:
-  - input: "Deploy To"
+  - input: "Deploy To them"
     fields:
       - select: "Regions"
         key: "deploy-regions"
