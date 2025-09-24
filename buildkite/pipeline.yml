@@ -21,12 +21,3 @@ steps:
             value: "asia"
           - label: "Oceania"
             value: "aunz"
-
-  - label: ":mag: Show metadata"
-    depends_on: "deploy-input"
-    command: |
-      set -euo pipefail
-      VAL="$(buildkite-agent meta-data get 'deploy-regions')"
-      echo "deploy-regions: $VAL"
-      echo "as lines:"
-      printf '%s' "$VAL" | tr ',' '\n'
