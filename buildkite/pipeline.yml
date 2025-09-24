@@ -1,5 +1,6 @@
 steps:
-  - input: "Deploy To them"
+  - input: "Deploy To"
+    key: "deploy-input"
     fields:
       - select: "Regions"
         key: "deploy-regions"
@@ -21,28 +22,11 @@ steps:
           - label: "Oceania"
             value: "aunz"
 
-  - label: "Display Selected Metadata"
+  - label: ":mag: Show metadata"
+    depends_on: "deploy-input"
     command: |
-      echo "All environment variables:"
-      env
-
-
-
-
-
-
-# Matrix
-#steps:
-# - label: "💥 {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
-#   command: "echo {{matrix.os}} {{matrix.arch}} {{matrix.test}}"
-#   matrix:
-#     setup:
-#       arch:
-#         - "amd64"
-#         - "arm64"
-#       os:
-#         - "windows"
-#         - "linux"
-#       test:
-#         - "A"
-#         - "B"
+      set -euo pipefail
+      VAL="$(buildkite-agent meta-data get 'deploy-regions')"
+      echo "deploy-regions: $VAL"
+      echo "as lines:"
+      printf '%s' "$VAL" | tr ',' '\n'
