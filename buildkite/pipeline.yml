@@ -21,6 +21,11 @@ steps:
           - label: "Oceania"
             value: "aunz"
 
+  - label: "Display Selected Metadata"
+    command: |
+      echo "All environment variables:"
+      env
+
 
 
 
