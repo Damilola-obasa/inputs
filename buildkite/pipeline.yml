@@ -1,75 +1,559 @@
+
+env:
+  BUILD_CONFIG_FILES: build.ci.toml
+  AWS_REGION: us-west-2
+  ARTIFACT_ACCOUNT_ID: "123456789012"
+
+# Plugin definitions with random values
+plugin_ecr: &plugin_ecr
+  ecr#v2.9.0:
+    login: true
+    region: "us-west-2"
+    account_ids: "123456789012"
+
+plugin_artifact_login: &plugin_artifact_login
+  ".buildkite/plugins/artifact-login":
+    domain: "test-domain"
+    region: "us-west-2"
+    account-id: "123456789012"
+    repository: "test-repo"
+
+plugin_docker_test: &plugin_docker_test
+  docker#v5.12.0:
+    image: "123456789012.dkr.ecr.us-west-2.amazonaws.com/test-ecr/ci/test:latest"
+    shell:
+      - "/bin/bash"
+      - "-e"
+      - "-c"
+    always-pull: true
+    environment:
+      - PIP_INDEX_URL
+      - BUILDKITE_AGENT_ACCESS_TOKEN
+    mount-ssh-agent: true
+    propagate-environment: true
+
+plugin_git_fetch: &plugin_git_fetch
+  ".buildkite/plugins/git-fetch":
+    branches:
+      - ${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-main}
+
+# Common plugin setup
+plugins_setup: &plugins_setup
+  plugins:
+    - <<: *plugin_ecr
+    - <<: *plugin_artifact_login
+    - <<: *plugin_docker_test
+
+# Environment variables for builds
+trigger_env_default: &trigger_env_default
+  env:
+    - BUILDKITE_PULL_REQUEST=${BUILDKITE_PULL_REQUEST}
+    - BUILDKITE_PULL_REQUEST_BASE_BRANCH=${BUILDKITE_PULL_REQUEST_BASE_BRANCH}
+    - BUILDKITE_PULL_REQUEST_REPO=${BUILDKITE_PULL_REQUEST_REPO}
+
+trigger_build_default: &trigger_build_default
+  build:
+    message: "${BUILDKITE_MESSAGE}"
+    commit: "${BUILDKITE_COMMIT}"
+    branch: "${BUILDKITE_BRANCH}"
+    <<: *trigger_env_default
+
 steps:
-  - label: "Create Massive Plugin Configuration"
+  - label: ":warning: Check for Manual PR Ref Triggers"
+    key: "check_manual_pr_ref"
+    priority: 100
+    agents:
+      queue: default
     command: |
-      echo "=== Creating massive plugin configuration to trigger ARG_MAX ==="
+      set -euo pipefail
+      echo "+++ Checking for manual PR ref trigger"
+      echo "BUILDKITE_PULL_REQUEST: ${BUILDKITE_PULL_REQUEST}"
+      echo "BUILDKITE_BRANCH: ${BUILDKITE_BRANCH}"
+      
+      if [[ "${BUILDKITE_PULL_REQUEST}" == "false" ]] && [[ "${BUILDKITE_BRANCH}" =~ ^refs/pull/[0-9]+/merge$ ]]; then
+        echo "❌ ERROR: Manual build detected with PR ref branch!"
+        echo "This is not supported because it bypasses the proper PR build generation logic."
+        exit 1
+      fi
+      
+      echo "✅ Build trigger validation passed"
+
+  - label: ":chart_with_upwards_trend: Upload Build Metadata"
+    key: "upload_build_metadata"
+    priority: 15
+    agents:
+      queue: default
+    command: |
+      echo "+++ Uploading build metadata"
+      echo "Build ID: ${BUILDKITE_BUILD_ID}"
+      echo "Branch: ${BUILDKITE_BRANCH}"
+      echo "Commit: ${BUILDKITE_COMMIT}"
+    timeout_in_minutes: 5
+
+  - label: ":shield: Validate Project Configuration"
+    key: "config_validator"
+    priority: 20
+    agents:
+      queue: default
+    command: |
+      set -euo pipefail
+      echo "+++ Validating project configuration"
+      echo "Current ARG_MAX: $(getconf ARG_MAX)"
+      echo "Environment size: $(env | wc -c) bytes"
+    timeout_in_minutes: 5
+
+  - label: "Trigger steps and pipelines conditionally"
+    priority: 45
+    plugins:
+      - ".buildkite/plugins/set-buildkite-api-token":
+          secret-key: test_webhook_bk_api_token
+      - ".buildkite/plugins/github-webhook-payload":
+          debug: false
+      - <<: *plugin_git_fetch
+      - monorepo-diff#v1.5.0:
+          diff: git diff --name-only "\$(. .buildkite/common/echo_git_base_reference.sh)"
+          watch:
+            - path:
+                - apps/frontend/**
+                - apps/backend/**
+              config:
+                key: "frontend_build"
+                label: ":frontend: Build Frontend Application"
+                agents:
+                  queue: default
+                command: |
+                  echo "+++ Building frontend application"
+                  npm install
+                  npm run build
+                plugins:
+                  - <<: *plugin_artifact_login
+            - path:
+                - apps/backend/**
+                - src/python/**
+              config:
+                key: "backend_build"
+                label: ":backend: Build Backend Application"
+                agents:
+                  queue: default
+                command: |
+                  echo "+++ Building backend application"
+                  pip install -r requirements.txt
+                  python -m pytest --collect-only
+                plugins:
+                  - <<: *plugin_artifact_login
+            - path:
+                - "**/*.py"
+                - "**/*.js"
+                - "**/*.ts"
+              config:
+                label: ":package: Check for dependency issues"
+                trigger: test-dependency-check
+                build:
+                  message: "${BUILDKITE_MESSAGE}"
+                  commit: "${BUILDKITE_COMMIT}"
+                  branch: "${BUILDKITE_BRANCH}"
+                  <<: *trigger_env_default
+
+  - label: ":package: Detect Changed Components"
+    priority: 10
+    agents:
+      queue: default
+    key: "detect_changes"
+    depends_on: []
+    commands:
+      - |
+        echo "+++ Detecting changed components"
+        echo "Current ARG_MAX: $(getconf ARG_MAX)"
+        echo "Environment size: $(env | wc -c) bytes"
+    timeout_in_minutes: 3
+    plugins:
+      - ".buildkite/plugins/set-buildkite-api-token":
+          secret-key: test_webhook_bk_api_token
+      - ".buildkite/plugins/github-webhook-payload":
+          debug: false
+      - <<: *plugin_git_fetch
+      - <<: *plugin_artifact_login
+
+  - label: ":package: Fetch Component Metadata"
+    priority: 10
+    agents:
+      queue: default
+    key: "fetch_metadata"
+    depends_on: []
+    commands:
+      - |
+        echo "+++ Fetching component metadata"
+        echo "ARG_MAX: $(getconf ARG_MAX)"
+        echo "Environment size: $(env | wc -c) bytes"
+    timeout_in_minutes: 2
+    plugins:
+      - <<: *plugin_artifact_login
+
+  - label: ":package: Publish Python Packages"
+    agents:
+      queue: default
+    key: "publish_python_packages"
+    depends_on:
+      - detect_changes
+      - fetch_metadata
+    commands:
+      - |
+        echo "+++ Publishing Python packages"
+        echo "ARG_MAX: $(getconf ARG_MAX)"
+        echo "Environment size: $(env | wc -c) bytes"
+    timeout_in_minutes: 5
+    plugins:
+      - <<: *plugin_artifact_login
+
+  - label: ":npm: Publish NPM Packages"
+    agents:
+      queue: default
+    key: "publish_npm_packages"
+    depends_on:
+      - detect_changes
+      - fetch_metadata
+    commands:
+      - |
+        echo "+++ Publishing NPM packages"
+        echo "ARG_MAX: $(getconf ARG_MAX)"
+        echo "Environment size: $(env | wc -c) bytes"
+    timeout_in_minutes: 10
+    plugins:
+      - <<: *plugin_ecr
+      - <<: *plugin_artifact_login
+
+  - label: ":test_tube: Test {{matrix}}"
+    if: |
+      build.pull_request.id != null || build.branch =~ /^gh-readonly-queue\//
+    key: "test_matrix"
+    agents:
+      queue: default
+    depends_on: []
+    timeout_in_minutes: 20
+    matrix:
+      - "0/10"
+      - "1/10"
+      - "2/10"
+      - "3/10"
+      - "4/10"
+      - "5/10"
+      - "6/10"
+      - "7/10"
+      - "8/10"
+      - "9/10"
+    commands:
+      - |
+        echo "+++ Running test matrix {{matrix}}"
+        echo "ARG_MAX: $(getconf ARG_MAX)"
+        echo "Environment size: $(env | wc -c) bytes"
+        echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
+    plugins:
+      - ".buildkite/plugins/set-buildkite-api-token":
+          secret-key: test_webhook_bk_api_token
+      - ".buildkite/plugins/github-webhook-payload":
+          debug: false
+      - <<: *plugin_git_fetch
+      - ".buildkite/plugins/set-buildkite-analytics-token":
+          secret-key: test_suite_api_key
+      - <<: *plugin_artifact_login
+      - ecr#v2.9.0:
+          login: true
+          account_ids: "123456789012"
+          region: "us-west-2"
+      - docker#v5.12.0:
+          image: "123456789012.dkr.ecr.us-west-2.amazonaws.com/test-ecr/ci/test:latest"
+          always-pull: true
+          shell: ["/bin/bash", "-e", "-c"]
+          propagate-environment: true
+          volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock"
+            - "/var/lib/buildkite-agent/.docker:/root/.docker"
+          environment:
+            - BUILDKITE_ANALYTICS_TOKEN
+            - PIP_INDEX_URL
+
+  - label: ":pipeline: Generate Docker Pipeline Steps"
+    key: "generate_docker_pipeline"
+    depends_on:
+      - detect_changes
+      - fetch_metadata
+    priority: 50
+    commands:
+      - |
+        echo "+++ Generating Docker pipeline steps"
+        echo "ARG_MAX: $(getconf ARG_MAX)"
+        echo "Environment size: $(env | wc -c) bytes"
+    plugins:
+      - <<: *plugin_ecr
+      - docker#v5.12.0:
+          image: "123456789012.dkr.ecr.us-west-2.amazonaws.com/test-ecr/test-bk:latest"
+          always-pull: true
+          shell: ["/bin/bash", "-e", "-c"]
+          mount-buildkite-agent: true
+          propagate-environment: true
+          environment:
+            - BUILDKITE_AGENT_ACCESS_TOKEN
+            - FORCE_CHANGED
+          volumes:
+            - "./src/python/test_devops:/opt/test-bk/lib/python3.11/site-packages/test_devops"
+            - "./src/python/testdev:/opt/test-bk/lib/python3.11/site-packages/testdev"
+            - "./src/python/testdev_bk:/opt/test-bk/lib/python3.11/site-packages/testdev_bk"
+
+  - label: ":pipeline: Generate PR Checks Pipeline Steps"
+    key: "generate_pr_checks_pipeline"
+    if: |
+      build.pull_request.id != null || build.branch =~ /^gh-readonly-queue\//
+    priority: 50
+    agents:
+      queue: default
+    commands:
+      - |
+        echo "+++ Generating PR checks pipeline"
+        echo "ARG_MAX: $(getconf ARG_MAX)"
+        echo "Environment size: $(env | wc -c) bytes"
+        echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
+    plugins:
+      - <<: *plugin_artifact_login
+
+  - label: ":docker: Docker Lint"
+    agents:
+      queue: default
+    command: |
+      set -euo pipefail
+      set -x
+      export PATH="\${HOME}/.local/bin:\${PATH}"
+      echo "+++ Running Docker lint checks"
+      echo "ARG_MAX: $(getconf ARG_MAX)"
+      echo "Environment size: $(env | wc -c) bytes"
+    plugins:
+      - ".buildkite/plugins/set-buildkite-api-token":
+          secret-key: test_webhook_bk_api_token
+      - ".buildkite/plugins/github-webhook-payload":
+          debug: false
+      - <<: *plugin_git_fetch
+      - <<: *plugin_ecr
+      - <<: *plugin_artifact_login
+      - <<: *plugin_docker_test
+
+  - label: ":python: Python Lint"
+    agents:
+      queue: default
+    command: |
+      set -euo pipefail
+      set -x
+      export PATH="\${HOME}/.local/bin:\${PATH}"
+      echo "+++ Running Python lint checks"
+      echo "ARG_MAX: $(getconf ARG_MAX)"
+      echo "Environment size: $(env | wc -c) bytes"
+    plugins:
+      - ".buildkite/plugins/set-buildkite-api-token":
+          secret-key: test_webhook_bk_api_token
+      - ".buildkite/plugins/github-webhook-payload":
+          debug: false
+      - <<: *plugin_git_fetch
+      - <<: *plugin_ecr
+      - <<: *plugin_artifact_login
+      - <<: *plugin_docker_test
+
+  - label: ":ruff: Ruff Check (data)"
+    command: ""
+    plugins:
+      - docker#v5.12.0:
+          image: "ghcr.io/astral-sh/ruff:0.8.6"
+          shell: false
+          command:
+            - "check"
+            - "--config"
+            - ".ruff.toml"
+            - "data/jobs"
+            - "data/packages"
+          always-pull: true
+
+  - label: ":package: Check for dependency issues"
+    if: |
+      build.pull_request.id != null || build.branch =~ /^gh-readonly-queue\//
+    command: |
+      echo "+++ Checking for dependency issues"
+      echo "ARG_MAX: $(getconf ARG_MAX)"
+      echo "Environment size: $(env | wc -c) bytes"
+    plugins:
+      - ".buildkite/plugins/set-buildkite-api-token":
+          secret-key: test_webhook_bk_api_token
+      - ".buildkite/plugins/github-webhook-payload":
+          debug: false
+      - <<: *plugin_git_fetch
+      - <<: *plugin_artifact_login
+
+  - label: ":package: Check for sdist-only packages"
+    if: |
+      build.pull_request.id != null || build.branch =~ /^gh-readonly-queue\//
+    agents:
+      queue: default
+    command: |
+      echo "+++ Checking for packages that only provide source distributions"
+      echo "ARG_MAX: $(getconf ARG_MAX)"
+      echo "Environment size: $(env | wc -c) bytes"
+    plugins:
+      - <<: *plugin_artifact_login
+
+  - label: ":api: Check external model imports"
+    if: |
+      build.pull_request.id != null || build.branch =~ /^gh-readonly-queue\//
+    agents:
+      queue: default
+    command: |
+      echo "+++ Checking for external model imports"
+      echo "ARG_MAX: $(getconf ARG_MAX)"
+      echo "Environment size: $(env | wc -c) bytes"
+    plugins:
+      - <<: *plugin_artifact_login
+
+  - group: ":python: Python - Static Type Checking"
+    key: "python_static_type_check"
+    if: |
+      build.pull_request.id != null || build.branch =~ /^gh-readonly-queue\//
+    steps:
+      - label: ":mypy: mypy Check for All Targets"
+        key: "mypy"
+        agents:
+          queue: default
+        plugins:
+          - <<: *plugin_ecr
+          - <<: *plugin_artifact_login
+        env:
+          MYPY_TARGET_VERSION: 1.10.0
+        commands:
+          - |
+            echo "+++ Running mypy static type checking"
+            echo "ARG_MAX: $(getconf ARG_MAX)"
+            echo "Environment size: $(env | wc -c) bytes"
+      - label: ":mypy: mypy Check (build system)"
+        key: "build_mypy"
+        agents:
+          queue: default
+        plugins:
+          - ".buildkite/plugins/set-buildkite-api-token":
+              secret-key: read_build_read_pipelines_api_access_token
+          - ".buildkite/plugins/github-webhook-payload":
+              debug: false
+          - <<: *plugin_git_fetch
+          - <<: *plugin_ecr
+          - <<: *plugin_artifact_login
+        commands:
+          - |
+            echo "+++ Running build system mypy checks"
+            echo "ARG_MAX: $(getconf ARG_MAX)"
+            echo "Environment size: $(env | wc -c) bytes"
+
+  - label: ":pipeline: Generate Frontend Pipeline Steps"
+    key: "generate_frontend_pipeline"
+    depends_on:
+      - detect_changes
+    priority: 50
+    commands:
+      - |
+        echo "+++ Generating frontend pipeline steps"
+        echo "ARG_MAX: $(getconf ARG_MAX)"
+        echo "Environment size: $(env | wc -c) bytes"
+    plugins:
+      - <<: *plugin_ecr
+      - docker#v5.12.0:
+          image: "123456789012.dkr.ecr.us-west-2.amazonaws.com/test-ecr/test-bk:latest"
+          always-pull: true
+          shell: ["/bin/bash", "-e", "-c"]
+          mount-buildkite-agent: true
+          propagate-environment: true
+          environment:
+            - BUILDKITE_AGENT_ACCESS_TOKEN
+          volumes:
+            - "./src/python/test_devops:/opt/test-bk/lib/python3.11/site-packages/test_devops"
+            - "./src/python/testdev:/opt/test-bk/lib/python3.11/site-packages/testdev"
+            - "./src/python/testdev_bk:/opt/test-bk/lib/python3.11/site-packages/testdev_bk"
+
+  - label: ":cloud: Trigger External Build Pipeline"
+    depends_on:
+      - detect_changes
+    agents:
+      queue: default
+    command: |
+      echo "+++ Triggering external build pipeline"
+      echo "ARG_MAX: $(getconf ARG_MAX)"
+      echo "Environment size: $(env | wc -c) bytes"
+    plugins:
+      - jasonwbarnett/git-opts:
+          depth: "1"
+          filter: "tree:0"
+          sparse-checkout: true
+          sparse-checkout-paths:
+            - .buildkite/pipelines/test-build
+            - .buildkite/plugins/artifact-login
+            - src/python/test_devops
+      - <<: *plugin_artifact_login
+
+  # ARG_MAX Testing Steps
+  - label: ":boom: ARG_MAX Test - Large Environment Variables"
+    key: "argmax_test_env"
+    priority: 5
+    agents:
+      queue: default
+    command: |
+      echo "=== ARG_MAX Testing with Large Environment Variables ==="
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
       echo "Initial environment size: $(env | wc -c) bytes"
       
-      # Create a massive plugin configuration that will be serialized into BUILDKITE_PLUGINS
-      # This simulates the exact scenario from the GitHub issue
+      # Create massive environment variables
+      export LARGE_VAR1=$(python3 -c "print('X' * 200000)")
+      export LARGE_VAR2=$(python3 -c "print('Y' * 200000)")
+      export LARGE_VAR3=$(python3 -c "print('Z' * 200000)")
       
-      # Create very large plugin configuration JSON
-      PLUGIN_CONFIG=$(python3 -c "print('X' * 500000)")
+      echo "After adding large vars - environment size: $(env | wc -c) bytes"
       
-      # Create massive BUILDKITE_PLUGINS environment variable
-      export BUILDKITE_PLUGINS="[{\"monorepo-diff#v1.5.1\":{\"watch\":["
+      # Try to execute a command that might hit ARG_MAX
+      /bin/bash -c "echo 'This should work or fail with argument list too long'"
+    timeout_in_minutes: 5
+
+  - label: ":boom: ARG_MAX Test - Massive Plugin Configuration"
+    key: "argmax_test_plugins"
+    priority: 5
+    agents:
+      queue: default
+    command: |
+      echo "=== ARG_MAX Testing with Massive Plugin Configuration ==="
+      echo "Current ARG_MAX: $(getconf ARG_MAX)"
+      echo "Initial environment size: $(env | wc -c) bytes"
       
-      # Add 100 watch paths with large configurations
-      for i in {1..100}; do
-        WATCH_PATH="packages/app$i/**/*"
-        COMMAND="echo 'Building app$i with very long command that includes many environment variables and complex build steps for package $i'"
-        export BUILDKITE_PLUGINS="$BUILDKITE_PLUGINS{\"path\":\"$WATCH_PATH\",\"config\":{\"command\":\"$COMMAND\",\"label\":\"Build app$i\",\"env\":{\"PACKAGE_NAME\":\"app$i\",\"BUILD_CONFIG\":\"$PLUGIN_CONFIG\"}}},"
-      done
-      
-      # Remove trailing comma and close the array
-      export BUILDKITE_PLUGINS="${BUILDKITE_PLUGINS%,}]}]"
+      # Create a massive BUILDKITE_PLUGINS environment variable
+      export BUILDKITE_PLUGINS="[{\"test-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('X' * 500000)")\"}}]"
       
       echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
       echo "Total environment size: $(env | wc -c) bytes"
       
-      # Now try to spawn a process that will definitely exceed ARG_MAX
-      echo "Attempting to spawn process with massive plugin configuration..."
-      
-      # Create a command with the massive plugin config as an argument
-      MASSIVE_CMD="echo 'Testing with massive plugin config: $BUILDKITE_PLUGINS'"
-      
-      # This should trigger the ARG_MAX error
-      /bin/bash -c "$MASSIVE_CMD"
+      # Try to execute a command that might hit ARG_MAX
+      /bin/bash -c "echo 'Testing ARG_MAX with massive plugin config'"
+    timeout_in_minutes: 5
 
-  - label: "Force ARG_MAX Error with Exec"
+  - label: ":boom: ARG_MAX Test - Long Branch Name Simulation"
+    key: "argmax_test_branch"
+    priority: 5
+    agents:
+      queue: default
     command: |
-      echo "=== Forcing ARG_MAX error with exec ==="
+      echo "=== ARG_MAX Testing with Long Branch Name ==="
+      echo "Current ARG_MAX: $(getconf ARG_MAX)"
+      echo "Initial environment size: $(env | wc -c) bytes"
       
-      # Create the largest possible environment
-      for i in {1..1000}; do
-        LARGE_VAR=$(python3 -c "print('VAR' * 1000)")
-        export "ENV_VAR_$i"="$LARGE_VAR"
+      # Simulate a very long branch name (like GitHub merge queue)
+      export BUILDKITE_BRANCH="gh-readonly-queue/merge-queue/main/pr-12345-abcdef1234567890abcdef1234567890abcdef12"
+      export BUILDKITE_PULL_REQUEST_BASE_BRANCH="main"
+      export BUILDKITE_PULL_REQUEST_REPO="https://github.com/test-org/test-repo.git"
+      
+      # Add many environment variables
+      for i in {1..50}; do
+        export "ENV_VAR_$i"=$(python3 -c "print('A' * 10000)")
       done
       
-      # Create massive plugin configuration
-      PLUGIN_CONFIG=$(python3 -c "print('PLUGIN' * 1000000)")
-      export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\",\"jaeger\",\"zipkin\",\"consul\",\"vault\",\"nomad\",\"traefik\",\"nginx-ingress\",\"cert-manager\",\"external-dns\",\"fluentd\",\"logstash\",\"filebeat\",\"metricbeat\",\"heartbeat\",\"auditbeat\",\"packetbeat\",\"winlogbeat\",\"functionbeat\",\"journalbeat\",\"osquerybeat\",\"uptimebeat\",\"syntheticsbeat\",\"apm-server\",\"kibana\",\"elasticsearch\",\"logstash\",\"beats\",\"x-pack\",\"security\",\"monitoring\",\"ml\",\"graph\",\"reporting\",\"canvas\",\"maps\",\"uptime\",\"apm\",\"infra\",\"logs\",\"metrics\",\"alerts\",\"cases\",\"siem\",\"endpoint\",\"fleet\",\"osquery\",\"timeline\",\"notebooks\",\"visualizations\",\"dashboards\",\"saved-objects\",\"index-patterns\",\"templates\",\"component-templates\",\"composable-templates\",\"data-streams\",\"indices\",\"aliases\",\"rollups\",\"transforms\",\"snapshot-lifecycle-management\",\"index-lifecycle-management\",\"watcher\",\"cross-cluster-replication\",\"cross-cluster-search\",\"remote-clusters\",\"ccr\",\"ccs\",\"remote-clusters\",\"cross-cluster-replication\",\"cross-cluster-search\"]}}]"
+      echo "After adding env vars - environment size: $(env | wc -c) bytes"
       
-      echo "Environment size: $(env | wc -c) bytes"
-      echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
-      
-      # Use exec to replace the current process - this should trigger ARG_MAX
-      exec /bin/bash -c "echo 'This should fail with argument list too long'"
-
-  - label: "Direct ARG_MAX Test"
-    command: |
-      echo "=== Direct ARG_MAX test ==="
-      
-      # Create a command with arguments that exceed ARG_MAX
-      LONG_ARG=$(python3 -c "print('ARG' * 1000000)")
-      
-      echo "Long argument length: $(echo -n "$LONG_ARG" | wc -c) bytes"
-      echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
-      
-      # Try to execute a command with the long argument
-      echo "Attempting to execute command with long argument..."
-      /bin/bash -c "echo 'Argument: $LONG_ARG'"
-      
-      # Try to use the long argument directly
-      echo "Trying direct execution..."
-      /bin/bash -c "echo '$LONG_ARG'"
+      # Try to execute a command that might hit ARG_MAX
+      /bin/bash -c "echo 'Testing ARG_MAX with long branch name and many env vars'"
+    timeout_in_minutes: 5
