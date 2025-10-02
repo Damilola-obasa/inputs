@@ -5,43 +5,30 @@ steps:
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
       echo "Current environment size: $(env | wc -c) bytes"
       
-      # Generate large environment variables to test ARG_MAX limits
+      # Generate large environment variables using built-in tools
       echo "Generating large environment variables..."
       
-      # Create a very large string (50KB)
-      LARGE_STRING=$(python3 -c "print('A' * 50000)")
+      # Create large strings using printf and head
+      LARGE_STRING=$(printf 'A%.0s' {1..50000})
       export LARGE_VAR_1="$LARGE_STRING"
       
       # Create multiple large variables
-      export LARGE_VAR_2="$(python3 -c "print('B' * 50000)")"
-      export LARGE_VAR_3="$(python3 -c "print('C' * 50000)")"
-      export LARGE_VAR_4="$(python3 -c "print('D' * 50000)")"
-      export LARGE_VAR_5="$(python3 -c "print('E' * 50000)")"
+      export LARGE_VAR_2="$(printf 'B%.0s' {1..50000})"
+      export LARGE_VAR_3="$(printf 'C%.0s' {1..50000})"
+      export LARGE_VAR_4="$(printf 'D%.0s' {1..50000})"
+      export LARGE_VAR_5="$(printf 'E%.0s' {1..50000})"
       
       # Create a very long branch name (like merge queue branches)
       export BUILDKITE_BRANCH="gh-readonly-queue/main/pr-12345-abcdef1234567890abcdef1234567890abcdef12"
       
       # Create large plugin configuration (simulating BUILDKITE_PLUGINS)
-      export BUILDKITE_PLUGINS='[
-        {
-          "github.com/buildkite-plugins/docker-compose#v4.0.0": {
-            "config": "'$(python3 -c "print('X' * 10000)")'",
-            "services": ["app", "db", "redis", "worker"],
-            "watch": ["src/**/*", "tests/**/*", "docs/**/*", "config/**/*"]
-          }
-        },
-        {
-          "github.com/buildkite-plugins/ecr#v2.0.0": {
-            "account-ids": ["123456789012", "234567890123", "345678901234"],
-            "login": true,
-            "config": "'$(python3 -c "print('Y' * 10000)')'"
-          }
-        }
-      ]'
+      PLUGIN_CONFIG=$(printf 'X%.0s' {1..10000})
+      export BUILDKITE_PLUGINS="[{\"github.com/buildkite-plugins/docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG\",\"services\":[\"app\",\"db\",\"redis\",\"worker\"],\"watch\":[\"src/**/*\",\"tests/**/*\",\"docs/**/*\",\"config/**/*\"]}}]"
       
       # Add more large environment variables
       for i in {1..20}; do
-        export "HUGE_VAR_$i"="$(python3 -c "print('Z' * 20000)")"
+        VAR_CONTENT=$(printf 'Z%.0s' {1..20000})
+        export "HUGE_VAR_$i"="$VAR_CONTENT"
       done
       
       echo "Environment size after adding large variables: $(env | wc -c) bytes"
@@ -55,37 +42,19 @@ steps:
     command: |
       echo "=== Testing process spawning with large environment ==="
       
-      # Create massive environment variables
-      export MASSIVE_VAR_1="$(python3 -c "print('A' * 100000)")"
-      export MASSIVE_VAR_2="$(python3 -c "print('B' * 100000)")"
-      export MASSIVE_VAR_3="$(python3 -c "print('C' * 100000)")"
-      export MASSIVE_VAR_4="$(python3 -c "print('D' * 100000)")"
-      export MASSIVE_VAR_5="$(python3 -c "print('E' * 100000)")"
+      # Create massive environment variables using built-in tools
+      export MASSIVE_VAR_1="$(printf 'A%.0s' {1..100000})"
+      export MASSIVE_VAR_2="$(printf 'B%.0s' {1..100000})"
+      export MASSIVE_VAR_3="$(printf 'C%.0s' {1..100000})"
+      export MASSIVE_VAR_4="$(printf 'D%.0s' {1..100000})"
+      export MASSIVE_VAR_5="$(printf 'E%.0s' {1..100000})"
       
-      # Simulate very large plugin configuration
-      export BUILDKITE_PLUGINS='[
-        {
-          "github.com/buildkite-plugins/docker-compose#v4.0.0": {
-            "config": "'$(python3 -c "print('X' * 50000)")'",
-            "services": ["app", "db", "redis", "worker", "nginx", "elasticsearch"],
-            "watch": ["src/**/*", "tests/**/*", "docs/**/*", "config/**/*", "scripts/**/*", "tools/**/*"],
-            "environment": "'$(python3 -c "print('ENV' * 10000)")'"
-          }
-        },
-        {
-          "github.com/buildkite-plugins/ecr#v2.0.0": {
-            "account-ids": ["123456789012", "234567890123", "345678901234", "456789012345"],
-            "login": true,
-            "config": "'$(python3 -c "print('Y' * 50000)')'"
-          }
-        },
-        {
-          "github.com/buildkite-plugins/s3-secrets#v2.0.0": {
-            "secrets": ["'$(python3 -c "print('SECRET' * 10000)")'"],
-            "config": "'$(python3 -c "print('Z' * 50000)')'"
-          }
-        }
-      ]'
+      # Create large plugin configuration
+      PLUGIN_CONFIG_1=$(printf 'X%.0s' {1..50000})
+      PLUGIN_CONFIG_2=$(printf 'Y%.0s' {1..50000})
+      PLUGIN_CONFIG_3=$(printf 'Z%.0s' {1..50000})
+      
+      export BUILDKITE_PLUGINS="[{\"github.com/buildkite-plugins/docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG_1\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\"],\"watch\":[\"src/**/*\",\"tests/**/*\",\"docs/**/*\",\"config/**/*\",\"scripts/**/*\",\"tools/**/*\"]}},{\"github.com/buildkite-plugins/ecr#v2.0.0\":{\"account-ids\":[\"123456789012\",\"234567890123\",\"345678901234\",\"456789012345\"],\"login\":true,\"config\":\"$PLUGIN_CONFIG_2\"}},{\"github.com/buildkite-plugins/s3-secrets#v2.0.0\":{\"secrets\":[\"$PLUGIN_CONFIG_3\"],\"config\":\"$PLUGIN_CONFIG_3\"}}]"
       
       echo "Total environment size: $(env | wc -c) bytes"
       echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
@@ -103,22 +72,13 @@ steps:
       export BUILDKITE_MESSAGE="Merge pull request #12345 from feature-branch-abcdef1234567890abcdef1234567890abcdef12"
       
       # Create large plugin configuration
-      export BUILDKITE_PLUGINS='[
-        {
-          "github.com/buildkite-plugins/monorepo-diff#v1.0.0": {
-            "watch": [
-              "packages/app1/**/*", "packages/app2/**/*", "packages/app3/**/*",
-              "packages/lib1/**/*", "packages/lib2/**/*", "packages/lib3/**/*",
-              "packages/service1/**/*", "packages/service2/**/*", "packages/service3/**/*"
-            ],
-            "config": "'$(python3 -c "print('CONFIG' * 20000)")'"
-          }
-        }
-      ]'
+      PLUGIN_CONFIG=$(printf 'CONFIG%.0s' {1..20000})
+      export BUILDKITE_PLUGINS="[{\"github.com/buildkite-plugins/monorepo-diff#v1.0.0\":{\"watch\":[\"packages/app1/**/*\",\"packages/app2/**/*\",\"packages/app3/**/*\",\"packages/lib1/**/*\",\"packages/lib2/**/*\",\"packages/lib3/**/*\",\"packages/service1/**/*\",\"packages/service2/**/*\",\"packages/service3/**/*\"],\"config\":\"$PLUGIN_CONFIG\"}}]"
       
       # Add many environment variables
       for i in {1..50}; do
-        export "ENV_VAR_$i"="$(python3 -c "print('VAR' * 5000)")"
+        VAR_CONTENT=$(printf 'VAR%.0s' {1..5000})
+        export "ENV_VAR_$i"="$VAR_CONTENT"
       done
       
       echo "Environment size: $(env | wc -c) bytes"
