@@ -42,12 +42,12 @@ steps:
     command: |
       echo "=== Testing process spawning with large environment ==="
       
-      # Create massive environment variables using built-in tools
-      export MASSIVE_VAR_1="$(printf 'A%.0s' {1..100000})"
-      export MASSIVE_VAR_2="$(printf 'B%.0s' {1..100000})"
-      export MASSIVE_VAR_3="$(printf 'C%.0s' {1..100000})"
-      export MASSIVE_VAR_4="$(printf 'D%.0s' {1..100000})"
-      export MASSIVE_VAR_5="$(printf 'E%.0s' {1..100000})"
+      # Create massive environment variables that exceed ARG_MAX (1MB)
+      export MASSIVE_VAR_1="$(printf 'A%.0s' {1..200000})"
+      export MASSIVE_VAR_2="$(printf 'B%.0s' {1..200000})"
+      export MASSIVE_VAR_3="$(printf 'C%.0s' {1..200000})"
+      export MASSIVE_VAR_4="$(printf 'D%.0s' {1..200000})"
+      export MASSIVE_VAR_5="$(printf 'E%.0s' {1..200000})"
       
       # Create large plugin configuration
       PLUGIN_CONFIG_1=$(printf 'X%.0s' {1..50000})
@@ -55,6 +55,12 @@ steps:
       PLUGIN_CONFIG_3=$(printf 'Z%.0s' {1..50000})
       
       export BUILDKITE_PLUGINS="[{\"github.com/buildkite-plugins/docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG_1\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\"],\"watch\":[\"src/**/*\",\"tests/**/*\",\"docs/**/*\",\"config/**/*\",\"scripts/**/*\",\"tools/**/*\"]}},{\"github.com/buildkite-plugins/ecr#v2.0.0\":{\"account-ids\":[\"123456789012\",\"234567890123\",\"345678901234\",\"456789012345\"],\"login\":true,\"config\":\"$PLUGIN_CONFIG_2\"}},{\"github.com/buildkite-plugins/s3-secrets#v2.0.0\":{\"secrets\":[\"$PLUGIN_CONFIG_3\"],\"config\":\"$PLUGIN_CONFIG_3\"}}]"
+      
+      # Add even more large environment variables to exceed ARG_MAX
+      for i in {1..10}; do
+        HUGE_VAR=$(printf 'HUGE%.0s' {1..100000})
+        export "EXTRA_LARGE_VAR_$i"="$HUGE_VAR"
+      done
       
       echo "Total environment size: $(env | wc -c) bytes"
       echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
