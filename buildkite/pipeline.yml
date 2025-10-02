@@ -1,156 +1,52 @@
 steps:
-  - label: "Reproduce ARG_MAX Issue - Massive Plugin Configuration"
-    plugins:
-      - monorepo-diff#v1.5.1:
-          watch:
-            - path: "packages/app1/**/*"
-              config:
-                command: "echo 'Building app1 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/app2/**/*"
-              config:
-                command: "echo 'Building app2 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/app3/**/*"
-              config:
-                command: "echo 'Building app3 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/app4/**/*"
-              config:
-                command: "echo 'Building app4 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/app5/**/*"
-              config:
-                command: "echo 'Building app5 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/lib1/**/*"
-              config:
-                command: "echo 'Building lib1 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/lib2/**/*"
-              config:
-                command: "echo 'Building lib2 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/lib3/**/*"
-              config:
-                command: "echo 'Building lib3 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/lib4/**/*"
-              config:
-                command: "echo 'Building lib4 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/lib5/**/*"
-              config:
-                command: "echo 'Building lib5 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/service1/**/*"
-              config:
-                command: "echo 'Building service1 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/service2/**/*"
-              config:
-                command: "echo 'Building service2 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/service3/**/*"
-              config:
-                command: "echo 'Building service3 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/service4/**/*"
-              config:
-                command: "echo 'Building service4 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/service5/**/*"
-              config:
-                command: "echo 'Building service5 with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/ui/**/*"
-              config:
-                command: "echo 'Building ui with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/utils/**/*"
-              config:
-                command: "echo 'Building utils with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/shared/**/*"
-              config:
-                command: "echo 'Building shared with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/common/**/*"
-              config:
-                command: "echo 'Building common with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/core/**/*"
-              config:
-                command: "echo 'Building core with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/api/**/*"
-              config:
-                command: "echo 'Building api with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/web/**/*"
-              config:
-                command: "echo 'Building web with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/mobile/**/*"
-              config:
-                command: "echo 'Building mobile with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/desktop/**/*"
-              config:
-                command: "echo 'Building desktop with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/backend/**/*"
-              config:
-                command: "echo 'Building backend with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/frontend/**/*"
-              config:
-                command: "echo 'Building frontend with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/database/**/*"
-              config:
-                command: "echo 'Building database with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/cache/**/*"
-              config:
-                command: "echo 'Building cache with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/queue/**/*"
-              config:
-                command: "echo 'Building queue with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/worker/**/*"
-              config:
-                command: "echo 'Building worker with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/scheduler/**/*"
-              config:
-                command: "echo 'Building scheduler with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/notifier/**/*"
-              config:
-                command: "echo 'Building notifier with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/analytics/**/*"
-              config:
-                command: "echo 'Building analytics with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/monitoring/**/*"
-              config:
-                command: "echo 'Building monitoring with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/logging/**/*"
-              config:
-                command: "echo 'Building logging with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/auth/**/*"
-              config:
-                command: "echo 'Building auth with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/payment/**/*"
-              config:
-                command: "echo 'Building payment with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/email/**/*"
-              config:
-                command: "echo 'Building email with very long command that includes many environment variables and complex build steps'"
-            - path: "packages/sms/**/*"
-              config:
-                command: "echo 'Building sms with very long command that includes many environment variables and complex build steps'"
+  - label: "Force ARG_MAX Error - Massive Environment"
     command: |
-      echo "=== Reproducing ARG_MAX issue as described in GitHub issue #3509 ==="
+      echo "=== Forcing ARG_MAX error by creating massive environment ==="
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      echo "Current environment size: $(env | wc -c) bytes"
+      echo "Initial environment size: $(env | wc -c) bytes"
+      
+      # Create a massive environment that will definitely exceed ARG_MAX
+      echo "Creating massive environment variables..."
+      
+      # Create 200 variables of 10KB each = 2MB
+      for i in {1..200}; do
+        LARGE_VAR=$(printf 'VAR%.0s' {1..10000})
+        export "MASSIVE_VAR_$i"="$LARGE_VAR"
+      done
+      
+      # Create 100 variables of 20KB each = 2MB more
+      for i in {1..100}; do
+        HUGE_VAR=$(printf 'HUGE%.0s' {1..20000})
+        export "HUGE_VAR_$i"="$HUGE_VAR"
+      done
+      
+      # Create 50 variables of 50KB each = 2.5MB more
+      for i in {1..50}; do
+        MEGA_VAR=$(printf 'MEGA%.0s' {1..50000})
+        export "MEGA_VAR_$i"="$MEGA_VAR"
+      done
+      
+      # Create 20 variables of 100KB each = 2MB more
+      for i in {1..20}; do
+        GIGA_VAR=$(printf 'GIGA%.0s' {1..100000})
+        export "GIGA_VAR_$i"="$GIGA_VAR"
+      done
+      
+      # Create massive plugin configuration
+      PLUGIN_CONFIG=$(printf 'PLUGIN%.0s' {1..500000})
+      export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\",\"jaeger\",\"zipkin\",\"consul\",\"vault\",\"nomad\",\"traefik\",\"nginx-ingress\",\"cert-manager\",\"external-dns\",\"fluentd\",\"logstash\",\"filebeat\",\"metricbeat\",\"heartbeat\",\"auditbeat\",\"packetbeat\",\"winlogbeat\",\"functionbeat\",\"journalbeat\",\"osquerybeat\",\"uptimebeat\",\"syntheticsbeat\",\"apm-server\",\"kibana\",\"elasticsearch\",\"logstash\",\"beats\",\"x-pack\",\"security\",\"monitoring\",\"ml\",\"graph\",\"reporting\",\"canvas\",\"maps\",\"uptime\",\"apm\",\"infra\",\"logs\",\"metrics\",\"alerts\",\"cases\",\"siem\",\"endpoint\",\"fleet\",\"osquery\",\"timeline\",\"notebooks\",\"visualizations\",\"dashboards\",\"saved-objects\",\"index-patterns\",\"templates\",\"component-templates\",\"composable-templates\",\"data-streams\",\"indices\",\"aliases\",\"rollups\",\"transforms\",\"snapshot-lifecycle-management\",\"index-lifecycle-management\",\"watcher\",\"cross-cluster-replication\",\"cross-cluster-search\",\"remote-clusters\",\"ccr\",\"ccs\",\"remote-clusters\",\"cross-cluster-replication\",\"cross-cluster-search\"],\"watch\":[\"packages/app1/**/*\",\"packages/app2/**/*\",\"packages/app3/**/*\",\"packages/lib1/**/*\",\"packages/lib2/**/*\",\"packages/lib3/**/*\",\"packages/service1/**/*\",\"packages/service2/**/*\",\"packages/service3/**/*\",\"packages/ui/**/*\",\"packages/utils/**/*\",\"packages/shared/**/*\",\"packages/common/**/*\",\"packages/core/**/*\",\"packages/api/**/*\",\"packages/web/**/*\",\"packages/mobile/**/*\",\"packages/desktop/**/*\",\"packages/backend/**/*\",\"packages/frontend/**/*\",\"packages/database/**/*\",\"packages/cache/**/*\",\"packages/queue/**/*\",\"packages/worker/**/*\",\"packages/scheduler/**/*\",\"packages/notifier/**/*\",\"packages/analytics/**/*\",\"packages/monitoring/**/*\",\"packages/logging/**/*\",\"packages/auth/**/*\",\"packages/payment/**/*\",\"packages/email/**/*\",\"packages/sms/**/*\"]}}]"
+      
+      echo "Final environment size: $(env | wc -c) bytes"
+      echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
       echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
       
-      # This step has 30+ watch configurations in monorepo-diff plugin
-      # Each with very long commands that will be serialized into BUILDKITE_PLUGINS
-      # This should create a massive BUILDKITE_PLUGINS environment variable
+      # This should definitely trigger the "argument list too long" error
+      echo "Attempting to spawn process with massive environment..."
+      /bin/bash -c "echo 'This should fail with argument list too long'"
       
-      echo "Step 1: Setting up environment variables"
-      echo "Step 2: Installing dependencies"
-      echo "Step 3: Running tests"
-      echo "Step 4: Building application"
-      echo "Step 5: Running linting"
-      echo "Step 6: Running security scans"
-      echo "Step 7: Generating documentation"
-      echo "Step 8: Creating artifacts"
-      echo "Step 9: Uploading to staging"
-      echo "Step 10: Running integration tests"
-      echo "Step 11: Performance testing"
-      echo "Step 12: Security testing"
-      echo "Step 13: Accessibility testing"
-      echo "Step 14: Browser testing"
-      echo "Step 15: Mobile testing"
-      echo "Step 16: API testing"
-      echo "Step 17: Database testing"
-      echo "Step 18: Cache testing"
-      echo "Step 19: Queue testing"
-      echo "Step 20: Final validation"
-      
-      # The issue occurs when Buildkite tries to spawn the plugin processes
-      # with the large BUILDKITE_PLUGINS environment variable
-      echo "This step should trigger the ARG_MAX error when Buildkite processes the plugins"
+      # Try multiple process spawns to increase chance of hitting the limit
+      echo "Trying multiple process spawns..."
+      for i in {1..10}; do
+        echo "Spawn attempt $i"
+        /bin/bash -c "echo 'Spawn attempt $i'"
+      done
