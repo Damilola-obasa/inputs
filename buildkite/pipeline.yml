@@ -1,75 +1,75 @@
 steps:
-  - label: "Force ARG_MAX Error - Massive Environment"
+  - label: "Create Massive Plugin Configuration"
     command: |
-      echo "=== Forcing ARG_MAX error by creating massive environment ==="
+      echo "=== Creating massive plugin configuration to trigger ARG_MAX ==="
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
       echo "Initial environment size: $(env | wc -c) bytes"
       
-      # Create a massive environment that will definitely exceed ARG_MAX
-      echo "Creating massive environment variables..."
+      # Create a massive plugin configuration that will be serialized into BUILDKITE_PLUGINS
+      # This simulates the exact scenario from the GitHub issue
       
-      # Create very large environment variables using a more reliable method
-      # Create 1000 variables of 1KB each = 1MB
-      for i in {1..1000}; do
-        export "VAR_$i"="$(printf 'X%.0s' {1..1000})"
-      done
+      # Create very large plugin configuration JSON
+      PLUGIN_CONFIG=$(printf 'X%.0s' {1..500000})
       
-      # Create 500 variables of 2KB each = 1MB more  
-      for i in {1..500}; do
-        export "BIG_VAR_$i"="$(printf 'Y%.0s' {1..2000})"
-      done
+      # Create massive BUILDKITE_PLUGINS environment variable
+      export BUILDKITE_PLUGINS="[{\"monorepo-diff#v1.5.1\":{\"watch\":["
       
-      # Create 200 variables of 5KB each = 1MB more
-      for i in {1..200}; do
-        export "HUGE_VAR_$i"="$(printf 'Z%.0s' {1..5000})"
-      done
-      
-      # Create 100 variables of 10KB each = 1MB more
+      # Add 100 watch paths with large configurations
       for i in {1..100}; do
-        export "MEGA_VAR_$i"="$(printf 'A%.0s' {1..10000})"
+        WATCH_PATH="packages/app$i/**/*"
+        COMMAND="echo 'Building app$i with very long command that includes many environment variables and complex build steps for package $i'"
+        export BUILDKITE_PLUGINS="$BUILDKITE_PLUGINS{\"path\":\"$WATCH_PATH\",\"config\":{\"command\":\"$COMMAND\",\"label\":\"Build app$i\",\"env\":{\"PACKAGE_NAME\":\"app$i\",\"BUILD_CONFIG\":\"$PLUGIN_CONFIG\"}}},"
       done
       
-      # Create 50 variables of 20KB each = 1MB more
-      for i in {1..50}; do
-        export "GIGA_VAR_$i"="$(printf 'B%.0s' {1..20000})"
-      done
+      # Remove trailing comma and close the array
+      export BUILDKITE_PLUGINS="${BUILDKITE_PLUGINS%,}]}]"
       
-      # Create 20 variables of 50KB each = 1MB more
-      for i in {1..20}; do
-        export "TERA_VAR_$i"="$(printf 'C%.0s' {1..50000})"
-      done
+      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
+      echo "Total environment size: $(env | wc -c) bytes"
       
-      # Create 10 variables of 100KB each = 1MB more
-      for i in {1..10}; do
-        export "PETA_VAR_$i"="$(printf 'D%.0s' {1..100000})"
+      # Now try to spawn a process that will definitely exceed ARG_MAX
+      echo "Attempting to spawn process with massive plugin configuration..."
+      
+      # Create a command with the massive plugin config as an argument
+      MASSIVE_CMD="echo 'Testing with massive plugin config: $BUILDKITE_PLUGINS'"
+      
+      # This should trigger the ARG_MAX error
+      /bin/bash -c "$MASSIVE_CMD"
+
+  - label: "Force ARG_MAX Error with Exec"
+    command: |
+      echo "=== Forcing ARG_MAX error with exec ==="
+      
+      # Create the largest possible environment
+      for i in {1..1000}; do
+        LARGE_VAR=$(printf 'VAR%.0s' {1..1000})
+        export "ENV_VAR_$i"="$LARGE_VAR"
       done
       
       # Create massive plugin configuration
-      PLUGIN_CONFIG=$(printf 'PLUGIN%.0s' {1..500000})
-      export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\",\"jaeger\",\"zipkin\",\"consul\",\"vault\",\"nomad\",\"traefik\",\"nginx-ingress\",\"cert-manager\",\"external-dns\",\"fluentd\",\"logstash\",\"filebeat\",\"metricbeat\",\"heartbeat\",\"auditbeat\",\"packetbeat\",\"winlogbeat\",\"functionbeat\",\"journalbeat\",\"osquerybeat\",\"uptimebeat\",\"syntheticsbeat\",\"apm-server\",\"kibana\",\"elasticsearch\",\"logstash\",\"beats\",\"x-pack\",\"security\",\"monitoring\",\"ml\",\"graph\",\"reporting\",\"canvas\",\"maps\",\"uptime\",\"apm\",\"infra\",\"logs\",\"metrics\",\"alerts\",\"cases\",\"siem\",\"endpoint\",\"fleet\",\"osquery\",\"timeline\",\"notebooks\",\"visualizations\",\"dashboards\",\"saved-objects\",\"index-patterns\",\"templates\",\"component-templates\",\"composable-templates\",\"data-streams\",\"indices\",\"aliases\",\"rollups\",\"transforms\",\"snapshot-lifecycle-management\",\"index-lifecycle-management\",\"watcher\",\"cross-cluster-replication\",\"cross-cluster-search\",\"remote-clusters\",\"ccr\",\"ccs\",\"remote-clusters\",\"cross-cluster-replication\",\"cross-cluster-search\"],\"watch\":[\"packages/app1/**/*\",\"packages/app2/**/*\",\"packages/app3/**/*\",\"packages/lib1/**/*\",\"packages/lib2/**/*\",\"packages/lib3/**/*\",\"packages/service1/**/*\",\"packages/service2/**/*\",\"packages/service3/**/*\",\"packages/ui/**/*\",\"packages/utils/**/*\",\"packages/shared/**/*\",\"packages/common/**/*\",\"packages/core/**/*\",\"packages/api/**/*\",\"packages/web/**/*\",\"packages/mobile/**/*\",\"packages/desktop/**/*\",\"packages/backend/**/*\",\"packages/frontend/**/*\",\"packages/database/**/*\",\"packages/cache/**/*\",\"packages/queue/**/*\",\"packages/worker/**/*\",\"packages/scheduler/**/*\",\"packages/notifier/**/*\",\"packages/analytics/**/*\",\"packages/monitoring/**/*\",\"packages/logging/**/*\",\"packages/auth/**/*\",\"packages/payment/**/*\",\"packages/email/**/*\",\"packages/sms/**/*\"]}}]"
+      PLUGIN_CONFIG=$(printf 'PLUGIN%.0s' {1..1000000})
+      export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\",\"jaeger\",\"zipkin\",\"consul\",\"vault\",\"nomad\",\"traefik\",\"nginx-ingress\",\"cert-manager\",\"external-dns\",\"fluentd\",\"logstash\",\"filebeat\",\"metricbeat\",\"heartbeat\",\"auditbeat\",\"packetbeat\",\"winlogbeat\",\"functionbeat\",\"journalbeat\",\"osquerybeat\",\"uptimebeat\",\"syntheticsbeat\",\"apm-server\",\"kibana\",\"elasticsearch\",\"logstash\",\"beats\",\"x-pack\",\"security\",\"monitoring\",\"ml\",\"graph\",\"reporting\",\"canvas\",\"maps\",\"uptime\",\"apm\",\"infra\",\"logs\",\"metrics\",\"alerts\",\"cases\",\"siem\",\"endpoint\",\"fleet\",\"osquery\",\"timeline\",\"notebooks\",\"visualizations\",\"dashboards\",\"saved-objects\",\"index-patterns\",\"templates\",\"component-templates\",\"composable-templates\",\"data-streams\",\"indices\",\"aliases\",\"rollups\",\"transforms\",\"snapshot-lifecycle-management\",\"index-lifecycle-management\",\"watcher\",\"cross-cluster-replication\",\"cross-cluster-search\",\"remote-clusters\",\"ccr\",\"ccs\",\"remote-clusters\",\"cross-cluster-replication\",\"cross-cluster-search\"]}}]"
       
-      echo "Final environment size: $(env | wc -c) bytes"
+      echo "Environment size: $(env | wc -c) bytes"
       echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
       
-      # This should definitely trigger the "argument list too long" error
-      echo "Attempting to spawn process with massive environment..."
+      # Use exec to replace the current process - this should trigger ARG_MAX
+      exec /bin/bash -c "echo 'This should fail with argument list too long'"
+
+  - label: "Direct ARG_MAX Test"
+    command: |
+      echo "=== Direct ARG_MAX test ==="
       
-      # Try to execute a command with a very long argument list
-      echo "Trying to execute command with long arguments..."
-      LONG_ARG=$(printf 'ARG%.0s' {1..200000})
-      echo "Long argument created, length: $(echo -n "$LONG_ARG" | wc -c)"
+      # Create a command with arguments that exceed ARG_MAX
+      LONG_ARG=$(printf 'ARG%.0s' {1..1000000})
       
-      # Try to spawn a process with the long argument
-      /bin/bash -c "echo 'Testing with long argument: $LONG_ARG'"
+      echo "Long argument length: $(echo -n "$LONG_ARG" | wc -c) bytes"
+      echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
       
-      # Try multiple process spawns with different approaches
-      echo "Trying multiple process spawns..."
-      for i in {1..5}; do
-        echo "Spawn attempt $i"
-        /bin/bash -c "echo 'Spawn attempt $i with environment size: $(env | wc -c)'"
-      done
+      # Try to execute a command with the long argument
+      echo "Attempting to execute command with long argument..."
+      /bin/bash -c "echo 'Argument: $LONG_ARG'"
       
-      # Try to use exec to replace the current process (this might trigger ARG_MAX)
-      echo "Attempting exec with large environment..."
-      exec /bin/bash -c "echo 'This exec should fail with argument list too long'"
+      # Try to use the long argument directly
+      echo "Trying direct execution..."
+      /bin/bash -c "echo '$LONG_ARG'"
