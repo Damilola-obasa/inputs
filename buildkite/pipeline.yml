@@ -8,28 +8,40 @@ steps:
       # Create a massive environment that will definitely exceed ARG_MAX
       echo "Creating massive environment variables..."
       
-      # Create 200 variables of 10KB each = 2MB
+      # Create very large environment variables using a more reliable method
+      # Create 1000 variables of 1KB each = 1MB
+      for i in {1..1000}; do
+        export "VAR_$i"="$(printf 'X%.0s' {1..1000})"
+      done
+      
+      # Create 500 variables of 2KB each = 1MB more  
+      for i in {1..500}; do
+        export "BIG_VAR_$i"="$(printf 'Y%.0s' {1..2000})"
+      done
+      
+      # Create 200 variables of 5KB each = 1MB more
       for i in {1..200}; do
-        LARGE_VAR=$(printf 'VAR%.0s' {1..10000})
-        export "MASSIVE_VAR_$i"="$LARGE_VAR"
+        export "HUGE_VAR_$i"="$(printf 'Z%.0s' {1..5000})"
       done
       
-      # Create 100 variables of 20KB each = 2MB more
+      # Create 100 variables of 10KB each = 1MB more
       for i in {1..100}; do
-        HUGE_VAR=$(printf 'HUGE%.0s' {1..20000})
-        export "HUGE_VAR_$i"="$HUGE_VAR"
+        export "MEGA_VAR_$i"="$(printf 'A%.0s' {1..10000})"
       done
       
-      # Create 50 variables of 50KB each = 2.5MB more
+      # Create 50 variables of 20KB each = 1MB more
       for i in {1..50}; do
-        MEGA_VAR=$(printf 'MEGA%.0s' {1..50000})
-        export "MEGA_VAR_$i"="$MEGA_VAR"
+        export "GIGA_VAR_$i"="$(printf 'B%.0s' {1..20000})"
       done
       
-      # Create 20 variables of 100KB each = 2MB more
+      # Create 20 variables of 50KB each = 1MB more
       for i in {1..20}; do
-        GIGA_VAR=$(printf 'GIGA%.0s' {1..100000})
-        export "GIGA_VAR_$i"="$GIGA_VAR"
+        export "TERA_VAR_$i"="$(printf 'C%.0s' {1..50000})"
+      done
+      
+      # Create 10 variables of 100KB each = 1MB more
+      for i in {1..10}; do
+        export "PETA_VAR_$i"="$(printf 'D%.0s' {1..100000})"
       done
       
       # Create massive plugin configuration
@@ -42,11 +54,22 @@ steps:
       
       # This should definitely trigger the "argument list too long" error
       echo "Attempting to spawn process with massive environment..."
-      /bin/bash -c "echo 'This should fail with argument list too long'"
       
-      # Try multiple process spawns to increase chance of hitting the limit
+      # Try to execute a command with a very long argument list
+      echo "Trying to execute command with long arguments..."
+      LONG_ARG=$(printf 'ARG%.0s' {1..200000})
+      echo "Long argument created, length: $(echo -n "$LONG_ARG" | wc -c)"
+      
+      # Try to spawn a process with the long argument
+      /bin/bash -c "echo 'Testing with long argument: $LONG_ARG'"
+      
+      # Try multiple process spawns with different approaches
       echo "Trying multiple process spawns..."
-      for i in {1..10}; do
+      for i in {1..5}; do
         echo "Spawn attempt $i"
-        /bin/bash -c "echo 'Spawn attempt $i'"
+        /bin/bash -c "echo 'Spawn attempt $i with environment size: $(env | wc -c)'"
       done
+      
+      # Try to use exec to replace the current process (this might trigger ARG_MAX)
+      echo "Attempting exec with large environment..."
+      exec /bin/bash -c "echo 'This exec should fail with argument list too long'"
