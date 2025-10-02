@@ -1,135 +1,129 @@
 steps:
-  - label: "🔧 Setup Environment"
+  - label: "Generate Large Environment Variables"
     command: |
-      echo "=== Setting up build environment ==="
-      echo "Current directory: $(pwd)"
-      echo "User: $(whoami)"
-      echo "Date: $(date)"
-      echo "Node version: $(node --version 2>/dev/null || echo 'Node not installed')"
-      echo "NPM version: $(npm --version 2>/dev/null || echo 'NPM not installed')"
-      echo "Git version: $(git --version)"
-      echo "Available disk space:"
-      df -h
-      echo "Memory usage:"
-      free -h 2>/dev/null || echo "Memory info not available"
-      echo "Environment variables:"
-      env | head -20
-      echo "=== Setup complete ==="
-
-  - label: "📦 Install Dependencies"
-    command: |
-      echo "=== Installing dependencies ==="
-      echo "Creating package.json..."
-      cat > package.json << EOF
-      {
-        "name": "test-project",
-        "version": "1.0.0",
-        "scripts": {
-          "test": "echo 'Running tests'",
-          "build": "echo 'Building project'",
-          "start": "echo 'Starting application'"
+      echo "=== Testing ARG_MAX limits ==="
+      echo "Current ARG_MAX: $(getconf ARG_MAX)"
+      echo "Current environment size: $(env | wc -c) bytes"
+      
+      # Generate large environment variables to test ARG_MAX limits
+      echo "Generating large environment variables..."
+      
+      # Create a very large string (50KB)
+      LARGE_STRING=$(python3 -c "print('A' * 50000)")
+      export LARGE_VAR_1="$LARGE_STRING"
+      
+      # Create multiple large variables
+      export LARGE_VAR_2="$(python3 -c "print('B' * 50000)")"
+      export LARGE_VAR_3="$(python3 -c "print('C' * 50000)")"
+      export LARGE_VAR_4="$(python3 -c "print('D' * 50000)")"
+      export LARGE_VAR_5="$(python3 -c "print('E' * 50000)")"
+      
+      # Create a very long branch name (like merge queue branches)
+      export BUILDKITE_BRANCH="gh-readonly-queue/main/pr-12345-abcdef1234567890abcdef1234567890abcdef12"
+      
+      # Create large plugin configuration (simulating BUILDKITE_PLUGINS)
+      export BUILDKITE_PLUGINS='[
+        {
+          "github.com/buildkite-plugins/docker-compose#v4.0.0": {
+            "config": "'$(python3 -c "print('X' * 10000)")'",
+            "services": ["app", "db", "redis", "worker"],
+            "watch": ["src/**/*", "tests/**/*", "docs/**/*", "config/**/*"]
+          }
         },
-        "dependencies": {
-          "lodash": "^4.17.21"
-        },
-        "devDependencies": {
-          "jest": "^29.0.0"
+        {
+          "github.com/buildkite-plugins/ecr#v2.0.0": {
+            "account-ids": ["123456789012", "234567890123", "345678901234"],
+            "login": true,
+            "config": "'$(python3 -c "print('Y' * 10000)')'"
+          }
         }
-      }
-      EOF
-      echo "Package.json created:"
-      cat package.json
-      echo "Installing packages..."
-      npm install --verbose
-      echo "=== Dependencies installed ==="
+      ]'
+      
+      # Add more large environment variables
+      for i in {1..20}; do
+        export "HUGE_VAR_$i"="$(python3 -c "print('Z' * 20000)")"
+      done
+      
+      echo "Environment size after adding large variables: $(env | wc -c) bytes"
+      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
+      
+      # Try to spawn a new process (this should fail if we exceed ARG_MAX)
+      echo "Attempting to spawn new process..."
+      /bin/bash -c "echo 'Process spawned successfully'"
 
-  - label: "🧪 Run Tests"
+  - label: "Test Process Spawning with Large Environment"
     command: |
-      echo "=== Running test suite ==="
-      echo "Test 1: Basic functionality"
-      echo "✓ Test passed: Basic functionality"
-      echo "Test 2: API endpoints"
-      echo "✓ Test passed: API endpoints"
-      echo "Test 3: Database connections"
-      echo "✓ Test passed: Database connections"
-      echo "Test 4: Authentication"
-      echo "✓ Test passed: Authentication"
-      echo "Test 5: File operations"
-      echo "✓ Test passed: File operations"
-      echo "Test 6: Network requests"
-      echo "✓ Test passed: Network requests"
-      echo "Test 7: Error handling"
-      echo "✓ Test passed: Error handling"
-      echo "Test 8: Performance"
-      echo "✓ Test passed: Performance"
-      echo "=== All tests completed ==="
+      echo "=== Testing process spawning with large environment ==="
+      
+      # Create massive environment variables
+      export MASSIVE_VAR_1="$(python3 -c "print('A' * 100000)")"
+      export MASSIVE_VAR_2="$(python3 -c "print('B' * 100000)")"
+      export MASSIVE_VAR_3="$(python3 -c "print('C' * 100000)")"
+      export MASSIVE_VAR_4="$(python3 -c "print('D' * 100000)")"
+      export MASSIVE_VAR_5="$(python3 -c "print('E' * 100000)")"
+      
+      # Simulate very large plugin configuration
+      export BUILDKITE_PLUGINS='[
+        {
+          "github.com/buildkite-plugins/docker-compose#v4.0.0": {
+            "config": "'$(python3 -c "print('X' * 50000)")'",
+            "services": ["app", "db", "redis", "worker", "nginx", "elasticsearch"],
+            "watch": ["src/**/*", "tests/**/*", "docs/**/*", "config/**/*", "scripts/**/*", "tools/**/*"],
+            "environment": "'$(python3 -c "print('ENV' * 10000)")'"
+          }
+        },
+        {
+          "github.com/buildkite-plugins/ecr#v2.0.0": {
+            "account-ids": ["123456789012", "234567890123", "345678901234", "456789012345"],
+            "login": true,
+            "config": "'$(python3 -c "print('Y' * 50000)')'"
+          }
+        },
+        {
+          "github.com/buildkite-plugins/s3-secrets#v2.0.0": {
+            "secrets": ["'$(python3 -c "print('SECRET' * 10000)")'"],
+            "config": "'$(python3 -c "print('Z' * 50000)')'"
+          }
+        }
+      ]'
+      
+      echo "Total environment size: $(env | wc -c) bytes"
+      echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
+      
+      # This should trigger the "argument list too long" error
+      echo "Attempting to spawn process with large environment..."
+      /bin/bash -c "echo 'This should fail with argument list too long'"
 
-  - label: "🏗️ Build Application"
+  - label: "Simulate Merge Queue Branch Name Issue"
     command: |
-      echo "=== Building application ==="
-      echo "Step 1: Compiling TypeScript"
-      echo "✓ TypeScript compilation complete"
-      echo "Step 2: Bundling assets"
-      echo "✓ Asset bundling complete"
-      echo "Step 3: Optimizing images"
-      echo "✓ Image optimization complete"
-      echo "Step 4: Generating source maps"
-      echo "✓ Source maps generated"
-      echo "Step 5: Creating production bundle"
-      echo "✓ Production bundle created"
-      echo "Build artifacts:"
-      ls -la
-      echo "=== Build complete ==="
-
-  - label: "🚀 Deploy to Staging"
-    command: |
-      echo "=== Deploying to staging ==="
-      echo "Step 1: Preparing deployment package"
-      echo "✓ Deployment package prepared"
-      echo "Step 2: Uploading to staging server"
-      echo "✓ Uploaded to staging server"
-      echo "Step 3: Running database migrations"
-      echo "✓ Database migrations completed"
-      echo "Step 4: Restarting services"
-      echo "✓ Services restarted"
-      echo "Step 5: Health check"
-      echo "✓ Health check passed"
-      echo "Deployment URL: https://staging.example.com"
-      echo "=== Staging deployment complete ==="
-
-  - label: "📊 Generate Reports"
-    command: |
-      echo "=== Generating reports ==="
-      echo "Code coverage report:"
-      echo "Lines: 95%"
-      echo "Functions: 98%"
-      echo "Branches: 92%"
-      echo "Statements: 96%"
-      echo ""
-      echo "Performance metrics:"
-      echo "Bundle size: 2.3MB"
-      echo "Load time: 1.2s"
-      echo "First paint: 0.8s"
-      echo "Time to interactive: 1.5s"
-      echo ""
-      echo "Security scan results:"
-      echo "✓ No critical vulnerabilities"
-      echo "✓ No high severity issues"
-      echo "✓ Dependencies up to date"
-      echo ""
-      echo "=== Reports generated ==="
-
-  - label: "🔍 Final Validation"
-    command: |
-      echo "=== Final validation ==="
-      echo "Checking application health..."
-      echo "✓ API endpoints responding"
-      echo "✓ Database connections stable"
-      echo "✓ Authentication working"
-      echo "✓ File uploads functional"
-      echo "✓ Email notifications working"
-      echo "✓ Background jobs processing"
-      echo "✓ Monitoring systems active"
-      echo "✓ Logging systems operational"
-      echo "=== Validation complete ==="
-      echo "🎉 Pipeline completed successfully!"
+      echo "=== Simulating merge queue branch name issue ==="
+      
+      # Create a very long branch name (like GitHub merge queue)
+      export BUILDKITE_BRANCH="gh-readonly-queue/main/pr-12345-abcdef1234567890abcdef1234567890abcdef12"
+      export BUILDKITE_MESSAGE="Merge pull request #12345 from feature-branch-abcdef1234567890abcdef1234567890abcdef12"
+      
+      # Create large plugin configuration
+      export BUILDKITE_PLUGINS='[
+        {
+          "github.com/buildkite-plugins/monorepo-diff#v1.0.0": {
+            "watch": [
+              "packages/app1/**/*", "packages/app2/**/*", "packages/app3/**/*",
+              "packages/lib1/**/*", "packages/lib2/**/*", "packages/lib3/**/*",
+              "packages/service1/**/*", "packages/service2/**/*", "packages/service3/**/*"
+            ],
+            "config": "'$(python3 -c "print('CONFIG' * 20000)")'"
+          }
+        }
+      ]'
+      
+      # Add many environment variables
+      for i in {1..50}; do
+        export "ENV_VAR_$i"="$(python3 -c "print('VAR' * 5000)")"
+      done
+      
+      echo "Environment size: $(env | wc -c) bytes"
+      echo "Branch name: $BUILDKITE_BRANCH"
+      echo "Message: $BUILDKITE_MESSAGE"
+      
+      # Try to spawn process
+      /bin/bash -c "echo 'Process spawn test'"
