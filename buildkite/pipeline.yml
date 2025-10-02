@@ -9,7 +9,7 @@ steps:
       # This simulates the exact scenario from the GitHub issue
       
       # Create very large plugin configuration JSON
-      PLUGIN_CONFIG=$(printf 'X%%.0s' {1..500000})
+      PLUGIN_CONFIG=$(python3 -c "print('X' * 500000)")
       
       # Create massive BUILDKITE_PLUGINS environment variable
       export BUILDKITE_PLUGINS="[{\"monorepo-diff#v1.5.1\":{\"watch\":["
@@ -42,12 +42,12 @@ steps:
       
       # Create the largest possible environment
       for i in {1..1000}; do
-        LARGE_VAR=$(printf 'VAR%%.0s' {1..1000})
+        LARGE_VAR=$(python3 -c "print('VAR' * 1000)")
         export "ENV_VAR_$i"="$LARGE_VAR"
       done
       
       # Create massive plugin configuration
-      PLUGIN_CONFIG=$(printf 'PLUGIN%%.0s' {1..1000000})
+      PLUGIN_CONFIG=$(python3 -c "print('PLUGIN' * 1000000)")
       export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\",\"jaeger\",\"zipkin\",\"consul\",\"vault\",\"nomad\",\"traefik\",\"nginx-ingress\",\"cert-manager\",\"external-dns\",\"fluentd\",\"logstash\",\"filebeat\",\"metricbeat\",\"heartbeat\",\"auditbeat\",\"packetbeat\",\"winlogbeat\",\"functionbeat\",\"journalbeat\",\"osquerybeat\",\"uptimebeat\",\"syntheticsbeat\",\"apm-server\",\"kibana\",\"elasticsearch\",\"logstash\",\"beats\",\"x-pack\",\"security\",\"monitoring\",\"ml\",\"graph\",\"reporting\",\"canvas\",\"maps\",\"uptime\",\"apm\",\"infra\",\"logs\",\"metrics\",\"alerts\",\"cases\",\"siem\",\"endpoint\",\"fleet\",\"osquery\",\"timeline\",\"notebooks\",\"visualizations\",\"dashboards\",\"saved-objects\",\"index-patterns\",\"templates\",\"component-templates\",\"composable-templates\",\"data-streams\",\"indices\",\"aliases\",\"rollups\",\"transforms\",\"snapshot-lifecycle-management\",\"index-lifecycle-management\",\"watcher\",\"cross-cluster-replication\",\"cross-cluster-search\",\"remote-clusters\",\"ccr\",\"ccs\",\"remote-clusters\",\"cross-cluster-replication\",\"cross-cluster-search\"]}}]"
       
       echo "Environment size: $(env | wc -c) bytes"
@@ -61,7 +61,7 @@ steps:
       echo "=== Direct ARG_MAX test ==="
       
       # Create a command with arguments that exceed ARG_MAX
-      LONG_ARG=$(printf 'ARG%%.0s' {1..1000000})
+      LONG_ARG=$(python3 -c "print('ARG' * 1000000)")
       
       echo "Long argument length: $(echo -n "$LONG_ARG" | wc -c) bytes"
       echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
