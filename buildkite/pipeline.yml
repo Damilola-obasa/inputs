@@ -1,212 +1,94 @@
 steps:
-  - label: ":boom: ARG_MAX Limit Test - Environment Variables + Command Arguments"
-    key: "argmax_combined_test"
+  - label: ":boom: ARG_MAX Error Test - Guaranteed Failure"
+    key: "argmax_error_test"
     agents:
       queue: default
     command: |
-      echo "=== ARG_MAX Combined Test: Environment Variables + Command Arguments ==="
+      echo "=== ARG_MAX Error Test ==="
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
       echo "Initial environment size: $(env | wc -c) bytes"
       
-      # Create large environment variables (400KB total)
-      echo "+++ Creating large environment variables..."
-      export LARGE_ENV_VAR1=$(python3 -c "print('A' * 100000)")
-      export LARGE_ENV_VAR2=$(python3 -c "print('B' * 100000)")
-      export LARGE_ENV_VAR3=$(python3 -c "print('C' * 100000)")
-      export LARGE_ENV_VAR4=$(python3 -c "print('D' * 100000)")
-      
-      echo "Environment size after adding large vars: $(env | wc -c) bytes"
-      
-      # Create massive BUILDKITE_PLUGINS (400KB)
-      echo "+++ Creating massive BUILDKITE_PLUGINS..."
-      export BUILDKITE_PLUGINS="[{\"test-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('X' * 400000)")\"}}]"
-      
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      echo "Total environment size: $(env | wc -c) bytes"
-      
-      # Create a command with very long arguments (200KB)
-      echo "+++ Creating command with long arguments..."
-      LONG_ARG=$(python3 -c "print('ARG' * 70000)")
-      
-      # This command should exceed ARG_MAX when combined with environment
-      echo "Attempting to execute command with long arguments..."
-      /bin/bash -c "echo 'Testing ARG_MAX with combined env vars and command args: $LONG_ARG'"
-      
-      echo "✅ Command executed successfully - ARG_MAX not exceeded"
-    timeout_in_minutes: 5
-
-  - label: ":boom: ARG_MAX Limit Test - Massive Command Arguments Only"
-    key: "argmax_command_args_test"
-    agents:
-      queue: default
-    command: |
-      echo "=== ARG_MAX Command Arguments Test ==="
-      echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      echo "Initial environment size: $(env | wc -c) bytes"
-      
-      # Create extremely long command arguments (1.5MB - guaranteed to exceed ARG_MAX)
-      echo "+++ Creating massive command arguments..."
-      echo "Argument size will be: $(python3 -c "print(len('MEGA_ARG_' * 200000))") bytes"
-      
-      # This should definitely exceed ARG_MAX
-      echo "Attempting to execute command with massive arguments..."
-      /bin/bash -c "echo 'This command has extremely long arguments: $(python3 -c \"print(\'MEGA_ARG_\' * 200000)\")'"
-      
-      echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
-    timeout_in_minutes: 5
-
-  - label: ":boom: ARG_MAX Limit Test - Environment + Plugins + Command Args"
-    key: "argmax_full_combined_test"
-    agents:
-      queue: default
-    command: |
-      echo "=== ARG_MAX Full Combined Test ==="
-      echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      echo "Initial environment size: $(env | wc -c) bytes"
-      
-      # Create large environment variables (300KB)
-      echo "+++ Adding large environment variables..."
-      for i in {1..10}; do
-        export "ENV_VAR_$i"=$(python3 -c "print('ENV' * 30000)")
-      done
-      
-      # Create massive BUILDKITE_PLUGINS (300KB)
-      echo "+++ Creating massive BUILDKITE_PLUGINS..."
-      export BUILDKITE_PLUGINS="[{\"plugin1#v1.0.0\":{\"config\":\"$(python3 -c "print('PLUGIN' * 50000)")\"}},{\"plugin2#v1.0.0\":{\"config\":\"$(python3 -c "print('PLUGIN' * 50000)")\"}}]"
-      
-      # Create long command arguments (400KB)
-      echo "+++ Creating long command arguments..."
-      CMD_ARG1=$(python3 -c "print('CMD1' * 100000)")
-      CMD_ARG2=$(python3 -c "print('CMD2' * 100000)")
-      
-      echo "Environment size: $(env | wc -c) bytes"
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      echo "Command args size: $(echo -n "$CMD_ARG1$CMD_ARG2" | wc -c) bytes"
-      
-      # This should exceed ARG_MAX
-      echo "Attempting to execute command with all combined elements..."
-      /bin/bash -c "echo 'Full test with env vars, plugins, and command args: $CMD_ARG1 $CMD_ARG2'"
-      
-      echo "✅ Command executed successfully - ARG_MAX not exceeded"
-    timeout_in_minutes: 5
-
-  - label: ":boom: ARG_MAX Limit Test - Simulate Real Buildkite Scenario"
-    key: "argmax_real_scenario_test"
-    agents:
-      queue: default
-    command: |
-      echo "=== ARG_MAX Real Buildkite Scenario Test ==="
-      echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      echo "Initial environment size: $(env | wc -c) bytes"
-      
-      # Simulate real Buildkite environment variables
-      export BUILDKITE_BUILD_ID="build-12345-abcdef"
-      export BUILDKITE_BRANCH="feature/very-long-branch-name-that-could-cause-issues-in-merge-queues"
-      export BUILDKITE_COMMIT="abcdef1234567890abcdef1234567890abcdef12"
-      export BUILDKITE_MESSAGE="This is a very long commit message that could potentially cause issues when combined with other environment variables and command arguments in Buildkite pipelines"
-      
-      # Simulate large plugin configuration (500KB)
-      echo "+++ Creating realistic plugin configuration..."
-      export BUILDKITE_PLUGINS="[{\"monorepo-diff#v1.5.1\":{\"watch\":["
-      for i in {1..50}; do
-        WATCH_CONFIG="{\"path\":\"packages/app$i/**/*\",\"config\":{\"command\":\"echo 'Building app$i with a very long command that includes many parameters and arguments that could potentially exceed the ARG_MAX limit when combined with environment variables'\"}}"
-        if [ $i -eq 50 ]; then
-          export BUILDKITE_PLUGINS="$BUILDKITE_PLUGINS$WATCH_CONFIG"
-        else
-          export BUILDKITE_PLUGINS="$BUILDKITE_PLUGINS$WATCH_CONFIG,"
-        fi
-      done
-      export BUILDKITE_PLUGINS="$BUILDKITE_PLUGINS]}}]"
-      
-      # Add many environment variables (200KB)
-      echo "+++ Adding many environment variables..."
-      for i in {1..20}; do
-        export "BUILD_VAR_$i"=$(python3 -c "print('BUILD_DATA_' * 10000)")
-      done
-      
-      # Create long command with many arguments (300KB)
-      echo "+++ Creating command with many long arguments..."
-      LONG_PARAMS=""
-      for i in {1..30}; do
-        LONG_PARAMS="$LONG_PARAMS --param$i=$(python3 -c "print('PARAM_VALUE_' * 10000)")"
-      done
-      
-      echo "Environment size: $(env | wc -c) bytes"
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      echo "Command params size: $(echo -n "$LONG_PARAMS" | wc -c) bytes"
-      
-      # This should exceed ARG_MAX in a real scenario
-      echo "Attempting to execute command with realistic Buildkite scenario..."
-      /bin/bash -c "echo 'Realistic Buildkite test with plugins and long params: $LONG_PARAMS'"
-      
-      echo "✅ Command executed successfully - ARG_MAX not exceeded"
-    timeout_in_minutes: 5
-
-  - label: ":boom: ARG_MAX Limit Test - Extreme Case"
-    key: "argmax_extreme_test"
-    agents:
-      queue: default
-    command: |
-      echo "=== ARG_MAX Extreme Test ==="
-      echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      echo "Initial environment size: $(env | wc -c) bytes"
-      
-      # Create massive environment variables (1.2MB - guaranteed to exceed ARG_MAX)
+      # Create massive environment variables to exceed ARG_MAX
       echo "+++ Creating massive environment variables..."
-      for i in {1..60}; do
-        export "EXTREME_VAR_$i"=$(python3 -c "print('EXTREME_DATA_' * 20000)")
+      for i in {1..100}; do
+        export "HUGE_VAR_$i"=$(python3 -c "print('X' * 10000)")
       done
       
-      # Create extremely large BUILDKITE_PLUGINS (800KB)
-      echo "+++ Creating extremely large BUILDKITE_PLUGINS..."
-      export BUILDKITE_PLUGINS="[{\"extreme-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('EXTREME_CONFIG_' * 40000)")\"}}]"
+      # Create massive BUILDKITE_PLUGINS
+      echo "+++ Creating massive BUILDKITE_PLUGINS..."
+      export BUILDKITE_PLUGINS="[{\"test-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('Y' * 500000)")\"}}]"
       
-      # Create extremely long command arguments (600KB)
-      echo "+++ Creating extremely long command arguments..."
       echo "Environment size: $(env | wc -c) bytes"
       echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      echo "Command arg size will be: $(python3 -c "print(len('EXTREME_ARG_' * 30000))") bytes"
       
-      # This should definitely exceed ARG_MAX
-      echo "Attempting to execute command with extreme parameters..."
-      /bin/bash -c "echo 'Extreme test with massive data: $(python3 -c \"print(\'EXTREME_ARG_\' * 30000)\")'"
+      # This command will definitely exceed ARG_MAX
+      echo "+++ Executing command that will fail with 'argument list too long'..."
+      /bin/bash -c "echo 'This should fail with argument list too long: $(python3 -c \"print(\'Z\' * 500000)\")'"
       
-      echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
+      echo "❌ This should not be reached - ARG_MAX should have been exceeded"
     timeout_in_minutes: 5
 
-  - label: ":boom: ARG_MAX Limit Test - Guaranteed Error"
-    key: "argmax_guaranteed_error"
+  - label: ":boom: ARG_MAX Error Test - Extreme Case"
+    key: "argmax_extreme_error"
     agents:
       queue: default
     command: |
-      echo "=== ARG_MAX Guaranteed Error Test ==="
+      echo "=== ARG_MAX Extreme Error Test ==="
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      echo "Initial environment size: $(env | wc -c) bytes"
       
-      # Create massive environment variables (1.5MB - definitely exceeds ARG_MAX)
-      echo "+++ Creating massive environment variables that will exceed ARG_MAX..."
-      for i in {1..75}; do
-        export "MASSIVE_VAR_$i"=$(python3 -c "print('MASSIVE_DATA_' * 20000)")
+      # Create extremely large environment variables
+      echo "+++ Creating extremely large environment variables..."
+      for i in {1..200}; do
+        export "MEGA_VAR_$i"=$(python3 -c "print('MEGA_DATA_' * 5000)")
       done
       
-      echo "Environment size after adding massive vars: $(env | wc -c) bytes"
+      # Create massive plugin configuration
+      echo "+++ Creating massive plugin configuration..."
+      export BUILDKITE_PLUGINS="[{\"massive-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('PLUGIN_CONFIG_' * 100000)")\"}}]"
       
-      # Create extremely large BUILDKITE_PLUGINS (1MB)
-      echo "+++ Creating extremely large BUILDKITE_PLUGINS..."
-      export BUILDKITE_PLUGINS="[{\"massive-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('PLUGIN_CONFIG_' * 50000)")\"}}]"
+      # Add many more environment variables
+      for i in {1..50}; do
+        export "ENV_VAR_$i"=$(python3 -c "print('ENV_DATA_' * 20000)")
+      done
       
+      echo "Environment size: $(env | wc -c) bytes"
       echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      echo "Total environment size: $(env | wc -c) bytes"
       
-      # Create extremely long command arguments (1MB) - direct approach
-      echo "+++ Creating extremely long command arguments..."
-      echo "Command arg size will be: $(python3 -c "print(len('MASSIVE_ARG_' * 50000))") bytes"
+      # This will definitely exceed ARG_MAX
+      echo "+++ Executing command that will definitely fail..."
+      /bin/bash -c "echo 'Extreme test: $(python3 -c \"print(\'EXTREME_ARG_\' * 200000)\")'"
       
-      # This WILL exceed ARG_MAX and show the error
-      echo "Attempting to execute command that WILL exceed ARG_MAX..."
-      /bin/bash -c "echo 'This command WILL fail with argument list too long: $(python3 -c \"print(\'MASSIVE_ARG_\' * 50000)\")'"
-      
-      echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
+      echo "❌ This should not be reached - ARG_MAX should have been exceeded"
     timeout_in_minutes: 5
 
- 
+  - label: ":boom: ARG_MAX Error Test - Buildkite Agent Simulation"
+    key: "argmax_agent_simulation"
+    agents:
+      queue: default
+    command: |
+      echo "=== ARG_MAX Buildkite Agent Simulation ==="
+      echo "Current ARG_MAX: $(getconf ARG_MAX)"
+      
+      # Simulate real Buildkite environment with massive data
+      export BUILDKITE_BUILD_ID="build-$(python3 -c "print('A' * 1000)")"
+      export BUILDKITE_BRANCH="feature/$(python3 -c "print('B' * 1000)")"
+      export BUILDKITE_COMMIT="$(python3 -c "print('C' * 1000)")"
+      export BUILDKITE_MESSAGE="$(python3 -c "print('D' * 1000)")"
+      
+      # Create massive plugin configuration
+      export BUILDKITE_PLUGINS="[{\"plugin1#v1.0.0\":{\"config\":\"$(python3 -c "print('E' * 200000)")\"}},{\"plugin2#v1.0.0\":{\"config\":\"$(python3 -c "print('F' * 200000)")\"}}]"
+      
+      # Add many environment variables
+      for i in {1..100}; do
+        export "BUILD_VAR_$i"=$(python3 -c "print('G' * 10000)")
+      done
+      
+      echo "Environment size: $(env | wc -c) bytes"
+      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
+      
+      # This should trigger the exact error you want
+      echo "+++ Executing command that will trigger 'fork/exec: argument list too long'..."
+      /bin/bash -c "echo 'Buildkite simulation: $(python3 -c \"print(\'H\' * 300000)\")'"
+      
+      echo "❌ This should not be reached - ARG_MAX should have been exceeded"
+    timeout_in_minutes: 5
