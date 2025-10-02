@@ -1,242 +1,55 @@
 steps:
-  - label: "Reproduce ARG_MAX Issue - Monorepo Diff with 30+ Watch Configs"
-    plugins:
-      - github.com/buildkite-plugins/monorepo-diff#v1.0.0:
-          watch:
-            - "packages/app1/**/*"
-            - "packages/app2/**/*"
-            - "packages/app3/**/*"
-            - "packages/app4/**/*"
-            - "packages/app5/**/*"
-            - "packages/lib1/**/*"
-            - "packages/lib2/**/*"
-            - "packages/lib3/**/*"
-            - "packages/lib4/**/*"
-            - "packages/lib5/**/*"
-            - "packages/service1/**/*"
-            - "packages/service2/**/*"
-            - "packages/service3/**/*"
-            - "packages/service4/**/*"
-            - "packages/service5/**/*"
-            - "packages/ui/**/*"
-            - "packages/utils/**/*"
-            - "packages/shared/**/*"
-            - "packages/common/**/*"
-            - "packages/core/**/*"
-            - "packages/api/**/*"
-            - "packages/web/**/*"
-            - "packages/mobile/**/*"
-            - "packages/desktop/**/*"
-            - "packages/backend/**/*"
-            - "packages/frontend/**/*"
-            - "packages/database/**/*"
-            - "packages/cache/**/*"
-            - "packages/queue/**/*"
-            - "packages/worker/**/*"
-            - "packages/scheduler/**/*"
-            - "packages/notifier/**/*"
-            - "packages/analytics/**/*"
-            - "packages/monitoring/**/*"
-            - "packages/logging/**/*"
-            - "packages/auth/**/*"
-            - "packages/payment/**/*"
-            - "packages/email/**/*"
-            - "packages/sms/**/*"
-      - github.com/buildkite-plugins/docker-compose#v4.0.0:
-          config: docker-compose.yml
-          services: [app, db, redis, worker, nginx, elasticsearch, kibana, prometheus, grafana]
-          watch: [src/**/*, tests/**/*, docs/**/*, config/**/*, scripts/**/*, tools/**/*]
-          environment: [NODE_ENV=test, DATABASE_URL=postgres://localhost/test, REDIS_URL=redis://localhost:6379]
-      - github.com/buildkite-plugins/ecr#v2.0.0:
-          account-ids: [123456789012, 234567890123, 345678901234, 456789012345, 567890123456]
-          login: true
-          config: ecr-config.json
-      - github.com/buildkite-plugins/s3-secrets#v2.0.0:
-          secrets: [database-password, api-key, jwt-secret, encryption-key, ssl-cert]
-          config: s3-secrets-config.json
-      - github.com/buildkite-plugins/artifacts#v1.0.0:
-          upload: [build/**/*, dist/**/*, coverage/**/*, reports/**/*]
-          download: [build/**/*, dist/**/*]
-          config: artifacts-config.json
+  - label: "Reproduce ARG_MAX Issue - Large Environment Variables"
     command: |
       echo "=== Reproducing ARG_MAX issue as described in GitHub issue #3509 ==="
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
       echo "Current environment size: $(env | wc -c) bytes"
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
       
-      # This step has 30+ watch configurations in monorepo-diff plugin
-      # Multiple plugins per step (4-5 plugins with configurations)
-      # Long inline commands (20+ lines of bash)
-      # Conditional steps that trigger on merge queue branches
+      # Create massive environment variables to exceed ARG_MAX
+      echo "Creating large environment variables..."
       
-      echo "Step 1: Setting up environment variables"
-      echo "Step 2: Installing dependencies"
-      echo "Step 3: Running tests"
-      echo "Step 4: Building application"
-      echo "Step 5: Running linting"
-      echo "Step 6: Running security scans"
-      echo "Step 7: Generating documentation"
-      echo "Step 8: Creating artifacts"
-      echo "Step 9: Uploading to staging"
-      echo "Step 10: Running integration tests"
-      echo "Step 11: Performance testing"
-      echo "Step 12: Security testing"
-      echo "Step 13: Accessibility testing"
-      echo "Step 14: Browser testing"
-      echo "Step 15: Mobile testing"
-      echo "Step 16: API testing"
-      echo "Step 17: Database testing"
-      echo "Step 18: Cache testing"
-      echo "Step 19: Queue testing"
-      echo "Step 20: Final validation"
-      
-      # Simulate the exact failure scenario
-      echo "Attempting to spawn process with large environment..."
-      /bin/bash -c "echo 'This should fail with argument list too long'"
-
-  - label: "Conditional Step for Merge Queue Branches"
-    if: build.branch =~ /^gh-readonly-queue\//
-    plugins:
-      - github.com/buildkite-plugins/monorepo-diff#v1.0.0:
-          watch:
-            - "packages/app1/**/*"
-            - "packages/app2/**/*"
-            - "packages/app3/**/*"
-            - "packages/app4/**/*"
-            - "packages/app5/**/*"
-            - "packages/lib1/**/*"
-            - "packages/lib2/**/*"
-            - "packages/lib3/**/*"
-            - "packages/lib4/**/*"
-            - "packages/lib5/**/*"
-            - "packages/service1/**/*"
-            - "packages/service2/**/*"
-            - "packages/service3/**/*"
-            - "packages/service4/**/*"
-            - "packages/service5/**/*"
-            - "packages/ui/**/*"
-            - "packages/utils/**/*"
-            - "packages/shared/**/*"
-            - "packages/common/**/*"
-            - "packages/core/**/*"
-            - "packages/api/**/*"
-            - "packages/web/**/*"
-            - "packages/mobile/**/*"
-            - "packages/desktop/**/*"
-            - "packages/backend/**/*"
-            - "packages/frontend/**/*"
-            - "packages/database/**/*"
-            - "packages/cache/**/*"
-            - "packages/queue/**/*"
-            - "packages/worker/**/*"
-            - "packages/scheduler/**/*"
-            - "packages/notifier/**/*"
-            - "packages/analytics/**/*"
-            - "packages/monitoring/**/*"
-            - "packages/logging/**/*"
-            - "packages/auth/**/*"
-            - "packages/payment/**/*"
-            - "packages/email/**/*"
-            - "packages/sms/**/*"
-      - github.com/buildkite-plugins/docker-compose#v4.0.0:
-          config: docker-compose.yml
-          services: [app, db, redis, worker, nginx, elasticsearch, kibana, prometheus, grafana]
-          watch: [src/**/*, tests/**/*, docs/**/*, config/**/*, scripts/**/*, tools/**/*]
-          environment: [NODE_ENV=test, DATABASE_URL=postgres://localhost/test, REDIS_URL=redis://localhost:6379]
-      - github.com/buildkite-plugins/ecr#v2.0.0:
-          account-ids: [123456789012, 234567890123, 345678901234, 456789012345, 567890123456]
-          login: true
-          config: ecr-config.json
-      - github.com/buildkite-plugins/s3-secrets#v2.0.0:
-          secrets: [database-password, api-key, jwt-secret, encryption-key, ssl-cert]
-          config: s3-secrets-config.json
-      - github.com/buildkite-plugins/artifacts#v1.0.0:
-          upload: [build/**/*, dist/**/*, coverage/**/*, reports/**/*]
-          download: [build/**/*, dist/**/*]
-          config: artifacts-config.json
-    command: |
-      echo "=== This step only runs on merge queue branches ==="
-      echo "Branch: $BUILDKITE_BRANCH"
-      echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      echo "Current environment size: $(env | wc -c) bytes"
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      
-      # This step has 30+ watch configurations in monorepo-diff plugin
-      # Multiple plugins per step (4-5 plugins with configurations)
-      # Long inline commands (20+ lines of bash)
-      # Conditional steps that trigger on merge queue branches
-      
-      echo "Step 1: Setting up environment variables"
-      echo "Step 2: Installing dependencies"
-      echo "Step 3: Running tests"
-      echo "Step 4: Building application"
-      echo "Step 5: Running linting"
-      echo "Step 6: Running security scans"
-      echo "Step 7: Generating documentation"
-      echo "Step 8: Creating artifacts"
-      echo "Step 9: Uploading to staging"
-      echo "Step 10: Running integration tests"
-      echo "Step 11: Performance testing"
-      echo "Step 12: Security testing"
-      echo "Step 13: Accessibility testing"
-      echo "Step 14: Browser testing"
-      echo "Step 15: Mobile testing"
-      echo "Step 16: API testing"
-      echo "Step 17: Database testing"
-      echo "Step 18: Cache testing"
-      echo "Step 19: Queue testing"
-      echo "Step 20: Final validation"
-      
-      # Simulate the exact failure scenario
-      echo "Attempting to spawn process with large environment..."
-      /bin/bash -c "echo 'This should fail with argument list too long'"
-
-  - label: "Test Process Spawning with Large Environment"
-    command: |
-      echo "=== Testing process spawning with large environment ==="
-      
-      # Create massive environment variables that exceed ARG_MAX (1MB)
+      # Create very large environment variables (200KB each)
       export MASSIVE_VAR_1="$(printf 'A%.0s' {1..200000})"
       export MASSIVE_VAR_2="$(printf 'B%.0s' {1..200000})"
       export MASSIVE_VAR_3="$(printf 'C%.0s' {1..200000})"
       export MASSIVE_VAR_4="$(printf 'D%.0s' {1..200000})"
       export MASSIVE_VAR_5="$(printf 'E%.0s' {1..200000})"
       
-      # Create large plugin configuration
-      PLUGIN_CONFIG_1=$(printf 'X%.0s' {1..50000})
-      PLUGIN_CONFIG_2=$(printf 'Y%.0s' {1..50000})
-      PLUGIN_CONFIG_3=$(printf 'Z%.0s' {1..50000})
+      # Create large plugin configuration (simulating BUILDKITE_PLUGINS)
+      PLUGIN_CONFIG_1=$(printf 'X%.0s' {1..100000})
+      PLUGIN_CONFIG_2=$(printf 'Y%.0s' {1..100000})
+      PLUGIN_CONFIG_3=$(printf 'Z%.0s' {1..100000})
       
-      export BUILDKITE_PLUGINS="[{\"github.com/buildkite-plugins/docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG_1\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\"],\"watch\":[\"src/**/*\",\"tests/**/*\",\"docs/**/*\",\"config/**/*\",\"scripts/**/*\",\"tools/**/*\"]}},{\"github.com/buildkite-plugins/ecr#v2.0.0\":{\"account-ids\":[\"123456789012\",\"234567890123\",\"345678901234\",\"456789012345\"],\"login\":true,\"config\":\"$PLUGIN_CONFIG_2\"}},{\"github.com/buildkite-plugins/s3-secrets#v2.0.0\":{\"secrets\":[\"$PLUGIN_CONFIG_3\"],\"config\":\"$PLUGIN_CONFIG_3\"}}]"
+      export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG_1\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\"],\"watch\":[\"src/**/*\",\"tests/**/*\",\"docs/**/*\",\"config/**/*\",\"scripts/**/*\",\"tools/**/*\"]}},{\"ecr#v2.0.0\":{\"account-ids\":[\"123456789012\",\"234567890123\",\"345678901234\",\"456789012345\",\"567890123456\"],\"login\":true,\"config\":\"$PLUGIN_CONFIG_2\"}},{\"s3-secrets#v2.0.0\":{\"secrets\":[\"database-password\",\"api-key\",\"jwt-secret\",\"encryption-key\",\"ssl-cert\"],\"config\":\"$PLUGIN_CONFIG_3\"}}]"
       
-      # Add even more large environment variables to exceed ARG_MAX
-      for i in {1..10}; do
-        HUGE_VAR=$(printf 'HUGE%.0s' {1..100000})
+      # Add more large environment variables
+      for i in {1..20}; do
+        HUGE_VAR=$(printf 'HUGE%.0s' {1..50000})
         export "EXTRA_LARGE_VAR_$i"="$HUGE_VAR"
       done
       
-      echo "Total environment size: $(env | wc -c) bytes"
-      echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
+      echo "Environment size after adding large variables: $(env | wc -c) bytes"
+      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
       
-      # This should trigger the "argument list too long" error
-      echo "Attempting to spawn process with large environment..."
-      /bin/bash -c "echo 'This should fail with argument list too long'"
+      # Try to spawn a new process (this should fail if we exceed ARG_MAX)
+      echo "Attempting to spawn new process..."
+      /bin/bash -c "echo 'Process spawned successfully'"
 
-  - label: "Simulate Merge Queue Branch Name Issue"
+  - label: "Test with Long Branch Name (Merge Queue Style)"
     command: |
-      echo "=== Simulating merge queue branch name issue ==="
+      echo "=== Testing with long branch name like merge queue ==="
       
-      # Create a very long branch name (like GitHub merge queue)
+      # Set a very long branch name (like GitHub merge queue)
       export BUILDKITE_BRANCH="gh-readonly-queue/main/pr-12345-abcdef1234567890abcdef1234567890abcdef12"
       export BUILDKITE_MESSAGE="Merge pull request #12345 from feature-branch-abcdef1234567890abcdef1234567890abcdef12"
       
       # Create large plugin configuration
-      PLUGIN_CONFIG=$(printf 'CONFIG%.0s' {1..20000})
-      export BUILDKITE_PLUGINS="[{\"github.com/buildkite-plugins/monorepo-diff#v1.0.0\":{\"watch\":[\"packages/app1/**/*\",\"packages/app2/**/*\",\"packages/app3/**/*\",\"packages/lib1/**/*\",\"packages/lib2/**/*\",\"packages/lib3/**/*\",\"packages/service1/**/*\",\"packages/service2/**/*\",\"packages/service3/**/*\"],\"config\":\"$PLUGIN_CONFIG\"}}]"
+      PLUGIN_CONFIG=$(printf 'CONFIG%.0s' {1..150000})
+      export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\",\"jaeger\",\"zipkin\",\"consul\",\"vault\",\"nomad\"],\"watch\":[\"packages/app1/**/*\",\"packages/app2/**/*\",\"packages/app3/**/*\",\"packages/lib1/**/*\",\"packages/lib2/**/*\",\"packages/lib3/**/*\",\"packages/service1/**/*\",\"packages/service2/**/*\",\"packages/service3/**/*\",\"packages/ui/**/*\",\"packages/utils/**/*\",\"packages/shared/**/*\",\"packages/common/**/*\",\"packages/core/**/*\",\"packages/api/**/*\",\"packages/web/**/*\",\"packages/mobile/**/*\",\"packages/desktop/**/*\",\"packages/backend/**/*\",\"packages/frontend/**/*\",\"packages/database/**/*\",\"packages/cache/**/*\",\"packages/queue/**/*\",\"packages/worker/**/*\",\"packages/scheduler/**/*\",\"packages/notifier/**/*\",\"packages/analytics/**/*\",\"packages/monitoring/**/*\",\"packages/logging/**/*\",\"packages/auth/**/*\",\"packages/payment/**/*\",\"packages/email/**/*\",\"packages/sms/**/*\"]}}]"
       
       # Add many environment variables
       for i in {1..50}; do
-        VAR_CONTENT=$(printf 'VAR%.0s' {1..5000})
+        VAR_CONTENT=$(printf 'VAR%.0s' {1..10000})
         export "ENV_VAR_$i"="$VAR_CONTENT"
       done
       
@@ -246,3 +59,24 @@ steps:
       
       # Try to spawn process
       /bin/bash -c "echo 'Process spawn test'"
+
+  - label: "Final ARG_MAX Test"
+    command: |
+      echo "=== Final ARG_MAX test with maximum environment size ==="
+      
+      # Create the largest possible environment
+      for i in {1..100}; do
+        MEGA_VAR=$(printf 'MEGA%.0s' {1..100000})
+        export "MEGA_VAR_$i"="$MEGA_VAR"
+      done
+      
+      # Create massive plugin configuration
+      MEGA_PLUGIN_CONFIG=$(printf 'PLUGIN%.0s' {1..200000})
+      export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$MEGA_PLUGIN_CONFIG\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\",\"jaeger\",\"zipkin\",\"consul\",\"vault\",\"nomad\",\"traefik\",\"nginx-ingress\",\"cert-manager\",\"external-dns\",\"fluentd\",\"logstash\",\"filebeat\",\"metricbeat\",\"heartbeat\",\"auditbeat\",\"packetbeat\",\"winlogbeat\",\"functionbeat\",\"journalbeat\",\"osquerybeat\",\"uptimebeat\",\"syntheticsbeat\",\"apm-server\",\"kibana\",\"elasticsearch\",\"logstash\",\"beats\",\"x-pack\",\"security\",\"monitoring\",\"ml\",\"graph\",\"reporting\",\"canvas\",\"maps\",\"uptime\",\"apm\",\"infra\",\"logs\",\"metrics\",\"alerts\",\"cases\",\"siem\",\"endpoint\",\"fleet\",\"osquery\",\"timeline\",\"notebooks\",\"visualizations\",\"dashboards\",\"saved-objects\",\"index-patterns\",\"templates\",\"component-templates\",\"composable-templates\",\"data-streams\",\"indices\",\"aliases\",\"rollups\",\"transforms\",\"snapshot-lifecycle-management\",\"index-lifecycle-management\",\"watcher\",\"cross-cluster-replication\",\"cross-cluster-search\",\"remote-clusters\",\"ccr\",\"ccs\",\"remote-clusters\",\"cross-cluster-replication\",\"cross-cluster-search\"]}}]"
+      
+      echo "Total environment size: $(env | wc -c) bytes"
+      echo "ARG_MAX limit: $(getconf ARG_MAX) bytes"
+      
+      # This should trigger the "argument list too long" error
+      echo "Attempting to spawn process with maximum environment size..."
+      /bin/bash -c "echo 'This should fail with argument list too long'"
