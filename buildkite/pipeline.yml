@@ -44,9 +44,9 @@ steps:
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
       echo "Initial environment size: $(env | wc -c) bytes"
       
-      # Create extremely long command arguments (1.2MB)
+      # Create extremely long command arguments (1.5MB - guaranteed to exceed ARG_MAX)
       echo "+++ Creating massive command arguments..."
-      MEGA_ARG=$(python3 -c "print('MEGA_ARG_' * 150000)")
+      MEGA_ARG=$(python3 -c "print('MEGA_ARG_' * 200000)")
       
       echo "Argument size: $(echo -n "$MEGA_ARG" | wc -c) bytes"
       
@@ -54,7 +54,7 @@ steps:
       echo "Attempting to execute command with massive arguments..."
       /bin/bash -c "echo 'This command has extremely long arguments: $MEGA_ARG'"
       
-      echo "✅ Command executed successfully - ARG_MAX not exceeded"
+      echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
     timeout_in_minutes: 5
 
   - label: ":boom: ARG_MAX Limit Test - Environment + Plugins + Command Args"
@@ -153,19 +153,19 @@ steps:
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
       echo "Initial environment size: $(env | wc -c) bytes"
       
-      # Create massive environment variables (800KB)
+      # Create massive environment variables (1.2MB - guaranteed to exceed ARG_MAX)
       echo "+++ Creating massive environment variables..."
-      for i in {1..40}; do
+      for i in {1..60}; do
         export "EXTREME_VAR_$i"=$(python3 -c "print('EXTREME_DATA_' * 20000)")
       done
       
-      # Create extremely large BUILDKITE_PLUGINS (600KB)
+      # Create extremely large BUILDKITE_PLUGINS (800KB)
       echo "+++ Creating extremely large BUILDKITE_PLUGINS..."
-      export BUILDKITE_PLUGINS="[{\"extreme-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('EXTREME_CONFIG_' * 30000)")\"}}]"
+      export BUILDKITE_PLUGINS="[{\"extreme-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('EXTREME_CONFIG_' * 40000)")\"}}]"
       
-      # Create extremely long command arguments (400KB)
+      # Create extremely long command arguments (600KB)
       echo "+++ Creating extremely long command arguments..."
-      EXTREME_ARG=$(python3 -c "print('EXTREME_ARG_' * 20000)")
+      EXTREME_ARG=$(python3 -c "print('EXTREME_ARG_' * 30000)")
       
       echo "Environment size: $(env | wc -c) bytes"
       echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
@@ -175,5 +175,44 @@ steps:
       echo "Attempting to execute command with extreme parameters..."
       /bin/bash -c "echo 'Extreme test with massive data: $EXTREME_ARG'"
       
-      echo "✅ Command executed successfully - ARG_MAX not exceeded"
+      echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
     timeout_in_minutes: 5
+
+  - label: ":boom: ARG_MAX Limit Test - Guaranteed Error"
+    key: "argmax_guaranteed_error"
+    agents:
+      queue: default
+    command: |
+      echo "=== ARG_MAX Guaranteed Error Test ==="
+      echo "Current ARG_MAX: $(getconf ARG_MAX)"
+      echo "Initial environment size: $(env | wc -c) bytes"
+      
+      # Create massive environment variables (1.5MB - definitely exceeds ARG_MAX)
+      echo "+++ Creating massive environment variables that will exceed ARG_MAX..."
+      for i in {1..75}; do
+        export "MASSIVE_VAR_$i"=$(python3 -c "print('MASSIVE_DATA_' * 20000)")
+      done
+      
+      echo "Environment size after adding massive vars: $(env | wc -c) bytes"
+      
+      # Create extremely large BUILDKITE_PLUGINS (1MB)
+      echo "+++ Creating extremely large BUILDKITE_PLUGINS..."
+      export BUILDKITE_PLUGINS="[{\"massive-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('PLUGIN_CONFIG_' * 50000)")\"}}]"
+      
+      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
+      echo "Total environment size: $(env | wc -c) bytes"
+      
+      # Create extremely long command arguments (1MB)
+      echo "+++ Creating extremely long command arguments..."
+      MASSIVE_ARG=$(python3 -c "print('MASSIVE_ARG_' * 50000)")
+      
+      echo "Command arg size: $(echo -n "$MASSIVE_ARG" | wc -c) bytes"
+      
+      # This WILL exceed ARG_MAX and show the error
+      echo "Attempting to execute command that WILL exceed ARG_MAX..."
+      /bin/bash -c "echo 'This command WILL fail with argument list too long: $MASSIVE_ARG'"
+      
+      echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
+    timeout_in_minutes: 5
+
+ 
