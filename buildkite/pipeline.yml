@@ -1,39 +1,160 @@
 steps:
-  - label: "Reproduce ARG_MAX Issue - Large Environment Variables"
+  - label: "Reproduce ARG_MAX Issue - Monorepo Diff with 30+ Watch Configs"
+    plugins:
+      - monorepo-diff#v1.5.1:
+          watch:
+            - path: "packages/app1/**/*"
+              config:
+                command: "echo 'Building app1'"
+            - path: "packages/app2/**/*"
+              config:
+                command: "echo 'Building app2'"
+            - path: "packages/app3/**/*"
+              config:
+                command: "echo 'Building app3'"
+            - path: "packages/app4/**/*"
+              config:
+                command: "echo 'Building app4'"
+            - path: "packages/app5/**/*"
+              config:
+                command: "echo 'Building app5'"
+            - path: "packages/lib1/**/*"
+              config:
+                command: "echo 'Building lib1'"
+            - path: "packages/lib2/**/*"
+              config:
+                command: "echo 'Building lib2'"
+            - path: "packages/lib3/**/*"
+              config:
+                command: "echo 'Building lib3'"
+            - path: "packages/lib4/**/*"
+              config:
+                command: "echo 'Building lib4'"
+            - path: "packages/lib5/**/*"
+              config:
+                command: "echo 'Building lib5'"
+            - path: "packages/service1/**/*"
+              config:
+                command: "echo 'Building service1'"
+            - path: "packages/service2/**/*"
+              config:
+                command: "echo 'Building service2'"
+            - path: "packages/service3/**/*"
+              config:
+                command: "echo 'Building service3'"
+            - path: "packages/service4/**/*"
+              config:
+                command: "echo 'Building service4'"
+            - path: "packages/service5/**/*"
+              config:
+                command: "echo 'Building service5'"
+            - path: "packages/ui/**/*"
+              config:
+                command: "echo 'Building ui'"
+            - path: "packages/utils/**/*"
+              config:
+                command: "echo 'Building utils'"
+            - path: "packages/shared/**/*"
+              config:
+                command: "echo 'Building shared'"
+            - path: "packages/common/**/*"
+              config:
+                command: "echo 'Building common'"
+            - path: "packages/core/**/*"
+              config:
+                command: "echo 'Building core'"
+            - path: "packages/api/**/*"
+              config:
+                command: "echo 'Building api'"
+            - path: "packages/web/**/*"
+              config:
+                command: "echo 'Building web'"
+            - path: "packages/mobile/**/*"
+              config:
+                command: "echo 'Building mobile'"
+            - path: "packages/desktop/**/*"
+              config:
+                command: "echo 'Building desktop'"
+            - path: "packages/backend/**/*"
+              config:
+                command: "echo 'Building backend'"
+            - path: "packages/frontend/**/*"
+              config:
+                command: "echo 'Building frontend'"
+            - path: "packages/database/**/*"
+              config:
+                command: "echo 'Building database'"
+            - path: "packages/cache/**/*"
+              config:
+                command: "echo 'Building cache'"
+            - path: "packages/queue/**/*"
+              config:
+                command: "echo 'Building queue'"
+            - path: "packages/worker/**/*"
+              config:
+                command: "echo 'Building worker'"
+            - path: "packages/scheduler/**/*"
+              config:
+                command: "echo 'Building scheduler'"
+            - path: "packages/notifier/**/*"
+              config:
+                command: "echo 'Building notifier'"
+            - path: "packages/analytics/**/*"
+              config:
+                command: "echo 'Building analytics'"
+            - path: "packages/monitoring/**/*"
+              config:
+                command: "echo 'Building monitoring'"
+            - path: "packages/logging/**/*"
+              config:
+                command: "echo 'Building logging'"
+            - path: "packages/auth/**/*"
+              config:
+                command: "echo 'Building auth'"
+            - path: "packages/payment/**/*"
+              config:
+                command: "echo 'Building payment'"
+            - path: "packages/email/**/*"
+              config:
+                command: "echo 'Building email'"
+            - path: "packages/sms/**/*"
+              config:
+                command: "echo 'Building sms'"
     command: |
       echo "=== Reproducing ARG_MAX issue as described in GitHub issue #3509 ==="
       echo "Current ARG_MAX: $(getconf ARG_MAX)"
       echo "Current environment size: $(env | wc -c) bytes"
-      
-      # Create massive environment variables to exceed ARG_MAX
-      echo "Creating large environment variables..."
-      
-      # Create very large environment variables (200KB each)
-      export MASSIVE_VAR_1="$(printf 'A%.0s' {1..200000})"
-      export MASSIVE_VAR_2="$(printf 'B%.0s' {1..200000})"
-      export MASSIVE_VAR_3="$(printf 'C%.0s' {1..200000})"
-      export MASSIVE_VAR_4="$(printf 'D%.0s' {1..200000})"
-      export MASSIVE_VAR_5="$(printf 'E%.0s' {1..200000})"
-      
-      # Create large plugin configuration (simulating BUILDKITE_PLUGINS)
-      PLUGIN_CONFIG_1=$(printf 'X%.0s' {1..100000})
-      PLUGIN_CONFIG_2=$(printf 'Y%.0s' {1..100000})
-      PLUGIN_CONFIG_3=$(printf 'Z%.0s' {1..100000})
-      
-      export BUILDKITE_PLUGINS="[{\"docker-compose#v4.0.0\":{\"config\":\"$PLUGIN_CONFIG_1\",\"services\":[\"app\",\"db\",\"redis\",\"worker\",\"nginx\",\"elasticsearch\",\"kibana\",\"prometheus\",\"grafana\"],\"watch\":[\"src/**/*\",\"tests/**/*\",\"docs/**/*\",\"config/**/*\",\"scripts/**/*\",\"tools/**/*\"]}},{\"ecr#v2.0.0\":{\"account-ids\":[\"123456789012\",\"234567890123\",\"345678901234\",\"456789012345\",\"567890123456\"],\"login\":true,\"config\":\"$PLUGIN_CONFIG_2\"}},{\"s3-secrets#v2.0.0\":{\"secrets\":[\"database-password\",\"api-key\",\"jwt-secret\",\"encryption-key\",\"ssl-cert\"],\"config\":\"$PLUGIN_CONFIG_3\"}}]"
-      
-      # Add more large environment variables
-      for i in {1..20}; do
-        HUGE_VAR=$(printf 'HUGE%.0s' {1..50000})
-        export "EXTRA_LARGE_VAR_$i"="$HUGE_VAR"
-      done
-      
-      echo "Environment size after adding large variables: $(env | wc -c) bytes"
       echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
       
-      # Try to spawn a new process (this should fail if we exceed ARG_MAX)
-      echo "Attempting to spawn new process..."
-      /bin/bash -c "echo 'Process spawned successfully'"
+      # This step has 30+ watch configurations in monorepo-diff plugin
+      # Multiple plugins per step (4-5 plugins with configurations)
+      # Long inline commands (20+ lines of bash)
+      # Conditional steps that trigger on merge queue branches
+      
+      echo "Step 1: Setting up environment variables"
+      echo "Step 2: Installing dependencies"
+      echo "Step 3: Running tests"
+      echo "Step 4: Building application"
+      echo "Step 5: Running linting"
+      echo "Step 6: Running security scans"
+      echo "Step 7: Generating documentation"
+      echo "Step 8: Creating artifacts"
+      echo "Step 9: Uploading to staging"
+      echo "Step 10: Running integration tests"
+      echo "Step 11: Performance testing"
+      echo "Step 12: Security testing"
+      echo "Step 13: Accessibility testing"
+      echo "Step 14: Browser testing"
+      echo "Step 15: Mobile testing"
+      echo "Step 16: API testing"
+      echo "Step 17: Database testing"
+      echo "Step 18: Cache testing"
+      echo "Step 19: Queue testing"
+      echo "Step 20: Final validation"
+      
+      # Simulate the exact failure scenario
+      echo "Attempting to spawn process with large environment..."
+      /bin/bash -c "echo 'This should fail with argument list too long'"
 
   - label: "Test with Long Branch Name (Merge Queue Style)"
     command: |
