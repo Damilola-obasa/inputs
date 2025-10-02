@@ -46,15 +46,11 @@ steps:
       
       # Create extremely long command arguments (1.5MB - guaranteed to exceed ARG_MAX)
       echo "+++ Creating massive command arguments..."
-      python3 -c "print('MEGA_ARG_' * 200000)" > /tmp/mega_arg.txt
-      MEGA_ARG=$(cat /tmp/mega_arg.txt)
-      rm /tmp/mega_arg.txt
-      
-      echo "Argument size: $(echo -n "$MEGA_ARG" | wc -c) bytes"
+      echo "Argument size will be: $(python3 -c "print(len('MEGA_ARG_' * 200000))") bytes"
       
       # This should definitely exceed ARG_MAX
       echo "Attempting to execute command with massive arguments..."
-      /bin/bash -c "echo 'This command has extremely long arguments: $MEGA_ARG'"
+      /bin/bash -c "echo 'This command has extremely long arguments: $(python3 -c \"print(\'MEGA_ARG_\' * 200000)\")'"
       
       echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
     timeout_in_minutes: 5
@@ -167,17 +163,13 @@ steps:
       
       # Create extremely long command arguments (600KB)
       echo "+++ Creating extremely long command arguments..."
-      python3 -c "print('EXTREME_ARG_' * 30000)" > /tmp/extreme_arg.txt
-      EXTREME_ARG=$(cat /tmp/extreme_arg.txt)
-      rm /tmp/extreme_arg.txt
-      
       echo "Environment size: $(env | wc -c) bytes"
       echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      echo "Command arg size: $(echo -n "$EXTREME_ARG" | wc -c) bytes"
+      echo "Command arg size will be: $(python3 -c "print(len('EXTREME_ARG_' * 30000))") bytes"
       
       # This should definitely exceed ARG_MAX
       echo "Attempting to execute command with extreme parameters..."
-      /bin/bash -c "echo 'Extreme test with massive data: $EXTREME_ARG'"
+      /bin/bash -c "echo 'Extreme test with massive data: $(python3 -c \"print(\'EXTREME_ARG_\' * 30000)\")'"
       
       echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
     timeout_in_minutes: 5
@@ -206,17 +198,13 @@ steps:
       echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
       echo "Total environment size: $(env | wc -c) bytes"
       
-      # Create extremely long command arguments (1MB) - use file-based approach
+      # Create extremely long command arguments (1MB) - direct approach
       echo "+++ Creating extremely long command arguments..."
-      python3 -c "print('MASSIVE_ARG_' * 50000)" > /tmp/massive_arg.txt
-      MASSIVE_ARG=$(cat /tmp/massive_arg.txt)
-      rm /tmp/massive_arg.txt
-      
-      echo "Command arg size: $(echo -n "$MASSIVE_ARG" | wc -c) bytes"
+      echo "Command arg size will be: $(python3 -c "print(len('MASSIVE_ARG_' * 50000))") bytes"
       
       # This WILL exceed ARG_MAX and show the error
       echo "Attempting to execute command that WILL exceed ARG_MAX..."
-      /bin/bash -c "echo 'This command WILL fail with argument list too long: $MASSIVE_ARG'"
+      /bin/bash -c "echo 'This command WILL fail with argument list too long: $(python3 -c \"print(\'MASSIVE_ARG_\' * 50000)\")'"
       
       echo "❌ ERROR: This should not be reached - ARG_MAX should have been exceeded"
     timeout_in_minutes: 5
