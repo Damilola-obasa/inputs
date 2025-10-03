@@ -1,20 +1,15 @@
 steps:
+  # Fast checks run first
+  - label: "Go Linter"
+    command: "make lint"
   
-  - label: ":lint: Fast check 1"
-    command: "echo fast1 && exit 0"
-
-  - label: ":mag: Fast check 2"
-    command: "echo fast2 && exit 1"
-
+  - label: "Fast Validation"
+    command: "make validate"
   
+  # Wait for fast checks - fails pipeline if either failed
   - wait
-
-
-  - label: ":test_tube: Step A"
-    command: "echo long A"
-
-  - label: ":test_tube: Step B"
-    command: "echo long B"
-
-  - label: ":test_tube: Step C"
-    command: "echo long C"
+  
+  # All 50 parallel steps using parallelism
+  - label: "Integration Tests"
+    command: "make test"
+    parallelism: 50
