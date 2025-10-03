@@ -1,47 +1,22 @@
 steps:
-  # Fast steps that should fail fast
-  - label: "Go Linter"
-    command: "echo 'Linting passed'"
-    timeout_in_minutes: 5
-    key: "fast-linter"
-    
-  - label: "Go Test (Fast)"
-    command: "echo 'Fast tests passed'"
-    timeout_in_minutes: 5
-    key: "fast-tests"
+  
+  - label: ":lint: Fast check 1"
+    key: "fast-check-1"
+    command: "echo fast1 && exit 0"
 
-  # Wait for fast steps to complete before starting slow steps
+  - label: ":mag: Fast check 2"
+    key: "fast-check-2"
+    command: "echo fast2 && exit 0"
+
+  
   - wait
 
-  # Slow steps that run in parallel using Buildkite's parallel capability
-  - type: "parallel"
-    steps:
-    - label: "Integration Tests"
-      command: "echo 'Integration tests passed'"
-      
-    - label: "E2E Tests"
-      command: "echo 'E2E tests passed'"
-      
-    - label: "Security Scan"
-      command: "echo 'Security scan passed'"
-      
-    - label: "Performance Tests"
-      command: "echo 'Performance tests passed'"
-      
-    - label: "Code Coverage"
-      command: "echo 'Code coverage passed'"
-      
-    - label: "Build Docker Images"
-      command: "echo 'Docker build passed'"
-      
-    - label: "Database Migration Tests"
-      command: "echo 'Database migration tests passed'"
-      
-    - label: "API Documentation"
-      command: "echo 'API documentation generated'"
-      
-    - label: "Static Analysis"
-      command: "echo 'Static analysis passed'"
-      
-    - label: "Dependency Check"
-      command: "echo 'Dependency check passed'"
+
+  - label: ":test_tube: Step A"
+    command: "echo long A"
+
+  - label: ":test_tube: Step B"
+    command: "echo long B"
+
+  - label: ":test_tube: Step C"
+    command: "echo long C"
