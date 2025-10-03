@@ -1,94 +1,65 @@
 steps:
-  - label: ":boom: ARG_MAX Error Test - Guaranteed Failure"
-    key: "argmax_error_test"
-    agents:
-      queue: default
-    command: |
-      echo "=== ARG_MAX Error Test ==="
-      echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      echo "Initial environment size: $(env | wc -c) bytes"
-      
-      # Create massive environment variables to exceed ARG_MAX
-      echo "+++ Creating massive environment variables..."
-      for i in {1..100}; do
-        export "HUGE_VAR_$i"=$(python3 -c "print('X' * 10000)")
-      done
-      
-      # Create massive BUILDKITE_PLUGINS
-      echo "+++ Creating massive BUILDKITE_PLUGINS..."
-      export BUILDKITE_PLUGINS="[{\"test-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('Y' * 500000)")\"}}]"
-      
-      echo "Environment size: $(env | wc -c) bytes"
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      
-      # This command will definitely exceed ARG_MAX
-      echo "+++ Executing command that will fail with 'argument list too long'..."
-      /bin/bash -c "echo 'This should fail with argument list too long: $(python3 -c \"print(\'Z\' * 500000)\")'"
-      
-      echo "❌ This should not be reached - ARG_MAX should have been exceeded"
+  # Fast steps that should fail fast
+  - label: "Go Linter"
+    command: "go vet ./... && go fmt -d ."
     timeout_in_minutes: 5
+    key: "fast-linter"
+    
+  - label: "Go Test (Fast)"
+    command: "go test -short ./..."
+    timeout_in_minutes: 5
+    key: "fast-tests"
 
-  - label: ":boom: ARG_MAX Error Test - Extreme Case"
-    key: "argmax_extreme_error"
-    agents:
-      queue: default
-    command: |
-      echo "=== ARG_MAX Extreme Error Test ==="
-      echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      
-      # Create extremely large environment variables
-      echo "+++ Creating extremely large environment variables..."
-      for i in {1..200}; do
-        export "MEGA_VAR_$i"=$(python3 -c "print('MEGA_DATA_' * 5000)")
-      done
-      
-      # Create massive plugin configuration
-      echo "+++ Creating massive plugin configuration..."
-      export BUILDKITE_PLUGINS="[{\"massive-plugin#v1.0.0\":{\"config\":\"$(python3 -c "print('PLUGIN_CONFIG_' * 100000)")\"}}]"
-      
-      # Add many more environment variables
-      for i in {1..50}; do
-        export "ENV_VAR_$i"=$(python3 -c "print('ENV_DATA_' * 20000)")
-      done
-      
-      echo "Environment size: $(env | wc -c) bytes"
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      
-      # This will definitely exceed ARG_MAX
-      echo "+++ Executing command that will definitely fail..."
-      /bin/bash -c "echo 'Extreme test: $(python3 -c \"print(\'EXTREME_ARG_\' * 200000)\")'"
-      
-      echo "❌ This should not be reached - ARG_MAX should have been exceeded"
-    timeout_in_minutes: 5
+  # Wait for fast steps to complete before starting slow steps
+  - wait
 
-  - label: ":boom: ARG_MAX Error Test - Buildkite Agent Simulation"
-    key: "argmax_agent_simulation"
-    agents:
-      queue: default
-    command: |
-      echo "=== ARG_MAX Buildkite Agent Simulation ==="
-      echo "Current ARG_MAX: $(getconf ARG_MAX)"
-      
-      # Simulate real Buildkite environment with massive data
-      export BUILDKITE_BUILD_ID="build-$(python3 -c "print('A' * 1000)")"
-      export BUILDKITE_BRANCH="feature/$(python3 -c "print('B' * 1000)")"
-      export BUILDKITE_COMMIT="$(python3 -c "print('C' * 1000)")"
-      export BUILDKITE_MESSAGE="$(python3 -c "print('D' * 1000)")"
-      
-      # Create massive plugin configuration
-      export BUILDKITE_PLUGINS="[{\"plugin1#v1.0.0\":{\"config\":\"$(python3 -c "print('E' * 200000)")\"}},{\"plugin2#v1.0.0\":{\"config\":\"$(python3 -c "print('F' * 200000)")\"}}]"
-      
-      # Add many environment variables
-      for i in {1..100}; do
-        export "BUILD_VAR_$i"=$(python3 -c "print('G' * 10000)")
-      done
-      
-      echo "Environment size: $(env | wc -c) bytes"
-      echo "BUILDKITE_PLUGINS size: $(echo -n "$BUILDKITE_PLUGINS" | wc -c) bytes"
-      
-      # This should trigger the exact error you want
-      echo "+++ Executing command that will trigger 'fork/exec: argument list too long'..."
-      /bin/bash -c "echo 'Buildkite simulation: $(python3 -c \"print(\'H\' * 300000)\")'"
-      
-      echo "❌ This should not be reached - ARG_MAX should have been exceeded"
+  # Slow steps that run in parallel (only if fast steps passed)
+  - label: "Integration Tests"
+    command: "go test -v ./integration/..."
+    timeout_in_minutes: 20
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "E2E Tests"
+    command: "go test -v ./e2e/..."
+    timeout_in_minutes: 20
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "Security Scan"
+    command: "gosec ./..."
+    timeout_in_minutes: 15
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "Performance Tests"
+    command: "go test -bench=. ./perf/..."
+    timeout_in_minutes: 25
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "Code Coverage"
+    command: "go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out"
+    timeout_in_minutes: 15
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "Build Docker Images"
+    command: "docker build -t app:latest ."
+    timeout_in_minutes: 10
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "Database Migration Tests"
+    command: "go test -v ./migrations/..."
+    timeout_in_minutes: 12
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "API Documentation"
+    command: "swagger generate spec -o swagger.json"
+    timeout_in_minutes: 8
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "Static Analysis"
+    command: "staticcheck ./..."
+    timeout_in_minutes: 10
+    depends_on: ["fast-linter", "fast-tests"]
+    
+  - label: "Dependency Check"
+    command: "go mod verify && go list -u -m all"
     timeout_in_minutes: 5
+    depends_on: ["fast-linter", "fast-tests"]
