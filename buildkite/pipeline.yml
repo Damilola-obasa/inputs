@@ -14,7 +14,8 @@ steps:
   - wait
 
   # Slow steps that run in parallel using Buildkite's parallel capability
-  - parallel:
+  - type: "parallel"
+    steps:
     - label: "Integration Tests"
       command: "echo 'Integration tests passed'"
       
