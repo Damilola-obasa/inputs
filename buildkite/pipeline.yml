@@ -1,12 +1,10 @@
 steps:
   
   - label: ":lint: Fast check 1"
-    key: "fast-check-1"
     command: "echo fast1 && exit 0"
 
   - label: ":mag: Fast check 2"
-    key: "fast-check-2"
-    command: "echo fast2 && exit 0"
+    command: "echo fast2 && exit 1"
 
   
   - wait
