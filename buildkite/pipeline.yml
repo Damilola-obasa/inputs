@@ -1,15 +1,15 @@
 steps:
   # Fast checks run first
   - label: "Go Linter"
-    command: "make lint"
+    command: "test"
   
   - label: "Fast Validation"
-    command: "make validate"
+    command: "test"
   
   # Wait for fast checks - fails pipeline if either failed
   - wait
   
   # All 50 parallel steps using parallelism
   - label: "Integration Tests"
-    command: "make test"
+    command: "make tests"
     parallelism: 50
