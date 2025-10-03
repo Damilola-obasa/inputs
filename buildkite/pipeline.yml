@@ -1,12 +1,12 @@
 steps:
   # Fast steps that should fail fast
   - label: "Go Linter"
-    command: "echo 'Linting passed' && exit 0"
+    command: "echo 'Linting passed'"
     timeout_in_minutes: 5
     key: "fast-linter"
     
   - label: "Go Test (Fast)"
-    command: "echo 'Fast tests passed' && exit 0"
+    command: "echo 'Fast tests passed'"
     timeout_in_minutes: 5
     key: "fast-tests"
 
