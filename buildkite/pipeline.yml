@@ -1,15 +1,3 @@
 steps:
-  # Fast checks run first
-  - label: "Go Linter"
-    command: "echo 'Linting passed'"
-  
-  - label: "Fast Validation"
-    command: "echo 'Fast validation passed'"
-  
-  # Wait for fast checks - fails pipeline if either failed
-  - wait
-  
-  # All 50 parallel steps using parallelism
-  - label: "Integration Tests"
-    command: "echo 'Fast validation passed'"
-    parallelism: 50
+  - label: "Hello World"
+    command: "echo 'hello'"
