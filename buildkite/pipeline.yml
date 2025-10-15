@@ -1,4 +1,4 @@
 steps:
   - label: "Hello World"
-    command: "echo 'helloss'"
+    command: "echo 'hells'"
   
