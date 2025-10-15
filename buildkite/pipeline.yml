@@ -1,3 +1,4 @@
 steps:
   - label: "Hello World"
-    command: "echo 'heallos'"
+    command: "echo 'heals'"
+  
