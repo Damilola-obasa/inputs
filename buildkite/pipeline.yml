@@ -5,3 +5,5 @@ steps:
   - command: "echo This runs regardless of the success or failure"
   - wait: ~
   - command: "echo The command passed"
+  - label: "Hello World"
+    command: "echo 'Hello World'"
