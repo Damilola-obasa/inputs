@@ -1,15 +1,9 @@
 steps:
-  - label: "Step 1 - Quick Task"
-    command: "sleep 5 && echo 'Step 1 completed in 5 seconds'"
+  - label: "Step 1"
+    command: "echo 'Running step 1'"
   
-  - label: "Step 2 - Medium Task"
-    command: "sleep 15 && echo 'Step 2 completed in 15 seconds'"
+  - label: "Step 2"
+    command: "echo 'Running step 2'"
   
-  - label: "Step 3 - Fast Task"
-    command: "sleep 3 && echo 'Step 3 completed in 3 seconds'"
-  
-  - label: "Step 4 - Long Task"
-    command: "sleep 20 && echo 'Step 4 completed in 20 seconds'"
-  
-  - label: "Step 5 - Moderate Task"
-    command: "sleep 8 && echo 'Step 5 completed in 8 seconds'"
+  - label: "Step 3"
+    command: "echo 'Running step 3'"
