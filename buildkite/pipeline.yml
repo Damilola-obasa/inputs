@@ -1,9 +1,15 @@
 steps:
-  - label: "Step 1 - Setup"
-    command: "echo 'Setting up environment' && pwd && ls -la"
+  - label: "Step 1"
+    command: "echo 'Running step 1'"
   
-  - label: "Step 2 - Build"
-    command: "echo 'Building application' && echo 'Build artifacts ready'"
+  - label: "Step 2"
+    command: "echo 'Running step 2'"
   
-  - label: "Step 3 - Verify"
-    command: "echo 'Verifying build output' && echo 'All checks passed'"
+  - label: "Step 3"
+    command: "echo 'Running step 3'"
+  
+  - label: "Step 4"
+    command: "echo 'Running step 4'"
+  
+  - label: "Step 5"
+    command: "echo 'Running step 5'"
