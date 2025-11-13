@@ -16,4 +16,7 @@ steps:
   
   - label: "Step 6"
     command: "echo 'Running step 6'"
+  
+  - label: "Step 7"
+    command: "echo 'Running step 7'"
 
