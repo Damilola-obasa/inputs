@@ -10,3 +10,6 @@ steps:
   
   - label: "Step 4"
     command: "echo 'Running step 4'"
+  
+  - label: "Step 5"
+    command: "echo 'Running step 5'"
