@@ -1,9 +1,43 @@
 steps:
-  - label: "Step 1"
-    command: "echo 'Running step 1'"
+  - label: "Build and Upload Artifacts"
+    command: |
+      # Create some example artifacts
+      mkdir -p artifacts
+      echo "Build output file 1" > artifacts/output1.txt
+      echo "Build output file 2" > artifacts/output2.txt
+      echo "Build log" > artifacts/build.log
+      
+      # Create a binary artifact example
+      echo "Binary data" > artifacts/binary.dat
+      
+      # List what we're uploading
+      echo "Artifacts to upload:"
+      find artifacts -type f
+    artifact_paths:
+      - "artifacts/**/*"
   
-  - label: "Step 2"
-    command: "echo 'Running step 2'"
+  - label: "Download and Use Artifacts"
+    depends_on: "Build and Upload Artifacts"
+    command: |
+      # Artifacts are automatically downloaded to the current directory
+      # They maintain their relative paths from artifact_paths
+      echo "Downloaded artifacts:"
+      ls -la artifacts/
+      
+      # Use the artifacts
+      echo "Content of output1.txt:"
+      cat artifacts/output1.txt
+      
+      echo "Content of output2.txt:"
+      cat artifacts/output2.txt
+      
+      echo "Build log:"
+      cat artifacts/build.log
+      
+      # Process artifacts
+      echo "Processing artifacts..."
+      cat artifacts/*.txt > artifacts/combined.txt
+      echo "Combined output created"
   
   - label: "Step 3"
     command: "echo 'Running step 3'"
