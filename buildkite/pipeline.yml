@@ -2,7 +2,7 @@ steps:
   - label: "Build-and-Upload-Artifacts"
     key: "build-upload-artifacts"
     command: |
-      # Create some example artifacts
+      # Create some examples artifacts
       mkdir -p artifacts
       echo "Build output file 1" > artifacts/output1.txt
       echo "Build output file 2" > artifacts/output2.txt
