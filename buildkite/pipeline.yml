@@ -1,5 +1,5 @@
 steps:
-  - label: "Build and Upload Artifacts"
+  - label: "Build-and-Upload-Artifacts"
     command: |
       # Create some example artifacts
       mkdir -p artifacts
@@ -16,8 +16,8 @@ steps:
     artifact_paths:
       - "artifacts/**/*"
   
-  - label: "Download and Use Artifacts"
-    depends_on: "Build and Upload Artifacts"
+  - label: "Download-and-Use-Artifacts"
+    depends_on: "Build-and-Upload-Artifacts"
     command: |
       # Artifacts are automatically downloaded to the current directory
       # They maintain their relative paths from artifact_paths
