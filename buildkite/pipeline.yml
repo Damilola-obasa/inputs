@@ -20,7 +20,11 @@ steps:
   - label: "Download-and-Use-Artifacts"
     depends_on: "build-upload-artifacts"
     command: |
-      # Artifacts are automatically downloaded to the current directory
+      # Download artifacts from the previous step
+      echo "Downloading artifacts..."
+      buildkite-agent artifact download "artifacts/**/*" .
+      
+      # Artifacts are downloaded to the current directory
       # They maintain their relative paths from artifact_paths
       echo "Downloaded artifacts:"
       ls -la artifacts/
