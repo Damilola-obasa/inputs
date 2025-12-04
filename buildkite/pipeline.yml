@@ -11,7 +11,7 @@ steps:
       # Create a binary artifact example
       echo "Binary data" > artifacts/binary.dat
       
-      # List what we're uploading
+      # List what we're uploadsasing
       echo "Artifacts to upload:"
       find artifacts -type f
     artifact_paths:
