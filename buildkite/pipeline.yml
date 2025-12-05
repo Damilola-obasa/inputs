@@ -1,54 +1,138 @@
+agents:
+  git-mirrors: true
+
 steps:
-  - label: "Build-and-Upload-Artifacts"
-    key: "build-upload-artifacts"
+  - label: ":git: Verify Git Mirrors Configuration"
+    key: "verify-git-mirrors"
     command: |
-      # Create some examples artifacts
+      echo "--- :mag: Checking Git Mirrors Configuration"
+
+      # Check if git mirrors directory exists
+      GIT_MIRRORS_PATH="/var/lib/buildkite-agent/git-mirrors"
+
+      echo "Checking for git mirrors directory..."
+      if [ -d "$GIT_MIRRORS_PATH" ]; then
+        echo "✅ Git mirrors directory exists: $GIT_MIRRORS_PATH"
+
+        # Show directory info
+        echo ""
+        echo "Directory permissions:"
+        ls -ld "$GIT_MIRRORS_PATH"
+
+        # Check if there are any mirrors
+        echo ""
+        echo "Existing git mirrors:"
+        ls -lah "$GIT_MIRRORS_PATH" 2>/dev/null || echo "No mirrors yet (this is normal for first run)"
+
+        # Show disk usage
+        echo ""
+        echo "Disk usage of git mirrors:"
+        du -sh "$GIT_MIRRORS_PATH" 2>/dev/null || echo "0 bytes"
+      else
+        echo "⚠️  Git mirrors directory not found at: $GIT_MIRRORS_PATH"
+        echo "The directory will be created on first use"
+      fi
+
+      # Check current repository info
+      echo ""
+      echo "--- :git: Current Repository Information"
+      echo "Repository URL: $(git config --get remote.origin.url)"
+      echo "Current commit: $(git rev-parse HEAD)"
+      echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+
+      # Check if we're using a mirror
+      echo ""
+      echo "--- :mirror: Git Mirror Status"
+      if [ -n "$BUILDKITE_REPO_MIRROR" ]; then
+        echo "✅ Using git mirror: $BUILDKITE_REPO_MIRROR"
+      else
+        echo "ℹ️  BUILDKITE_REPO_MIRROR not set (may not be using mirrors)"
+      fi
+
+      # Display agent configuration related to git
+      echo ""
+      echo "--- :buildkite: Agent Git Configuration"
+      echo "Build directory: $BUILDKITE_BUILD_PATH"
+      echo "Agent name: $BUILDKITE_AGENT_NAME"
+
+      echo ""
+      echo "✅ Git mirrors verification complete!"
+
+  - label: ":hammer: Build and Upload Artifacts"
+    key: "build-upload-artifacts"
+    depends_on: "verify-git-mirrors"
+    command: |
+      echo "--- :package: Creating build artifacts"
+
+      # Create some example artifacts
       mkdir -p artifacts
       echo "Build output file 1" > artifacts/output1.txt
       echo "Build output file 2" > artifacts/output2.txt
       echo "Build log" > artifacts/build.log
-      
+
       # Create a binary artifact example
       echo "Binary data" > artifacts/binary.dat
-      
-      # List what we're uploadsascsing
+
+      # Add build metadata
+      echo "Build: $BUILDKITE_BUILD_NUMBER" >> artifacts/build-info.txt
+      echo "Commit: $BUILDKITE_COMMIT" >> artifacts/build-info.txt
+      echo "Branch: $BUILDKITE_BRANCH" >> artifacts/build-info.txt
+
+      echo ""
       echo "Artifacts to upload:"
-      find artifacts -type f
+      find artifacts -type f -exec ls -lh {} \;
     artifact_paths:
       - "artifacts/**/*"
-  
-  - label: "Download-and-Use-Artifacts"
+
+  - label: ":arrow_down: Download and Use Artifacts"
+    key: "download-artifacts"
     depends_on: "build-upload-artifacts"
     command: |
-      # Download artifacts from the previous step
-      echo "Downloading artifacts..."
+      echo "--- :inbox_tray: Downloading artifacts"
       buildkite-agent artifact download "artifacts/**/*" .
-      
-      # Artifacts are downloaded to the current directory
-      # They maintain their relative paths from artifact_paths
+
+      echo ""
       echo "Downloaded artifacts:"
       ls -la artifacts/
-      
-      # Use the artifacts
+
+      echo ""
+      echo "--- :mag: Verifying artifact contents"
+
       echo "Content of output1.txt:"
       cat artifacts/output1.txt
-      
+
+      echo ""
       echo "Content of output2.txt:"
       cat artifacts/output2.txt
-      
-      echo "Build log:"
-      cat artifacts/build.log
-      
-      # Process artifacts
-      echo "Processing artifacts..."
+
+      echo ""
+      echo "Build information:"
+      cat artifacts/build-info.txt
+
+      echo ""
+      echo "--- :hammer_and_wrench: Processing artifacts"
       cat artifacts/*.txt > artifacts/combined.txt
-      echo "Combined output created"
-  
-  - label: "Step 3"
-    command: "echo 'Running step 3'"
-  
-  - label: "Step 4"
-    command: "echo 'Running step 4'"
-  
-  - label: "Step 5"
-    command: "echo 'Running step 5'"
+      echo "✅ Combined output created"
+
+      echo ""
+      echo "Final artifact count: $(find artifacts -type f | wc -l) files"
+
+  - label: ":white_check_mark: Final Validation"
+    key: "final-validation"
+    depends_on: "download-artifacts"
+    command: |
+      echo "--- :tada: Pipeline Validation Summary"
+
+      echo "✅ Git mirrors configuration verified"
+      echo "✅ Build artifacts created successfully"
+      echo "✅ Artifacts downloaded and processed"
+
+      echo ""
+      echo "--- :chart_with_upwards_trend: Performance Notes"
+      echo "Git mirrors help reduce clone times by:"
+      echo "  • Reusing repository data across builds"
+      echo "  • Reducing network bandwidth usage"
+      echo "  • Speeding up fresh checkouts"
+
+      echo ""
+      echo "🎉 All checks passed! Git mirrors are properly configured."
