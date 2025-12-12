@@ -7,6 +7,6 @@ steps:
       cat <<EOF | buildkite-agent pipeline upload
       steps:
         - command: "upload-jobs.sh"
-          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
+          concurrency_group: "runnedr/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
           concurrency: ${LIMIT}
       EOF
