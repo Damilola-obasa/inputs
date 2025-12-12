@@ -1,5 +1,5 @@
 env:
-  JOB_TYPE: "data-processing"
+  JOB_TYPE: "deployment"
 
 steps:
   - command: |
@@ -11,7 +11,48 @@ steps:
       LIMIT=$(jq -r --arg type "$JOB_TYPE" '.[$type] // .default' buildkite/concurrency-config.json)
       cat <<EOF | buildkite-agent pipeline upload
       steps:
-        - command: "upload-jobs.sh"
+        - label: ":runner: Runner - ${JOB_TYPE}"
+          command: "upload-jobs.sh"
+          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
+          concurrency: ${LIMIT}
+
+        - label: ":test_tube: Test Job 1 - ${JOB_TYPE}"
+          command: |
+            echo "Job 1 starting..."
+            sleep 10
+            echo "Job 1 completed"
+          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
+          concurrency: ${LIMIT}
+
+        - label: ":test_tube: Test Job 2 - ${JOB_TYPE}"
+          command: |
+            echo "Job 2 starting..."
+            sleep 10
+            echo "Job 2 completed"
+          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
+          concurrency: ${LIMIT}
+
+        - label: ":test_tube: Test Job 3 - ${JOB_TYPE}"
+          command: |
+            echo "Job 3 starting..."
+            sleep 10
+            echo "Job 3 completed"
+          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
+          concurrency: ${LIMIT}
+
+        - label: ":test_tube: Test Job 4 - ${JOB_TYPE}"
+          command: |
+            echo "Job 4 starting..."
+            sleep 10
+            echo "Job 4 completed"
+          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
+          concurrency: ${LIMIT}
+
+        - label: ":test_tube: Test Job 5 - ${JOB_TYPE}"
+          command: |
+            echo "Job 5 starting..."
+            sleep 10
+            echo "Job 5 completed"
           concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
           concurrency: ${LIMIT}
       EOF
