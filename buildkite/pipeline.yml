@@ -1,12 +1,14 @@
-env:
-  JOB_TYPE: "data-processing"
-
 steps:
   - command: |
+      if [ -z "${JOB_TYPE:-}" ]; then
+        echo "Error: JOB_TYPE environment variable is required"
+        echo "Set it when triggering the build (e.g., JOB_TYPE=data-processing)"
+        exit 1
+      fi
       LIMIT=$(jq -r --arg type "$JOB_TYPE" '.[$type] // .default' buildkite/concurrency-config.json)
       cat <<EOF | buildkite-agent pipeline upload
       steps:
         - command: "upload-jobs.sh"
-          concurrency_group: "runnedr/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
+          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
           concurrency: ${LIMIT}
       EOF
