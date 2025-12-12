@@ -1,5 +1,5 @@
 env:
-  JOB_TYPE: "reports"
+  JOB_TYPE: "default"
 
 steps:
   - command: |
