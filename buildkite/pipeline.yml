@@ -1,3 +1,6 @@
+env:
+  JOB_TYPE: "data-processing"
+
 steps:
   - command: |
       if [ -z "${JOB_TYPE:-}" ]; then
