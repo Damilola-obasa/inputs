@@ -12,7 +12,7 @@ steps:
       cat <<EOF | buildkite-agent pipeline upload
       steps:
         - label: ":runner: Runner - ${JOB_TYPE}"
-          command: "upload-jobs.sh"
+          command: "echo 'Hello, World!'"
           concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
           concurrency: ${LIMIT}
 
