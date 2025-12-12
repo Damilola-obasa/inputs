@@ -1,5 +1,5 @@
 env:
-  JOB_TYPE: "deployment"
+  JOB_TYPE: "reports"
 
 steps:
   - command: |
