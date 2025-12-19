@@ -12,24 +12,9 @@ steps:
 
   - label: ":test: Check for Timeouts"
     command: |
-      RESPONSE=$$(curl -s -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
-        "https://api.buildkite.com/v2/organizations/$$BUILDKITE_ORGANIZATION_SLUG/pipelines/$$BUILDKITE_PIPELINE_SLUG/builds/$$BUILDKITE_BUILD_NUMBER")
-
-      echo "Checking for timed out jobs"
-
-      # Get timed out jobs with their details
-      TIMED_OUT_COUNT=$$(echo "$$RESPONSE" | jq '[.jobs[] | select(.state == "timed_out")] | length')
-
-      if [ "$$TIMED_OUT_COUNT" -gt 0 ]; then
-        echo "Found $$TIMED_OUT_COUNT timed out job(s)!"
-
-        echo "$$RESPONSE" | jq -r '.jobs[] | select(.state == "timed_out") |
-          ":x: **Job timed out:** \(.name)\n**Reason:** " +
-          (if .started_at then "Execution exceeded timeout limit" else "Waited too long for an available agent" end) +
-          "\n**Timeout setting:** " + (.timeout_in_minutes // "not set" | tostring) + " minutes\n"' \
-        | while IFS= read -r line; do
-            buildkite-agent annotate "$$line" --style error --context "timeout-$$(date +%s)-$$RANDOM"
+      curl -s -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
+        "https://api.buildkite.com/v2/organizations/$$BUILDKITE_ORGANIZATION_SLUG/pipelines/$$BUILDKITE_PIPELINE_SLUG/builds/$$BUILDKITE_BUILD_NUMBER" \
+        | jq -r '.jobs[] | select(.state == "timed_out") | .name' \
+        | while read job; do
+            buildkite-agent annotate ":x: Job timed out: $$job" --style error
           done
-      else
-        echo "No timed out jobs found"
-      fi
