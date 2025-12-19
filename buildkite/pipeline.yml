@@ -1,5 +1,14 @@
 ---
 steps:
+  - label: ":test_tube: Test Timeout"
+    agents:
+      nonexistent: "true"
+    timeout_in_minutes: 1
+    command: echo "Won't run"
+
+  - wait: ~
+    continue_on_failure: true
+
   - label: ":hourglass: Check Timeouts"
     command: |
       curl -s -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
