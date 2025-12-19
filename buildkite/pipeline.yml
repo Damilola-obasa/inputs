@@ -1,18 +1,16 @@
 ---
 steps:
   # This job will run but timeout during execution
-  - label: ":test_tube: Job That Will Timeout"
+  - label: ":test: Job That Will Timeout"
     timeout_in_minutes: 1
     command: |
-      echo "Starting job..."
-      echo "Sleeping for 2 minutes to trigger timeout..."
+      echo "Sleeping for 2 minutes to trigger timeout"
       sleep 120
-      echo "This won't print"
-
+    
   - wait: ~
     continue_on_failure: true
 
-  - label: ":hourglass: Check for Timeouts"
+  - label: ":test: Check for Timeouts"
     command: |
       RESPONSE=$$(curl -s -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
         "https://api.buildkite.com/v2/organizations/$$BUILDKITE_ORGANIZATION_SLUG/pipelines/$$BUILDKITE_PIPELINE_SLUG/builds/$$BUILDKITE_BUILD_NUMBER")
