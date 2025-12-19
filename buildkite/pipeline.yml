@@ -6,7 +6,7 @@ steps:
       queue: "default"
       # Use impossible requirements so no agent will match
       os: "nonexistent-os-12345"
-    timeout_in_minutes: 0.1  # 6 seconds
+    timeout_in_minutes: 1
     command: echo "This won't run"
 
   - wait: ~
