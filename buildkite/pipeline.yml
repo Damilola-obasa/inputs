@@ -1,58 +1,29 @@
-env:
-  JOB_TYPE: "default"
-
+---
 steps:
-  - command: |
-      if [ -z "${JOB_TYPE:-}" ]; then
-        echo "Error: JOB_TYPE environment variable is required"
-        echo "Set it when triggering the build (e.g., JOB_TYPE=data-processing)"
-        exit 1
-      fi
-      LIMIT=$(jq -r --arg type "$JOB_TYPE" '.[$type] // .default' buildkite/concurrency-config.json)
-      cat <<EOF | buildkite-agent pipeline upload
-      steps:
-        - label: ":runner: Runner - ${JOB_TYPE}"
-          command: "echo 'Hello, World!'"
-          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
-          concurrency: ${LIMIT}
+  # Test job that will timeout
+  - label: ":test_tube: Test Timeout"
+    agents:
+      queue: "nonexistent-queue"
+    timeout_in_minutes: 1
+    command: echo "This won't run"
 
-        - label: ":test_tube: Test Job 1 - ${JOB_TYPE}"
-          command: |
-            echo "Job 1 starting..."
-            sleep 10
-            echo "Job 1 completed"
-          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
-          concurrency: ${LIMIT}
+  - wait: ~
+    continue_on_failure: true
 
-        - label: ":test_tube: Test Job 2 - ${JOB_TYPE}"
-          command: |
-            echo "Job 2 starting..."
-            sleep 10
-            echo "Job 2 completed"
-          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
-          concurrency: ${LIMIT}
+  # Check for timeouts and annotate
+  - label: ":hourglass: Check Timeouts"
+    command: |
+      RESPONSE=$$(curl -s -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
+        "https://api.buildkite.com/v2/organizations/$$BUILDKITE_ORGANIZATION_SLUG/builds/$$BUILDKITE_BUILD_NUMBER")
 
-        - label: ":test_tube: Test Job 3 - ${JOB_TYPE}"
-          command: |
-            echo "Job 3 starting..."
-            sleep 10
-            echo "Job 3 completed"
-          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
-          concurrency: ${LIMIT}
+      TIMED_OUT=$$(echo "$$RESPONSE" | jq -r '.jobs[] | select(.state == "timed_out") | .name')
 
-        - label: ":test_tube: Test Job 4 - ${JOB_TYPE}"
-          command: |
-            echo "Job 4 starting..."
-            sleep 10
-            echo "Job 4 completed"
-          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
-          concurrency: ${LIMIT}
+      if [ -n "$$TIMED_OUT" ]; then
+        buildkite-agent annotate --style error <<EOF
+      ## :x: Jobs Timed Out
 
-        - label: ":test_tube: Test Job 5 - ${JOB_TYPE}"
-          command: |
-            echo "Job 5 starting..."
-            sleep 10
-            echo "Job 5 completed"
-          concurrency_group: "runner/\${BUILDKITE_BUILD_CREATOR}/${JOB_TYPE}"
-          concurrency: ${LIMIT}
+      $$TIMED_OUT
+
+      No agents available for the requested queue.
       EOF
+      fi
