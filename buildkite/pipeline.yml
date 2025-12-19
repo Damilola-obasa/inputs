@@ -6,7 +6,7 @@ steps:
       queue: "default"
       # Use impossible requirements so no agent will match
       os: "nonexistent-os-12345"
-    timeout_in_minutes: 1
+    timeout_in_minutes: 0.1  # 6 seconds
     command: echo "This won't run"
 
   - wait: ~
@@ -15,12 +15,23 @@ steps:
   # Check for timeouts and annotate
   - label: ":hourglass: Check Timeouts"
     command: |
+      echo "--- Debug Info"
+      echo "API Token set: $${BUILDKITE_API_TOKEN:+YES}"
+      echo "Org: $$BUILDKITE_ORGANIZATION_SLUG"
+      echo "Build: $$BUILDKITE_BUILD_NUMBER"
+
+      echo "--- Fetching build data"
       RESPONSE=$$(curl -s -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
         "https://api.buildkite.com/v2/organizations/$$BUILDKITE_ORGANIZATION_SLUG/builds/$$BUILDKITE_BUILD_NUMBER")
 
+      echo "--- API Response"
+      echo "$$RESPONSE" | jq '.'
+
+      echo "--- Looking for timed out jobs"
       TIMED_OUT=$$(echo "$$RESPONSE" | jq -r '.jobs[] | select(.state == "timed_out") | .name')
 
       if [ -n "$$TIMED_OUT" ]; then
+        echo "Found timed out jobs!"
         buildkite-agent annotate --style error <<EOF
       ## :x: Jobs Timed Out
 
@@ -28,4 +39,6 @@ steps:
 
       No agents available for the requested queue.
       EOF
+      else
+        echo "No timed out jobs found"
       fi
