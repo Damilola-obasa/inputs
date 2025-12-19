@@ -2,12 +2,30 @@
 steps:
   - label: ":hourglass: Check for Timed Out Jobs"
     command: |
+      echo "--- Debug Info"
+      echo "Token exists: $${BUILDKITE_API_TOKEN:+YES}"
+      echo "Org: $$BUILDKITE_ORGANIZATION_SLUG"
+      echo "Build: $$BUILDKITE_BUILD_NUMBER"
+
       echo "--- Fetching build data"
-      RESPONSE=$$(curl -s -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
+      RESPONSE=$$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+        -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
         "https://api.buildkite.com/v2/organizations/$$BUILDKITE_ORGANIZATION_SLUG/builds/$$BUILDKITE_BUILD_NUMBER")
 
+      HTTP_CODE=$$(echo "$$RESPONSE" | grep HTTP_CODE | cut -d: -f2)
+      BODY=$$(echo "$$RESPONSE" | sed '/HTTP_CODE:/d')
+
+      echo "HTTP Status: $$HTTP_CODE"
+      echo "Response body:"
+      echo "$$BODY"
+
+      if [ "$$HTTP_CODE" != "200" ]; then
+        echo "API call failed with status $$HTTP_CODE"
+        exit 1
+      fi
+
       echo "--- Checking for timeouts"
-      TIMED_OUT=$$(echo "$$RESPONSE" | jq -r '.jobs[] | select(.state == "timed_out") | .name')
+      TIMED_OUT=$$(echo "$$BODY" | jq -r '.jobs[]? | select(.state == "timed_out") | .name' 2>/dev/null || echo "")
 
       if [ -n "$$TIMED_OUT" ]; then
         echo "Found timed out jobs!"
