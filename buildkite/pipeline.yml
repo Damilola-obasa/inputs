@@ -2,7 +2,8 @@
 steps:
   - label: ":test_tube: Test Timeout"
     agents:
-      nonexistent: "true"
+      queue: "default"
+      hostname: "nonexistent-agent-12345"
     timeout_in_minutes: 1
     command: echo "Won't run"
 
