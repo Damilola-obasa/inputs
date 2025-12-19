@@ -1,42 +1,10 @@
 ---
 steps:
-  - label: ":hourglass: Check for Timed Out Jobs"
+  - label: ":hourglass: Check Timeouts"
     command: |
-      echo "--- Debug Info"
-      echo "Token exists: $${BUILDKITE_API_TOKEN:+YES}"
-      echo "Org: $$BUILDKITE_ORGANIZATION_SLUG"
-      echo "Pipeline: $$BUILDKITE_PIPELINE_SLUG"
-      echo "Build: $$BUILDKITE_BUILD_NUMBER"
-      echo "Build ID: $$BUILDKITE_BUILD_ID"
-
-      echo "--- Fetching build data via REST API"
-      RESPONSE=$$(curl -s -w "\nHTTP_CODE:%{http_code}" \
-        -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
-        "https://api.buildkite.com/v2/organizations/$$BUILDKITE_ORGANIZATION_SLUG/pipelines/$$BUILDKITE_PIPELINE_SLUG/builds/$$BUILDKITE_BUILD_NUMBER")
-
-      HTTP_CODE=$$(echo "$$RESPONSE" | grep HTTP_CODE | cut -d: -f2)
-      BODY=$$(echo "$$RESPONSE" | sed '/HTTP_CODE:/d')
-
-      echo "HTTP Status: $$HTTP_CODE"
-
-      if [ "$$HTTP_CODE" != "200" ]; then
-        echo "API call failed with status $$HTTP_CODE"
-        echo "Response: $$BODY"
-        exit 1
-      fi
-
-      echo "--- Checking for timeouts"
-      TIMED_OUT=$$(echo "$$BODY" | jq -r '.jobs[]? | select(.state == "timed_out") | .name' 2>/dev/null || echo "")
-
-      if [ -n "$$TIMED_OUT" ]; then
-        echo "Found timed out jobs!"
-        buildkite-agent annotate --style error <<EOF
-      ## :x: Jobs Timed Out Waiting for Agents
-
-      $$TIMED_OUT
-
-      No agents were available for the requested queue.
-      EOF
-      else
-        echo "No timed out jobs found in this build"
-      fi
+      curl -s -H "Authorization: Bearer $$BUILDKITE_API_TOKEN" \
+        "https://api.buildkite.com/v2/organizations/$$BUILDKITE_ORGANIZATION_SLUG/pipelines/$$BUILDKITE_PIPELINE_SLUG/builds/$$BUILDKITE_BUILD_NUMBER" \
+        | jq -r '.jobs[] | select(.state == "timed_out") | .name' \
+        | while read job; do
+            buildkite-agent annotate ":x: Job timed out: $$job" --style error
+          done
