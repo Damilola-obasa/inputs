@@ -3,7 +3,9 @@ steps:
   # Test job that will timeout
   - label: ":test_tube: Test Timeout"
     agents:
-      queue: "nonexistent-queue"
+      queue: "default"
+      # Use impossible requirements so no agent will match
+      os: "nonexistent-os-12345"
     timeout_in_minutes: 1
     command: echo "This won't run"
 
