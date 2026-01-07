@@ -14,8 +14,8 @@ steps:
           VALUE=$$(buildkite-agent meta-data get "$$key")
           echo "**$$key:** \`$$VALUE\`"
         done
-      } | buildkite-agent annotate --style info
+      } | buildkite-agent annotate --style info --context metadata
 
   - label: ":wave: Simple Annotation"
     command: |
-      buildkite-agent annotate "Hello! This is a simple test annotation." --style success
+      buildkite-agent annotate "Hello! This is a simple test annotation." --style success --context greeting
