@@ -7,9 +7,10 @@ steps:
 
   - label: ":memo: Display Metadata"
     command: |
-      ANNOTATION="## Metadata\n\n"
+      echo "## Metadata" > /tmp/annotation.md
+      echo "" >> /tmp/annotation.md
       buildkite-agent meta-data keys | while read key; do
         VALUE=$$(buildkite-agent meta-data get "$$key")
-        ANNOTATION="$${ANNOTATION}**$$key:** \`$$VALUE\`\n"
+        echo "**$$key:** \`$$VALUE\`" >> /tmp/annotation.md
       done
-      echo -e "$$ANNOTATION" | buildkite-agent annotate --style info
+      buildkite-agent annotate --style info < /tmp/annotation.md
