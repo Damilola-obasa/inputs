@@ -14,3 +14,7 @@ steps:
         echo "**$$key:** \`$$VALUE\`" >> /tmp/annotation.md
       done
       buildkite-agent annotate --style info < /tmp/annotation.md
+
+  - label: ":wave: Simple Annotation"
+    command: |
+      buildkite-agent annotate "Hello! This is a simple test annotation." --style success
