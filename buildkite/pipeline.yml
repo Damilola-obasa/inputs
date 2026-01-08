@@ -1,21 +1,41 @@
 ---
 steps:
-  - label: ":label: Set Metadata"
-    command: |
-      buildkite-agent meta-data set "env" "production"
-      buildkite-agent meta-data set "version" "1.2.3"
+  # Test 1: Retry on agent_stop only (should NOT retry on timeout)
+  - label: ":test_tube: Test 1: agent_stop only"
+    timeout_in_minutes: 1
+    command: sleep 120
+    retry:
+      automatic:
+        - exit_status: "*"
+          signal_reason: "agent_stop"
+          limit: 2
 
-  - label: ":memo: Display Metadata"
-    command: |
-      {
-        echo "## Metadata"
-        echo ""
-        for key in $$(buildkite-agent meta-data keys); do
-          VALUE=$$(buildkite-agent meta-data get "$$key")
-          echo "**$$key:** \`$$VALUE\`"
-        done
-      } | buildkite-agent annotate --style info --context metadata
+  # Test 2: Don't retry on cancelled (should NOT retry on timeout if signal is cancelled)
+  - label: ":test_tube: Test 2: exclude cancelled"
+    timeout_in_minutes: 1
+    command: sleep 120
+    retry:
+      automatic:
+        - exit_status: "*"
+          signal_reason: "none"
+          limit: 2
 
-  - label: ":wave: Simple Annotation"
+  # Test 3: Retry on cancelled (should retry on timeout if signal IS cancelled)
+  - label: ":test_tube: Test 3: retry cancelled"
+    timeout_in_minutes: 1
+    command: sleep 120
+    retry:
+      automatic:
+        - exit_status: "*"
+          signal_reason: "cancel"
+          limit: 2
+
+  - wait: ~
+    continue_on_failure: true
+
+  - label: ":mag: Results"
     command: |
-      buildkite-agent annotate "Hello! This is a simple test annotation." --style success --context greeting
+      buildkite-agent annotate "**Test Results:**
+      - Test 1 (agent_stop): Should NOT retry
+      - Test 2 (none): Should NOT retry
+      - Test 3 (cancelled): Should RETRY if timeout signal_reason is 'cancelled'" --style info
