@@ -1,41 +1,22 @@
 ---
 steps:
-  # Test 1: Retry on agent_stop only (should NOT retry on timeout)
-  - label: ":test_tube: Test 1: agent_stop only"
+  # Test: Retry on agent_stop + none (should NOT retry on timeout if it's "cancel")
+  - label: ":test_tube: Test: agent_stop + none"
     timeout_in_minutes: 1
-    command: sleep 120
+    command: sleep 90
     retry:
       automatic:
         - exit_status: "*"
           signal_reason: "agent_stop"
-          limit: 2
-
-  # Test 2: Don't retry on cancelled (should NOT retry on timeout if signal is cancelled)
-  - label: ":test_tube: Test 2: exclude cancelled"
-    timeout_in_minutes: 1
-    command: sleep 120
-    retry:
-      automatic:
+          limit: 1
         - exit_status: "*"
           signal_reason: "none"
-          limit: 2
-
-  # Test 3: Retry on cancelled (should retry on timeout if signal IS cancelled)
-  - label: ":test_tube: Test 3: retry cancelled"
-    timeout_in_minutes: 1
-    command: sleep 120
-    retry:
-      automatic:
-        - exit_status: "*"
-          signal_reason: "cancel"
-          limit: 2
+          limit: 1
 
   - wait: ~
     continue_on_failure: true
 
   - label: ":mag: Results"
     command: |
-      buildkite-agent annotate "**Test Results:**
-      - Test 1 (agent_stop): Should NOT retry
-      - Test 2 (none): Should NOT retry
-      - Test 3 (cancelled): Should RETRY if timeout signal_reason is 'cancelled'" --style info
+      buildkite-agent annotate "**Test Result:**
+      If this job did NOT retry, then timeout signal_reason is 'cancel' (not 'none' as the blog suggests)" --style info
