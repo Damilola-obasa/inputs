@@ -20,18 +20,8 @@ steps:
           signal_reason: "none"
           limit: 2
 
-  # Test 3: Retry on cancelled (should retry on timeout if signal IS cancelled)
-  - label: ":test_tube: Test 3: retry cancelled"
-    timeout_in_minutes: 1
-    command: sleep 120
-    retry:
-      automatic:
-        - exit_status: "*"
-          signal_reason: "cancelled"
-          limit: 2
-
-  # Test 4: Retry on cancel (should retry on timeout if signal IS cancel)
-  - label: ":test_tube: Test 4: retry cancel"
+  # Test 3: Retry on cancel (should retry on timeout if signal IS cancel)
+  - label: ":test_tube: Test 3: retry cancel"
     timeout_in_minutes: 1
     command: sleep 120
     retry:
@@ -48,5 +38,4 @@ steps:
       buildkite-agent annotate "**Test Results:**
       - Test 1 (agent_stop): Should NOT retry
       - Test 2 (none): Should NOT retry
-      - Test 3 (cancelled): Check if it retried
-      - Test 4 (cancel): Check if it retried" --style info
+      - Test 3 (cancel): Should RETRY (timeout signal is 'cancel')" --style info
