@@ -1,7 +1,7 @@
 ---
 steps:
   # Test 1: Retry on agent_stop only (should NOT retry on timeout)
-  - label: ":test_tube: Test 1: agent_stop only"
+  - label: ":test_tube: Test 1: agent_stop"
     timeout_in_minutes: 1
     command: sleep 120
     retry:
@@ -10,8 +10,8 @@ steps:
           signal_reason: "agent_stop"
           limit: 2
 
-  # Test 2: Don't retry on cancelled (should NOT retry on timeout if signal is cancelled)
-  - label: ":test_tube: Test 2: exclude cancelled"
+  # Test 2: Retry on none (should retry if timeout signal is 'none')
+  - label: ":test_tube: Test 2: none"
     timeout_in_minutes: 1
     command: sleep 120
     retry:
@@ -20,8 +20,8 @@ steps:
           signal_reason: "none"
           limit: 2
 
-  # Test 3: Retry on cancel (should retry on timeout if signal IS cancel)
-  - label: ":test_tube: Test 3: retry cancel"
+  # Test 3: Retry on cancel (should retry if timeout signal is 'cancel')
+  - label: ":test_tube: Test 3: cancel"
     timeout_in_minutes: 1
     command: sleep 120
     retry:
@@ -30,12 +30,19 @@ steps:
           signal_reason: "cancel"
           limit: 2
 
+  # Test 4: Retry on process_run_error
+  - label: ":test_tube: Test 4: process_run_error"
+    timeout_in_minutes: 1
+    command: sleep 120
+    retry:
+      automatic:
+        - exit_status: "*"
+          signal_reason: "process_run_error"
+          limit: 2
+
   - wait: ~
     continue_on_failure: true
 
   - label: ":mag: Results"
     command: |
-      buildkite-agent annotate "**Test Results:**
-      - Test 1 (agent_stop): Should NOT retry
-      - Test 2 (none): Should NOT retry
-      - Test 3 (cancel): Should RETRY (timeout signal is 'cancel')" --style info
+      buildkite-agent annotate "Check which test retried - that one has the correct signal_reason for timeouts" --style info
