@@ -6,7 +6,7 @@ steps:
     command: sleep 120
     retry:
       automatic:
-        - exit_status: "*"
+        - exit_status: -1
           signal_reason: "agent_stop"
           limit: 2
 
@@ -16,7 +16,7 @@ steps:
     command: sleep 120
     retry:
       automatic:
-        - exit_status: "*"
+        - exit_status: -1
           signal_reason: "none"
           limit: 2
 
@@ -26,7 +26,7 @@ steps:
     command: sleep 120
     retry:
       automatic:
-        - exit_status: "*"
+        - exit_status: -1
           signal_reason: "cancel"
           limit: 2
 
@@ -36,7 +36,7 @@ steps:
     command: sleep 120
     retry:
       automatic:
-        - exit_status: "*"
+        - exit_status: -1
           signal_reason: "process_run_error"
           limit: 2
 
