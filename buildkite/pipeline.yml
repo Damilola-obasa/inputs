@@ -12,6 +12,6 @@ steps:
       ( echo "B START"; sleep 2; echo "B END" )
 
       echo "--- Subprocess C (expect ~4s gap)"
-      ( echo "C START"; sleep 4; echo "C END" )
+      ( echo "C START"; sleep 5; echo "C END" )
 
       echo "=== Step end ==="
