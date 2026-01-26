@@ -11,7 +11,7 @@ steps:
       echo "--- Subprocess B (expect ~2s gap)"
       ( echo "B START"; sleep 2; echo "B END" )
 
-      echo "--- Subprocess C (expect ~3s gap)"
-      ( echo "C START"; sleep 3; echo "C END" )
+      echo "--- Subprocess C (expect ~4s gap)"
+      ( echo "C START"; sleep 4; echo "C END" )
 
       echo "=== Step end ==="
