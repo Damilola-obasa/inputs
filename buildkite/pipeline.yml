@@ -1,48 +1,32 @@
 ---
 steps:
-  # Test 1: Retry on agent_stop only (should NOT retry on timeout)
-  - label: ":test_tube: Test 1: agent_stop"
-    timeout_in_minutes: 1
-    command: sleep 120
-    retry:
-      automatic:
-        - exit_status: -1
-          signal_reason: "agent_stop"
-          limit: 2
-
-  # Test 2: Retry on none (should retry if timeout signal is 'none')
-  - label: ":test_tube: Test 2: none"
-    timeout_in_minutes: 1
-    command: sleep 120
-    retry:
-      automatic:
-        - exit_status: -1
-          signal_reason: "none"
-          limit: 2
-
-  # Test 3: Retry on cancel (should retry if timeout signal is 'cancel')
-  - label: ":test_tube: Test 3: cancel"
-    timeout_in_minutes: 1
-    command: sleep 120
-    retry:
-      automatic:
-        - exit_status: -1
-          signal_reason: "cancel"
-          limit: 2
-
-  # Test 4: Retry on process_run_error
-  - label: ":test_tube: Test 4: process_run_error"
-    timeout_in_minutes: 1
-    command: sleep 120
-    retry:
-      automatic:
-        - exit_status: -1
-          signal_reason: "process_run_error"
-          limit: 2
-
-  - wait: ~
-    continue_on_failure: true
-
-  - label: ":mag: Results"
+  - label: ":clock1: Test Log Timestamps with Subprocesses"
     command: |
-      buildkite-agent annotate "Check which test retried - that one has the correct signal_reason for timeouts" --style info
+      echo "=== Main process start: $$(date) ==="
+
+      echo "--- Sequential commands"
+      echo "Line 1"
+      sleep 2
+      echo "Line 2 (after 2s)"
+
+      echo "--- Background subprocess"
+      (sleep 3 && echo "Background process done (3s)") &
+      echo "Main continues immediately"
+
+      echo "--- Nested subshell"
+      (
+        echo "Subshell start"
+        sleep 1
+        echo "Subshell after 1s"
+      )
+
+      echo "--- Piped commands"
+      sleep 2 && echo "Pipe source" | while read line; do echo "Piped: $$line"; done
+
+      echo "--- Parallel subprocesses"
+      (sleep 1 && echo "Process A done") &
+      (sleep 2 && echo "Process B done") &
+      (sleep 3 && echo "Process C done") &
+      wait
+
+      echo "=== Main process end: $$(date) ==="
