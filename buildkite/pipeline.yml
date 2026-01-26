@@ -1,27 +1,17 @@
----
 steps:
-  - label: ":clock1: Test Log Timestamps with Subprocesses"
-    commands:
-      - echo "=== Main process start: $$(date) ==="
-      - echo "--- Sequential commands"
-      - echo "Line 1"
-      - sleep 2
-      - echo "Line 2 (after 2s)"
-      - echo "--- Background subprocess"
-      - (sleep 3 && echo "Background process done (3s)") &
-      - echo "Main continues immediately"
-      - echo "--- Nested subshell"
-      - |
-        (
-          echo "Subshell start"
-          sleep 1
-          echo "Subshell after 1s"
-        )
-      - echo "--- Piped commands"
-      - sleep 2 && echo "Pipe source" | while read line; do echo "Piped: $$line"; done
-      - echo "--- Parallel subprocesses"
-      - (sleep 1 && echo "Process A done") &
-      - (sleep 2 && echo "Process B done") &
-      - (sleep 3 && echo "Process C done") &
-      - wait
-      - echo "=== Main process end: $$(date) ==="
+  - label: ":stopwatch: Prove log-view durations are gaps between outputs"
+    command: |
+      set -euo pipefail
+
+      echo "=== Step start ==="
+
+      echo "--- Subprocess A (expect ~1s gap)"
+      ( echo "A START"; sleep 1; echo "A END" )
+
+      echo "--- Subprocess B (expect ~2s gap)"
+      ( echo "B START"; sleep 2; echo "B END" )
+
+      echo "--- Subprocess C (expect ~3s gap)"
+      ( echo "C START"; sleep 3; echo "C END" )
+
+      echo "=== Step end ==="
