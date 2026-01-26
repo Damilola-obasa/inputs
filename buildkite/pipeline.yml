@@ -1,32 +1,27 @@
 ---
 steps:
   - label: ":clock1: Test Log Timestamps with Subprocesses"
-    command: |
-      echo "=== Main process start: $$(date) ==="
-
-      echo "--- Sequential commands"
-      echo "Line 1"
-      sleep 2
-      echo "Line 2 (after 2s)"
-
-      echo "--- Background subprocess"
-      (sleep 3 && echo "Background process done (3s)") &
-      echo "Main continues immediately"
-
-      echo "--- Nested subshell"
-      (
-        echo "Subshell start"
-        sleep 1
-        echo "Subshell after 1s"
-      )
-
-      echo "--- Piped commands"
-      sleep 2 && echo "Pipe source" | while read line; do echo "Piped: $$line"; done
-
-      echo "--- Parallel subprocesses"
-      (sleep 1 && echo "Process A done") &
-      (sleep 2 && echo "Process B done") &
-      (sleep 3 && echo "Process C done") &
-      wait
-
-      echo "=== Main process end: $$(date) ==="
+    commands:
+      - echo "=== Main process start: $$(date) ==="
+      - echo "--- Sequential commands"
+      - echo "Line 1"
+      - sleep 2
+      - echo "Line 2 (after 2s)"
+      - echo "--- Background subprocess"
+      - (sleep 3 && echo "Background process done (3s)") &
+      - echo "Main continues immediately"
+      - echo "--- Nested subshell"
+      - |
+        (
+          echo "Subshell start"
+          sleep 1
+          echo "Subshell after 1s"
+        )
+      - echo "--- Piped commands"
+      - sleep 2 && echo "Pipe source" | while read line; do echo "Piped: $$line"; done
+      - echo "--- Parallel subprocesses"
+      - (sleep 1 && echo "Process A done") &
+      - (sleep 2 && echo "Process B done") &
+      - (sleep 3 && echo "Process C done") &
+      - wait
+      - echo "=== Main process end: $$(date) ==="
