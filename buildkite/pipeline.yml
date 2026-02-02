@@ -1,86 +1,13 @@
 steps:
-  - label: ":gcloud: GCP Batch Secrets via env"
-    command:
-      - echo "--- Verifying batch secrets are exported"
-      - test -n "$${SECRET_KEY_A}" && echo "SECRET_KEY_A is set"
-      - test -n "$${SECRET_KEY_B}" && echo "SECRET_KEY_B is set"
-    plugins:
-      - buildkite-plugins/secrets#Micheal/SUP-5596:
-          provider: gcp
-          gcp-project: buildtest-485813
-          env: "gcp-batch-secret"
+  - label: ":rocket: Simple Test Step"
+    command: |
+      echo "Hello from Buildkite!"
+      echo "Current directory: $(pwd)"
+      echo "Date: $(date)"
+      echo "✅ Test step completed successfully"
 
-  - label: ":gcloud: GCP Individual Variables"
-    command:
-      - echo "--- Verifying individual secrets are exported"
-      - test -n "$${MY_GCP_SECRET}" && echo "MY_GCP_SECRET is set"
-    plugins:
-      - buildkite-plugins/secrets#Micheal/SUP-5596:
-          provider: gcp
-          gcp-project: buildtest-485813
-          variables:
-            MY_GCP_SECRET: "my-gcp-secret"
-
-  - label: ":gcloud: GCP Multiple Individual Variables"
-    command:
-      - echo "--- Verifying multiple individual secrets"
-      - test -n "$${GCP_TOKEN}" && echo "GCP_TOKEN is set"
-      - test -n "$${GCP_API_KEY}" && echo "GCP_API_KEY is set"
-      - test -n "$${GCP_DB_PASSWORD}" && echo "GCP_DB_PASSWORD is set"
-    plugins:
-      - buildkite-plugins/secrets#Micheal/SUP-5596:
-          provider: gcp
-          gcp-project: buildtest-485813
-          variables:
-            GCP_TOKEN: "gcp-token"
-            GCP_API_KEY: "gcp-api-key"
-            GCP_DB_PASSWORD: "gcp-db-password"
-
-  - label: ":gcloud: GCP Specific Secret Version"
-    command:
-      - echo "--- Verifying pinned version secret"
-      - test -n "$${PINNED_SECRET}" && echo "PINNED_SECRET is set"
-    plugins:
-      - buildkite-plugins/secrets#Micheal/SUP-5596:
-          provider: gcp
-          gcp-project: buildtest-485813
-          gcp-secret-version: "1"
-          variables:
-            PINNED_SECRET: "gcp-versioned-secret"
-
-  - label: ":gcloud: GCP Project Fallback via CLOUDSDK_CORE_PROJECT"
-    env:
-      CLOUDSDK_CORE_PROJECT: buildtest-485813
-    command:
-      - echo "--- Verifying project fallback works"
-      - test -n "$${FALLBACK_SECRET}" && echo "FALLBACK_SECRET is set"
-    plugins:
-      - buildkite-plugins/secrets#Micheal/SUP-5596:
-          provider: gcp
-          variables:
-            FALLBACK_SECRET: "gcp-fallback-secret"
-
-  - label: ":gcloud: GCP Skip Redaction"
-    command:
-      - echo "--- Verifying skip-redaction works (secret value visible in logs)"
-      - echo "SECRET_NO_REDACT=$${SECRET_NO_REDACT}"
-    plugins:
-      - buildkite-plugins/secrets#Micheal/SUP-5596:
-          provider: gcp
-          gcp-project: buildtest-485813
-          skip-redaction: true
-          variables:
-            SECRET_NO_REDACT: "gcp-redaction-test"
-
-  - label: ":gcloud: GCP Custom Retry Config"
-    command:
-      - echo "--- Verifying custom retry settings"
-      - test -n "$${RETRY_SECRET}" && echo "RETRY_SECRET is set"
-    plugins:
-      - buildkite-plugins/secrets#Micheal/SUP-5596:
-          provider: gcp
-          gcp-project: buildtest-485813
-          retry-max-attempts: 3
-          retry-base-delay: 1
-          variables:
-            RETRY_SECRET: "gcp-retry-secret"
+  - label: ":checkered_flag: Another Test Step"
+    command: |
+      echo "This is step 2"
+      echo "Testing pipeline validation"
+      echo "✅ All good!"
