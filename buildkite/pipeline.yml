@@ -9,5 +9,5 @@ steps:
   - label: ":checkered_flag: Another Test Ssdseps
     command: |
       echo "This is step 2"
-      echo "Testing pipeline validation"
+      echo "Testing pipeline validations"
       echo "✅ All good!"
