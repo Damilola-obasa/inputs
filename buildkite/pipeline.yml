@@ -6,7 +6,7 @@ steps:
       echo "Date: $(date)"
       echo "✅ Test step completed successfully"
 
-  - label: ":checkered_flag: Another Test Steps
+  - label: ":checkered_flag: Another Test Ssdseps
     command: |
       echo "This is step 2"
       echo "Testing pipeline validation"
