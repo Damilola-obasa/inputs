@@ -1,7 +1,7 @@
 steps:
   - label: ":rocket: Simple Test Step"
     command: |
-      echo "Hello from Buildkite!"
+      echo "Hello from Builddsdkite!"
       echo "Current directory: $(pwd)"
       echo "Date: $(date)"
       echo "✅ Test step completed successdsdssdfasfully"
