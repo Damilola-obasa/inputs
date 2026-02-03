@@ -4,7 +4,7 @@ steps:
       echo "Hello from Buildkite!"
       echo "Current directory: $(pwd)"
       echo "Date: $(date)"
-      echo "✅ Test step completed successdsdfasfully"
+      echo "✅ Test step completed successdsdssdfasfully"
 
   - label: ":checkered_flag: Another Test Ssdssdseps
     command: |
