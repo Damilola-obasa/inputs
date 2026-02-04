@@ -1,5 +1,5 @@
 steps:
-  - label: "Test on {{matrix.platform}}-{{matrix.arch}}"
+  - label: "Tesst on {{matrix.platform}}-{{matrix.arch}}"
     command: echo "{{matrix.platform}}" "{{matrix.arch}}"
     agents:
       queue: "{{matrix.platform}}"
