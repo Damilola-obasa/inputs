@@ -2,7 +2,7 @@ steps:
   - label: "Tesst on {{matrix.platform}}-{{matrix.arch}}"
     command: echo "{{matrix.platform}}" "{{matrix.arch}}"
     agents:
-      queue: "{{matrix.platform}}"
+      queue: default
     matrix:
       setup:
         arch: ["__placeholder__"]
