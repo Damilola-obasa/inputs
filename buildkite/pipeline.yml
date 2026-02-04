@@ -1,8 +1,25 @@
 steps:
-  - label: "Tesst on {{matrix.platform}}-{{matrix.arch}}"
-    command: echo "{{matrix.platform}}" "{{matrix.arch}}"
-    agents:
-      queue: default
+  # ============================================================
+  # CASE 1: BUG - Empty arrays with adjustments
+  # Expected: 2 jobs (from adjustments)
+  # Actual: 0 jobs (BUG!)
+  # ============================================================
+  - label: "[BUG] Empty arrays: {{matrix.platform}}-{{matrix.arch}}"
+    command: echo "Platform={{matrix.platform}} Arch={{matrix.arch}}"
+    matrix:
+      setup:
+        arch: []
+        platform: []
+      adjustments:
+        - with: { arch: "x86_64", platform: "mac" }
+        - with: { arch: "x64", platform: "windows" }
+
+  # ============================================================
+  # CASE 2: WORKAROUND - Placeholder with skip
+  # Expected: 2 jobs (placeholder skipped, adjustments run)
+  # ============================================================
+  - label: "[WORKAROUND] Placeholder: {{matrix.platform}}-{{matrix.arch}}"
+    command: echo "Platform={{matrix.platform}} Arch={{matrix.arch}}"
     matrix:
       setup:
         arch: ["__placeholder__"]
@@ -10,5 +27,19 @@ steps:
       adjustments:
         - with: { arch: "__placeholder__", platform: "__placeholder__" }
           skip: true
+        - with: { arch: "x86_64", platform: "mac" }
+        - with: { arch: "x64", platform: "windows" }
+
+  # ============================================================
+  # CASE 3: WORKING - Non-empty arrays with adjustments
+  # Expected: 3 jobs (1 from setup + 2 from adjustments)
+  # ============================================================
+  - label: "[WORKING] Non-empty: {{matrix.platform}}-{{matrix.arch}}"
+    command: echo "Platform={{matrix.platform}} Arch={{matrix.arch}}"
+    matrix:
+      setup:
+        arch: ["arm64"]
+        platform: ["mac"]
+      adjustments:
         - with: { arch: "x86_64", platform: "mac" }
         - with: { arch: "x64", platform: "windows" }
