@@ -1,13 +1,13 @@
 steps:
   - label: ":rocket: Simple Test Step"
     command: |
-      echo "Hello from Builddsdkite!"
+      echo "Hello from Buildkite!"
       echo "Current directory: $(pwd)"
       echo "Date: $(date)"
-      echo "✅ Test step completed successdsdssdfasfully"
+      echo "✅ Test step completed successfully"
 
-  - label: ":checkered_flag: Another Test Szdssddsassdseps
+  - label: ":checkered_flag: Another Test Step"
     command: |
       echo "This is step 2"
-      echo "Testing pipeline validatiodsdsns"
+      echo "Testing pipeline validation"
       echo "✅ All good!"
