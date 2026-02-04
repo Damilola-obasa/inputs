@@ -43,3 +43,17 @@ steps:
       adjustments:
         - with: { arch: "x86_64", platform: "mac" }
         - with: { arch: "x64", platform: "windows" }
+
+  # ============================================================
+  # CASE 4: SIMPLER WORKAROUND - Real combo in setup, rest in adjustments
+  # Expected: 3 jobs (no placeholder needed, no skip needed)
+  # ============================================================
+  - label: "[SIMPLER] Real combo: {{matrix.platform}}-{{matrix.arch}}"
+    command: echo "Platform={{matrix.platform}} Arch={{matrix.arch}}"
+    matrix:
+      setup:
+        arch: ["arm64"]
+        platform: ["mac"]
+      adjustments:
+        - with: { arch: "x86_64", platform: "mac" }
+        - with: { arch: "x64", platform: "windows" }
