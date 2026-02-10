@@ -12,3 +12,7 @@ steps:
   - label: "Case C: printf (avoids embedding a literal newline in one arg)"
     command: |
       printf '%s\n' "💡 Run reason" "yada yada serve_vllm"
+
+  - label: "Repro: literal \\n in echo string"
+    command: |
+      echo "💡 Run reason\nyada yada serve_vllm"
