@@ -1,59 +1,14 @@
 steps:
-  # ============================================================
-  # CASE 1: BUG - Empty arrays with adjustments
-  # Expected: 2 jobs (from adjustments)
-  # Actual: 0 jobs (BUG!)
-  # ============================================================
-  - label: "[BUG] Empty arrays: {{matrix.platform}}-{{matrix.arch}}"
-    command: echo "Platform={{matrix.platform}} Arch={{matrix.arch}}"
-    matrix:
-      setup:
-        arch: []
-        platform: []
-      adjustments:
-        - with: { arch: "x86_64", platform: "mac" }
-        - with: { arch: "x64", platform: "windows" }
+  - label: "Case A: newline INSIDE quoted string (should NOT imply &&)"
+    command: |
+      echo "💡 Run reason
+      yada yada serve_vllm"
 
-  # ============================================================
-  # CASE 2: WORKAROUND - Placeholder with skip
-  # Expected: 2 jobs (placeholder skipped, adjustments run)
-  # ============================================================
-  - label: "[WORKAROUND] Placeholder: {{matrix.platform}}-{{matrix.arch}}"
-    command: echo "Platform={{matrix.platform}} Arch={{matrix.arch}}"
-    matrix:
-      setup:
-        arch: ["__placeholder__"]
-        platform: ["__placeholder__"]
-      adjustments:
-        - with: { arch: "__placeholder__", platform: "__placeholder__" }
-          skip: true
-        - with: { arch: "x86_64", platform: "mac" }
-        - with: { arch: "x64", platform: "windows" }
+  - label: "Case B: two separate commands (UI often joins with &&)"
+    command: |
+      echo "--- 💡 Run reason"
+      echo "yada yada serve_vllm"
 
-  # ============================================================
-  # CASE 3: WORKING - Non-empty arrays with adjustments
-  # Expected: 3 jobs (1 from setup + 2 from adjustments)
-  # ============================================================
-  - label: "[WORKING] Non-empty: {{matrix.platform}}-{{matrix.arch}}"
-    command: echo "Platform={{matrix.platform}} Arch={{matrix.arch}}"
-    matrix:
-      setup:
-        arch: ["arm64"]
-        platform: ["mac"]
-      adjustments:
-        - with: { arch: "x86_64", platform: "mac" }
-        - with: { arch: "x64", platform: "windows" }
-
-  # ============================================================
-  # CASE 4: SIMPLER WORKAROUND - Real combo in setup, rest in adjustments
-  # Expected: 3 jobs (no placeholder needed, no skip needed)
-  # ============================================================
-  - label: "[SIMPLER] Real combo: {{matrix.platform}}-{{matrix.arch}}"
-    command: echo "Platform={{matrix.platform}} Arch={{matrix.arch}}"
-    matrix:
-      setup:
-        arch: ["arm64"]
-        platform: ["mac"]
-      adjustments:
-        - with: { arch: "x86_64", platform: "mac" }
-        - with: { arch: "x64", platform: "windows" }
+  - label: "Case C: printf (avoids embedding a literal newline in one arg)"
+    command: |
+      printf '%s\n' "💡 Run reason" "yada yada serve_vllm"
