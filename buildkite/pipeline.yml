@@ -16,3 +16,17 @@ steps:
   - label: "Repro: literal \\n in echo string"
     command: |
       echo "💡 Run reason\nyada yada serve_vllm"
+
+  # ============================================================
+  # Skip reason tests — is the reason string visible in the UI?
+  # ============================================================
+  - label: "Skip with reason string"
+    command: echo "This should not run"
+    skip: "Component X hasn't changed, skipping build"
+
+  - label: "Skip with boolean (no reason)"
+    command: echo "This should not run either"
+    skip: true
+
+  - label: "This step runs normally"
+    command: echo "I ran successfully"
