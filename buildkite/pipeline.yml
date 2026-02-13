@@ -30,3 +30,24 @@ steps:
 
   - label: "This step runs normally"
     command: echo "I ran successfully"
+
+  # ============================================================
+  # Skip reason shown via annotation
+  # ============================================================
+  - label: ":memo: Announce skip reasons"
+    command: |
+      buildkite-agent annotate --style "info" --context "skip-reasons" <<'EOF'
+      <h3>Skipped Steps</h3>
+      <ul>
+        <li><strong>Build Component X</strong> — Component X hasn't changed, skipping build</li>
+        <li><strong>Deploy Staging</strong> — No deployment needed, config unchanged</li>
+      </ul>
+      EOF
+
+  - label: "Build Component X"
+    command: echo "This should not run"
+    skip: "Component X hasn't changed, skipping build"
+
+  - label: "Deploy Staging"
+    command: echo "This should not run"
+    skip: "No deployment needed, config unchanged"
