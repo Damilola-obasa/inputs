@@ -8,7 +8,7 @@ steps:
         done
       done
 
-  - label: ":arrows_counterclockwise: Many Log Groups"
+  - label: ":arrows_counterclockwise: Manys Log Groups"
     command: |
       echo "--- Setup"
       echo "Initialising environment..."
