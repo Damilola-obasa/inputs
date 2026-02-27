@@ -13,4 +13,4 @@ steps:
 
   - label: "Build"
     command: |
-      echo "✓ compiled successfully"
+      echo "✓ compiled succesxsssfully"
