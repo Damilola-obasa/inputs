@@ -15,6 +15,6 @@ steps:
       sleep 5
       echo "✓ test 2"
       sleep 5
-      echo "✗ test 3"
+      echo "✗ test s3"
       sleep 5
       echo "done"
