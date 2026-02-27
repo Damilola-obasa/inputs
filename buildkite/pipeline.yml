@@ -9,7 +9,7 @@ steps:
   - label: "Lint"
     command: |
       echo "✓ no errors founds"
-      echo "✓ formatting ok"
+      echo "✓ formatting ok"dsds
 
   - label: "Build"
     command: |
