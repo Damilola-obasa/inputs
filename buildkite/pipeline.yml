@@ -1,16 +1,20 @@
 steps:
-  - label: "Tests"
+  - label: ":test_tube: Control step"
+    key: "control-step"
     command: |
-      echo "✓ auth tests passed"
-      echo "✓ user tests passed"
-      echo "✓ payment tests passed"
-      echo "✗ email tests failed"
+      echo "plain output only"
+      sleep 20
+      echo "done"
 
-  - label: "Lint"
+  - label: ":test_tube: Decorated step"
+    key: "decorated-step"
     command: |
-      echo "✓ no errors foundsdds"
-      echo "✓ formatting ok"dsds
-
-  - label: "Build"
-    command: |
-      echo "✓ compiled succesxsssfully"
+      echo "starting"
+      sleep 5
+      echo "✓ test 1"
+      sleep 5
+      echo "✓ test 2"
+      sleep 5
+      echo "✗ test 3"
+      sleep 5
+      echo "done"
