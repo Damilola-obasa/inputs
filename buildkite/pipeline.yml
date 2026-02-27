@@ -8,7 +8,7 @@ steps:
 
   - label: "Lint"
     command: |
-      echo "✓ no errors found"
+      echo "✓ no errors founds"
       echo "✓ formatting ok"
 
   - label: "Build"
