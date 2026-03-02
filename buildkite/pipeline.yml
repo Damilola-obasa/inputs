@@ -1,6 +1,30 @@
 steps:
-  - label: "Tests"
-    command: |
-      echo "✓ auth tests passed"
-      echo "✓ user tests passed"
-      echo "✗ email tests failed"
+  - label: "Step 1"
+    command: echo "Step 1 done"
+
+  - label: "Step 2"
+    command: echo "Step 2 done"
+
+  - label: "Step 3"
+    command: echo "Step 3 done"
+
+  - label: "Step 4"
+    command: echo "Step 4 done"
+
+  - label: "Step 5"
+    command: echo "Step 5 done"
+
+  - label: "Step 6"
+    command: echo "Step 6 done"
+
+  - label: "Step 7"
+    command: echo "Step 7 done"
+
+  - label: "Step 8"
+    command: echo "Step 8 done"
+
+  - label: "Step 9"
+    command: echo "Step 9 done"
+
+  - label: "Step 10"
+    command: echo "Step 10 done"
