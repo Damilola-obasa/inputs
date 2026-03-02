@@ -1,15 +1,6 @@
 steps:
-  - label: "Step 1"
-    command: echo "Hi from step 1! 👋"
-
-  - label: "Step 2"
-    command: echo "Hey there, hope your day is going well!"
-
-  - label: "Step 3"
-    command: echo "Greetindsdgs from the pipeline!"
-
-  - label: "Step 4"
-    command: echo "Hi! Almdsssdssedsost donexw here."
-
-  - label: "Step 5"
-    command: echo "Hello sasdadsdsfxdcsaarocsedm the last step. All done!"
+  - label: "Tests"
+    command: |
+      echo "✓ auth tests passed"
+      echo "✓ user tests passed"
+      echo "✗ email tests failed"
