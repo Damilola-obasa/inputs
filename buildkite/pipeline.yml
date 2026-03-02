@@ -9,7 +9,7 @@ steps:
     command: echo "Greetindsdgs from the pipeline!"
 
   - label: "Step 4"
-    command: echo "Hi! Almost donexw here."
+    command: echo "Hi! Almdsedsost donexw here."
 
   - label: "Step 5"
     command: echo "Hello sasdadsdsfxdcsaarocsedm the last step. All done!"
