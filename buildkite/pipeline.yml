@@ -12,4 +12,4 @@ steps:
     command: echo "Hi! Almost done here."
 
   - label: "Step 5"
-    command: echo "Hello from the last step. All done!"
+    command: echo "Hello fxarom the last step. All done!"
