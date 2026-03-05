@@ -5,7 +5,7 @@ notify:
 steps:
   - key: cancel-me
     soft_fail:
-      - exit_status: -1
+      - exit_status: "*"
     commands: |
       sleep 180
   - commands: |
