@@ -3,12 +3,34 @@ notify:
     if: build.state == "failed"
 
 steps:
-  - key: cancel-me
-    soft_fail:
-      - exit_status: "*"
+  - label: "Upload job"
     commands: |
-      sleep 180
-  - commands: |
-      sleep 15
-      buildkite-agent step cancel --step 'cancel-me'
-    priority: 100
+      echo "Uploading..."
+      sleep 3
+      echo "Upload complete"
+
+  - label: "Cleanup job"
+    soft_fail:
+      - exit_status: 42
+    commands: |
+      TIMEOUT_SECS=15
+
+      # Simulate long-running cleanup (replace with real cleanup command)
+      sleep 180 &
+      WORK_PID=$!
+
+      ELAPSED=0
+      while kill -0 $WORK_PID 2>/dev/null && [ $ELAPSED -lt $TIMEOUT_SECS ]; do
+        sleep 1
+        ELAPSED=$((ELAPSED + 1))
+      done
+
+      if kill -0 $WORK_PID 2>/dev/null; then
+        kill $WORK_PID
+        wait $WORK_PID 2>/dev/null
+        echo "Cleanup timed out after ${TIMEOUT_SECS}s — soft failing"
+        exit 42
+      fi
+
+      wait $WORK_PID
+      exit $?
