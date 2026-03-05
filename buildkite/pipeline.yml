@@ -3,13 +3,10 @@ notify:
     if: build.state == "failed"
 
 steps:
-  - key: cancel-me
+  - label: "Upload job"
+    timeout_in_minutes: 1
     soft_fail:
       - exit_status: 42
     commands: |
       trap 'exit 42' TERM
       sleep 180
-  - commands: |
-      sleep 15
-      buildkite-agent step cancel --step 'cancel-me'
-    priority: 100
