@@ -1,7 +1,7 @@
 
 notify:
   - slack: "#social"
-    if: build.state == "failed"
+    if: build.state == "passed"
 
 steps:
   - key: cancel-me
