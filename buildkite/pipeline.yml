@@ -1,15 +1,6 @@
-
 notify:
   - slack: "#social"
-    if: build.state == "passed"
 
 steps:
-  - key: cancel-me
-    soft_fail:
-      - exit_status: "*"
-    commands: |
-      sleep 180
-  - commands: |
-      sleep 15
-      buildkite-agent step cancel --step 'cancel-me'
-    priority: 100
+  - label: "Hello"
+    command: echo "Hello World"
