@@ -1,15 +1,3 @@
-notify:
-  - slack: "#social"
-    if: build.state == "failed"
-
 steps:
-  - key: cancel-me
-    soft_fail:
-      - exit_status: "*"
-    commands: |
-      echo "BUILDKITE_CANCEL_GRACE_PERIOD=$BUILDKITE_CANCEL_GRACE_PERIOD"
-      sleep 180
-  - commands: |
-      sleep 15
-      buildkite-agent build cancel
-    priority: 100
+  - label: "117 second run"
+    command: sleep 117
