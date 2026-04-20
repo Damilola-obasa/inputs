@@ -1,3 +1,15 @@
 steps:
-  - label: "2m30s run"
-    command: sleep 150
+  - label: "Fail then pass on retry"
+    command: |
+      echo "BUILDKITE_RETRY_COUNT=$BUILDKITE_RETRY_COUNT"
+      echo "BUILDKITE_JOB_ID=$BUILDKITE_JOB_ID"
+      echo "BUILDKITE_BUILD_ID=$BUILDKITE_BUILD_ID"
+      if [ "$BUILDKITE_RETRY_COUNT" -eq "0" ]; then
+        echo "First attempt — failing"
+        exit 1
+      fi
+      echo "Retry attempt — passing"
+    retry:
+      automatic:
+        - exit_status: 1
+          limit: 1
