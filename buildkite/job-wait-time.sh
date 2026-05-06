@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-# Usage: ./job-wait-time.sh <org> <pipeline> <build-number>
-# Requires: BUILDKITE_API_TOKEN env var
-
 set -euo pipefail
 
-ORG="${1:?Usage: $0 <org> <pipeline> <build-number>}"
-PIPELINE="${2:?}"
-BUILD="${3:?}"
+ORG="${1:-$BUILDKITE_ORGANIZATION_SLUG}"
+PIPELINE="${2:-$BUILDKITE_PIPELINE_SLUG}"
+BUILD="${3:-$BUILDKITE_BUILD_NUMBER}"
 
 response=$(curl -sf \
   -H "Authorization: Bearer ${BUILDKITE_API_TOKEN:?BUILDKITE_API_TOKEN not set}" \
