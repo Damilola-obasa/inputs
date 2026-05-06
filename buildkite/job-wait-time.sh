@@ -5,11 +5,10 @@ ORG="${1:-$BUILDKITE_ORGANIZATION_SLUG}"
 PIPELINE="${2:-$BUILDKITE_PIPELINE_SLUG}"
 BUILD="${3:-$BUILDKITE_BUILD_NUMBER}"
 
-response=$(curl -sf \
-  -H "Authorization: Bearer ${BUILDKITE_API_TOKEN:?BUILDKITE_API_TOKEN not set}" \
-  "https://api.buildkite.com/v2/organizations/${ORG}/pipelines/${PIPELINE}/builds/${BUILD}")
+PYTHON_SCRIPT=$(mktemp)
+trap 'rm -f "$PYTHON_SCRIPT"' EXIT
 
-echo "$response" | python3 - <<'EOF'
+cat > "$PYTHON_SCRIPT" <<'EOF'
 import sys, json
 from datetime import datetime
 
@@ -32,3 +31,8 @@ for job in build.get("jobs", []):
     else:
         print(f"{name:<50} {'N/A':>10}")
 EOF
+
+curl -sf \
+  -H "Authorization: Bearer ${BUILDKITE_API_TOKEN:?BUILDKITE_API_TOKEN not set}" \
+  "https://api.buildkite.com/v2/organizations/${ORG}/pipelines/${PIPELINE}/builds/${BUILD}" \
+  | python3 "$PYTHON_SCRIPT"
