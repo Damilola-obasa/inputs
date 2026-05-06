@@ -1,4 +1,7 @@
 steps:
+  - label: "Test job wait time script"
+    command: ./buildkite/test-job-wait-time.sh
+
   - label: "Fail then pass on retry"
     command: |
       echo "BUILDKITE_RETRY_COUNT=$BUILDKITE_RETRY_COUNT"
