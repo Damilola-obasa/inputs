@@ -1,3 +1,14 @@
 steps:
+  - label: "Job A"
+    command: sleep 5
+
+  - label: "Job B"
+    command: sleep 3
+
+  - label: "Job C"
+    command: sleep 7
+
+  - wait
+
   - label: "Check agent wait time"
     command: ./buildkite/job-wait-time.sh
