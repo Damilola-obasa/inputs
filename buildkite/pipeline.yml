@@ -1,13 +1,30 @@
 steps:
-  - label: "Step A"
-    command: |
-      echo "Step A started at $(date -u +%T)"
-      buildkite-agent pipeline upload <<'EOF'
-      steps:
-        - label: "Step B"
-          depends_on: ~
-          command: echo "Step B started at $(date -u +%T)"
-      EOF
-      echo "Step B uploaded, Step A continuing..."
-      sleep 30
-      echo "Step A finished at $(date -u +%T)"
+  # Test 1: depends_on a missing step key — expect build to fail
+  - label: "Test 1: missing depends_on key"
+    key: "test-1"
+    command: echo "This depends on a step that was never uploaded"
+    depends_on: "optional-step-missing"
+
+  - wait: ~
+    continue_on_failure: true
+
+  # Test 2: allow_dependency_failure on a missing step — does it help?
+  - label: "Test 2: allow_dependency_failure on missing step"
+    key: "test-2"
+    command: echo "allow_dependency_failure set"
+    depends_on:
+      - step: "optional-step-missing-2"
+        allow_failure: true
+
+  - wait: ~
+    continue_on_failure: true
+
+  # Test 3: no-op placeholder — always upload a dummy step with the key
+  - label: "Upload optional step (no-op placeholder)"
+    key: "optional-step-real"
+    command: echo "Optional step placeholder — always runs, always passes"
+
+  - label: "Test 3: collector with placeholder"
+    key: "test-3"
+    command: echo "Collector ran — dependency was satisfied by placeholder"
+    depends_on: "optional-step-real"
