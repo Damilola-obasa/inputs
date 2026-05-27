@@ -1,9 +1,24 @@
 steps:
-  # Test 3: no-op placeholder — always upload a dummy step with the key
-  - label: "Optional step (no-op placeholder)"
-    key: "optional-step-real"
-    command: echo "Optional step placeholder — always passes"
+  - label: "Uploader"
+    command: |
+      echo "Uploading Step C (depends on Step D) first..."
+      buildkite-agent pipeline upload <<'EOF'
+      steps:
+        - label: "Step C"
+          key: "step-c"
+          depends_on: "step-d"
+          command: echo "Step C ran at $(date -u +%T)"
+      EOF
 
-  - label: "Collector"
-    command: echo "Collector ran — dependency satisfied by placeholder"
-    depends_on: "optional-step-real"
+      echo "Waiting 10s before uploading Step D..."
+      sleep 10
+
+      echo "Uploading Step D now..."
+      buildkite-agent pipeline upload <<'EOF'
+      steps:
+        - label: "Step D"
+          key: "step-d"
+          command: echo "Step D ran at $(date -u +%T)"
+      EOF
+
+      echo "Both uploaded"
