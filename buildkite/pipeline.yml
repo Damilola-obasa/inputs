@@ -1,24 +1,13 @@
 steps:
   - label: "Uploader"
     command: |
-      echo "Uploading Step C (depends on Step D) first..."
+      echo "Uploading Step A (depends on Step B) at $(date -u +%T)"
       buildkite-agent pipeline upload <<'EOF'
       steps:
-        - label: "Step C"
-          key: "step-c"
-          depends_on: "step-d"
-          command: echo "Step C ran at $(date -u +%T)"
+        - label: "Step A"
+          key: "step-a"
+          depends_on: "step-b"
+          command: echo "Step A ran at $(date -u +%T)"
       EOF
-
-      echo "Waiting 10s before uploading Step D..."
-      sleep 10
-
-      echo "Uploading Step D now..."
-      buildkite-agent pipeline upload <<'EOF'
-      steps:
-        - label: "Step D"
-          key: "step-d"
-          command: echo "Step D ran at $(date -u +%T)"
-      EOF
-
-      echo "Both uploaded"
+      echo "Step A uploaded — Step B will never be uploaded"
+      echo "Uploader finished at $(date -u +%T)"
