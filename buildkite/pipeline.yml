@@ -1,17 +1,14 @@
 steps:
-  # Holds the concurrency slot for 3 minutes
-  - label: "Slot holder"
+  - label: "Guard"
     command: |
-      echo "Holding concurrency slot at $(date -u +%T)"
-      sleep 180
-      echo "Slot released at $(date -u +%T)"
-    concurrency: 1
-    concurrency_group: "test-concurrency"
+      echo "BUILDKITE_SOURCE=$BUILDKITE_SOURCE"
+      echo "BUILDKITE_RETRY_COUNT=$BUILDKITE_RETRY_COUNT"
+      if [ "$BUILDKITE_SOURCE" = "ui" ] && [ "$BUILDKITE_RETRY_COUNT" -eq 0 ]; then
+        echo "Manual build detected — blocking"
+        exit 1
+      fi
+      echo "Build allowed to continue"
 
-  # Waits for the slot with a 1 minute timeout
-  # If timeout applies to waiting, this will time out before the slot is free
-  - label: "Waiting step (1min timeout)"
-    command: echo "Got the slot at $(date -u +%T)"
-    concurrency: 1
-    concurrency_group: "test-concurrency"
-    timeout_in_minutes: 1
+  - label: "Actual work"
+    command: echo "Running actual job"
+    depends_on: "guard"
