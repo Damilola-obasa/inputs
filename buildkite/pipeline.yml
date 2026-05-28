@@ -1,5 +1,6 @@
 steps:
   - label: "Guard"
+    key: "guard"
     command: |
       echo "BUILDKITE_SOURCE=$BUILDKITE_SOURCE"
       echo "BUILDKITE_RETRY_COUNT=$BUILDKITE_RETRY_COUNT"
