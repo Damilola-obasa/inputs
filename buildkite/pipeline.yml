@@ -10,5 +10,7 @@ steps:
       echo "Build allowed to continue"
 
   - label: "Actual work"
-    command: echo "Running actual job"
+    command: |
+      echo "Running actual job"
+      exit 1
     depends_on: "guard"
