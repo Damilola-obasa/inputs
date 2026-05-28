@@ -1,13 +1,17 @@
 steps:
-  - label: "Uploader"
+  # Holds the concurrency slot for 3 minutes
+  - label: "Slot holder"
     command: |
-      echo "Uploading Step A (depends on Step B) at $(date -u +%T)"
-      buildkite-agent pipeline upload <<'EOF'
-      steps:
-        - label: "Step A"
-          key: "step-a"
-          depends_on: "step-b"
-          command: echo "Step A ran at $(date -u +%T)"
-      EOF
-      echo "Step A uploaded — Step B will never be uploaded"
-      echo "Uploader finished at $(date -u +%T)"
+      echo "Holding concurrency slot at $(date -u +%T)"
+      sleep 180
+      echo "Slot released at $(date -u +%T)"
+    concurrency: 1
+    concurrency_group: "test-concurrency"
+
+  # Waits for the slot with a 1 minute timeout
+  # If timeout applies to waiting, this will time out before the slot is free
+  - label: "Waiting step (1min timeout)"
+    command: echo "Got the slot at $(date -u +%T)"
+    concurrency: 1
+    concurrency_group: "test-concurrency"
+    timeout_in_minutes: 1
