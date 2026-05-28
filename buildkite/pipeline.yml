@@ -3,8 +3,8 @@ steps:
     key: "guard"
     command: |
       echo "BUILDKITE_SOURCE=$BUILDKITE_SOURCE"
-      if [ "$BUILDKITE_SOURCE" = "ui" ]; then
-        echo "Manual build detected — blocking"
+      if [ "$BUILDKITE_SOURCE" = "ui" ] && [ "${BUILDKITE_RETRY_COUNT:-0}" = "0" ]; then
+        echo "Manual UI builds are disabled for this pipeline. Please trigger via webhook/API (or retry an existing build)."
         exit 1
       fi
       echo "Build allowed to continue"
