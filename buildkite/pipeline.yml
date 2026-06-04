@@ -1,5 +1,5 @@
 steps:
-  - label: "Test pre-exit hook on failure"
+  - label: "Test pre-exit hook on failures"
     command: |
       echo "Running command that will fail..."
       exit 1
