@@ -1,7 +1,4 @@
 steps:
-  - label: "Test pre-exit hook on failures"
-    command: |
-      echo "Running command that will fail..."
-      exit 1
-    soft_fail:
-      - exit_status: 1
+  - trigger: "CHILD_PIPELINE_SLUG"
+    label: "Trigger child pipeline"
+    soft_fail: true
