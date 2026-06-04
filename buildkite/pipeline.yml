@@ -1,4 +1,4 @@
 steps:
-  - trigger: "CHILD_PIPELINE_SLUG"
+  - trigger: "inputs"
     label: "Trigger child pipeline"
     soft_fail: true
