@@ -1,5 +1,5 @@
 steps:
   - label: "Test post-command hook override"
     command: |
-      echo "Running command that will fail..."
+      echo "Running commands that will fail..."
       exit 1
