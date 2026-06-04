@@ -1,0 +1,5 @@
+steps:
+  - label: "Deploy Backend"
+    command: |
+      buildkite-agent meta-data set "job-type" "deploy-backend"
+      echo "Running Deploy Backend job..."
