@@ -1,16 +1,7 @@
 steps:
-  - label: "Guard"
-    key: "guard"
+  - label: "Test pre-exit hook on failure"
     command: |
-      echo "BUILDKITE_SOURCE=$BUILDKITE_SOURCE"
-      if [ "$BUILDKITE_SOURCE" = "ui" ] && [ "${BUILDKITE_RETRY_COUNT:-0}" = "0" ]; then
-        echo "Manual UI builds are disabled for this pipeline. Please trigger via webhook/API (or retry an existing build)."
-        exit 1
-      fi
-      echo "Build allowed to continue"
-
-  - label: "Actual work"
-    command: |
-      echo "Running actual job"
+      echo "Running command that will fail..."
       exit 1
-    depends_on: "guard"
+    soft_fail:
+      - exit_status: 1
