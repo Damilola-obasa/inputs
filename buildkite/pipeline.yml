@@ -1,5 +1,5 @@
 steps:
   - label: "Test post-commands hook override"
     command: |
-      echo "Running command that will fail..."
+      echo "Running command that wddssilcsafdrfdsddl fail..."
       exit 1
