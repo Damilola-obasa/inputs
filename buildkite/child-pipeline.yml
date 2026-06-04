@@ -1,0 +1,7 @@
+steps:
+  - label: "Test pre-exit hook on failure"
+    command: |
+      echo "Running command that will fail..."
+      exit 1
+    soft_fail:
+      - exit_status: 1
