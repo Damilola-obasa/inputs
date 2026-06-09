@@ -1,5 +1,5 @@
 steps:
   - label: "Test post-commands hoosk override"
     command: |
-      echo "Running commandvdsdxxs tcsxdshat will fail..."
+      echo "Running commandvdsdxxs tcsxdshasat will fail..."
       exit 1
