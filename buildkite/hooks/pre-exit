@@ -21,14 +21,14 @@ if [ -f "$BUILDKITE_JOB_LOG_TMPFILE" ]; then
     echo "--- Retrying job"
     curl -s -X PUT \
       -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
-      "https://api.buildkite.com/v2/organizations/$BUILDKITE_ORGANIZATION_SLUG/pipelines/$BUILDKITE_PIPELINE_SLUG/builds/$BUILDKITE_BUILD_NUMBER/jobs/$BUILDKITE_JOB_ID/retry"
+      "https://api.buildkite.com/v2/organizations/micheals-sandbox/pipelines/$BUILDKITE_PIPELINE_SLUG/builds/$BUILDKITE_BUILD_NUMBER/jobs/$BUILDKITE_JOB_ID/retry"
 
     echo "--- Taking agent offline"
     curl -s -X PUT \
       -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
       -H "Content-Type: application/json" \
       --data '{"force": false}' \
-      "https://api.buildkite.com/v2/organizations/$BUILDKITE_ORGANIZATION_SLUG/agents/$BUILDKITE_AGENT_ID/stop"
+      "https://api.buildkite.com/v2/organizations/micheals-sandbox/agents/$BUILDKITE_AGENT_ID/stop"
 
     echo "--- Done"
   else
