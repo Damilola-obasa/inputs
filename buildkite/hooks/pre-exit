@@ -1,0 +1,21 @@
+#!/bin/bash
+echo "--- pre-exit hook fired"
+echo "BUILDKITE_COMMAND_EXIT_STATUS=$BUILDKITE_COMMAND_EXIT_STATUS"
+
+if [ "$BUILDKITE_COMMAND_EXIT_STATUS" != "0" ] && [ -f "$BUILDKITE_JOB_LOG_TMPFILE" ]; then
+  echo "--- Checking job log for known hardware errors"
+  echo "Log file: $BUILDKITE_JOB_LOG_TMPFILE"
+
+  if grep -q "ERROR: failed to register layer" "$BUILDKITE_JOB_LOG_TMPFILE"; then
+    echo "Flaky hardware pattern detected — annotating build"
+    buildkite-agent annotate "⚠️ **Flaky hardware detected** on agent \`$BUILDKITE_AGENT_NAME\` — job failed with: \`ERROR: failed to register layer\`" \
+      --style warning \
+      --context flaky-hardware
+  else
+    echo "No known hardware error patterns found in log"
+  fi
+elif [ "$BUILDKITE_COMMAND_EXIT_STATUS" != "0" ]; then
+  echo "Job failed but BUILDKITE_JOB_LOG_TMPFILE is not set or missing — ensure enable-job-log-tmpfile=true in agent config"
+else
+  echo "Command passed"
+fi

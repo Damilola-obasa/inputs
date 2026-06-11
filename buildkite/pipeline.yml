@@ -1,5 +1,6 @@
 steps:
-  - label: "Say hello"
+  - label: "Simulate flaky hardware"
     command: |
-      echo "Hello from the jobs"
-      buildkite-agent annotate "Job ran successfully" --style success --context job-result
+      echo "Running job..."
+      echo "ERROR: failed to register layer"
+      exit 1
