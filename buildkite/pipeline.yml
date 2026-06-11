@@ -1,5 +1,5 @@
 steps:
   - label: "Say hello"
     command: |
-      echo "Hello from the job"
+      echo "Hello from the jobs"
       buildkite-agent annotate "Job ran successfully" --style success --context job-result --scope job
