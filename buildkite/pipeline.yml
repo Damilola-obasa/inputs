@@ -1,24 +1,5 @@
 steps:
-  - label: ":hammer: Build"
+  - label: "Say hello"
     command: |
-      echo "Building project..."
-      buildkite-agent annotate "**Build started** at $(date)" --style info --context build-info
-
-  - wait
-
-  - label: ":test_tube: Test"
-    command: |
-      echo "Running tests..."
-      if [ $? -eq 0 ]; then
-        buildkite-agent annotate ":white_check_mark: **Tests passed**" --style success --context test-result
-      else
-        buildkite-agent annotate ":x: **Tests failed**" --style error --context test-result
-        exit 1
-      fi
-
-  - wait
-
-  - label: ":rocket: Deploy"
-    command: |
-      echo "Deploying..."
-      buildkite-agent annotate ":rocket: **Deployed successfully** to staging" --style success --context deploy-result
+      echo "Hello from the job"
+      buildkite-agent annotate "Job ran successfully at $(date)" --style success --context job-result
