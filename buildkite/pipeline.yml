@@ -1,6 +1,6 @@
 steps:
   - label: "Simulate flaky hardware"
     command: |
-      echo "Running job..."
+      echo "Running job...."
       echo "ERROR: failed to register layer"
       exit 1
