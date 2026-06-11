@@ -2,4 +2,4 @@ steps:
   - label: "Say hello"
     command: |
       echo "Hello from the job"
-      buildkite-agent annotate "Job ran successfully" --style success --context job-result
+      buildkite-agent annotate "Job ran successfully" --style success --context job-result --scope job
