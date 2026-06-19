@@ -1,0 +1,40 @@
+#!/bin/bash
+echo "--- pre-exit hook fired"
+echo "BUILDKITE_COMMAND_EXIT_STATUS=$BUILDKITE_COMMAND_EXIT_STATUS"
+echo "BUILDKITE_ORGANIZATION_SLUG=$BUILDKITE_ORGANIZATION_SLUG"
+echo "BUILDKITE_AGENT_ID=$BUILDKITE_AGENT_ID"
+
+INIT_FAILURE_PATTERN="failed to initialize job"
+INIT_FAILURE_LIMIT="${INIT_FAILURE_LIMIT:-10}"
+INIT_FAILURE_COUNT_FILE="/tmp/buildkite-init-failure-count-${BUILDKITE_AGENT_ID}"
+
+if [ -f "$BUILDKITE_JOB_LOG_TMPFILE" ] && grep -q "$INIT_FAILURE_PATTERN" "$BUILDKITE_JOB_LOG_TMPFILE"; then
+  count=$(( $(cat "$INIT_FAILURE_COUNT_FILE" 2>/dev/null || echo 0) + 1 ))
+  echo "$count" > "$INIT_FAILURE_COUNT_FILE"
+  echo "--- '$INIT_FAILURE_PATTERN' detected ($count/$INIT_FAILURE_LIMIT consecutive)"
+else
+  if [ -f "$INIT_FAILURE_COUNT_FILE" ]; then
+    echo "--- No '$INIT_FAILURE_PATTERN' this run — resetting consecutive count"
+    rm -f "$INIT_FAILURE_COUNT_FILE"
+  fi
+  count=0
+fi
+
+if [ "$count" -ge "$INIT_FAILURE_LIMIT" ]; then
+  echo "Consecutive init-failure limit reached"
+
+  echo "--- Annotating build"
+  buildkite-agent annotate "🔴 **Agent dying**: \`$BUILDKITE_AGENT_NAME\` failed to initialize jobs $count times in a row. Taking agent offline." \
+    --style error \
+    --context init-failure-death
+
+  echo "--- Taking agent offline"
+  curl -s -X PUT \
+    -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
+    -H "Content-Type: application/json" \
+    --data '{"force": false}' \
+    "https://api.buildkite.com/v2/organizations/$BUILDKITE_ORGANIZATION_SLUG/agents/$BUILDKITE_AGENT_ID/stop"
+
+  rm -f "$INIT_FAILURE_COUNT_FILE"
+  echo "--- Done"
+fi

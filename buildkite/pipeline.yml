@@ -1,6 +1,10 @@
 steps:
-  - label: "Simulate flaky hardware"
+  - label: "Simulate persistent init failure"
     command: |
-      echo "Running job after agent-level pre-exit hook removal......"
-      echo "ERROR: failed to register layer"
+      echo "Running job..."
+      echo "failed to initialize job"
       exit 1
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 10
