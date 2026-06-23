@@ -1,6 +1,15 @@
 steps:
-  - label: "Simulate flaky hardware"
+  - label: "Kernel & package vulnerability check"
     command: |
-      echo "Running job after agent-level pre-exit hook removal......"
-      echo "ERROR: failed to register layer"
-      exit 1
+      echo "--- Actively running kernel (uname -r)"
+      uname -r
+
+      echo "--- Installed kernel packages (rpm)"
+      rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | grep -i '^kernel' | sort
+
+      echo "--- Reboot required for an installed kernel update to take effect?"
+      if command -v needs-restarting >/dev/null 2>&1; then
+        needs-restarting -r || echo "Reboot required: a newer kernel is installed but not yet running"
+      else
+        echo "needs-restarting not found — install yum-utils to enable this check (yum install -y yum-utils)"
+      fi
