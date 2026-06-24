@@ -1,15 +1,21 @@
 steps:
-  - label: "Kernel & package vulnerability check"
-    command: |
-      echo "--- Actively running kernel (uname -r)"
-      uname -r
-
-      echo "--- Installed kernel packages (rpm)"
-      rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | grep -i '^kernel' | sort
-
-      echo "--- Reboot required for an installed kernel update to take effect?"
-      if command -v needs-restarting >/dev/null 2>&1; then
-        needs-restarting -r || echo "Reboot required: a newer kernel is installed but not yet running"
-      else
-        echo "needs-restarting not found — install yum-utils to enable this check (yum install -y yum-utils)"
-      fi
+  - label: "This is a very long job name for step number one"
+    command: "echo 'Running step one'"
+  - label: "This is a very long job name for step number two"
+    command: "echo 'Running step two'"
+  - label: "This is a very long job name for step number three"
+    command: "echo 'Running step three'"
+  - label: "This is a very long job name for step number four"
+    command: "echo 'Running step four'"
+  - label: "This is a very long job name for step number five"
+    command: "echo 'Running step five'"
+  - label: "This is a very long job name for step number six"
+    command: "echo 'Running step six'"
+  - label: "This is a very long job name for step number seven"
+    command: "echo 'Running step seven'"
+  - label: "This is a very long job name for step number eight"
+    command: "echo 'Running step eight'"
+  - label: "This is a very long job name for step number nine"
+    command: "echo 'Running step nine'"
+  - label: "This is a very long job name for step number ten"
+    command: "echo 'Running step ten'"
