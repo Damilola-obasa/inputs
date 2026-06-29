@@ -1,21 +1,41 @@
 steps:
-  - label: "This is a very long job name for step number one"
-    command: "echo 'Running step one'"
-  - label: "This is a very long job name for step number two"
-    command: "echo 'Running step two'"
-  - label: "This is a very long job name for step number three"
-    command: "echo 'Running step three'"
-  - label: "This is a very long job name for step number four"
-    command: "echo 'Running step four'"
-  - label: "This is a very long job name for step number five"
-    command: "echo 'Running step five'"
-  - label: "This is a very long job name for step number six"
-    command: "echo 'Running step six'"
-  - label: "This is a very long job name for step number seven"
-    command: "echo 'Running step seven'"
-  - label: "This is a very long job name for step number eight"
-    command: "echo 'Running step eight'"
-  - label: "This is a very long job name for step number nine"
-    command: "echo 'Running step nine'"
-  - label: "This is a very long job name for step number ten"
-    command: "echo 'Running step ten'"
+  - label: ":boom: Upstream step (intentionally fails)"
+    key: "upstream"
+    command: "exit 1"
+
+  - group: ":family: Group depending on failed upstream"
+    key: "group"
+    depends_on: "upstream"
+    steps:
+      - label: "Child job A"
+        key: "child-a"
+        command: "echo 'child A ran'"
+      - label: "Child job B"
+        key: "child-b"
+        command: "echo 'child B ran'"
+
+  - label: ":mag: Downstream inspection step"
+    key: "inspect"
+    depends_on: "group"
+    allow_dependency_failure: true
+    command: |
+      echo "--- Downstream step is runnable (this line printing confirms it)"
+
+      echo "--- child-a state / outcome"
+      buildkite-agent step get state --step "child-a" || echo "(state lookup failed)"
+      buildkite-agent step get outcome --step "child-a" || echo "(outcome lookup failed)"
+
+      echo "--- child-b state / outcome"
+      buildkite-agent step get state --step "child-b" || echo "(state lookup failed)"
+      buildkite-agent step get outcome --step "child-b" || echo "(outcome lookup failed)"
+
+      echo "--- group state / outcome (first check)"
+      buildkite-agent step get state --step "group" || echo "(state lookup failed)"
+      buildkite-agent step get outcome --step "group" || echo "(outcome lookup failed)"
+
+      echo "--- Waiting 30s to check for delayed resolution"
+      sleep 30
+
+      echo "--- group state / outcome (after wait)"
+      buildkite-agent step get state --step "group" || echo "(state lookup failed)"
+      buildkite-agent step get outcome --step "group" || echo "(outcome lookup failed)"
