@@ -14,28 +14,17 @@ steps:
         key: "child-b"
         command: "echo 'child B ran'"
 
-  - label: ":mag: Downstream inspection step"
+  - label: ":mag: Downstream inspection step (workaround: check upstream, not group)"
     key: "inspect"
-    depends_on: "group"
+    depends_on: "upstream"
     allow_dependency_failure: true
     command: |
       echo "--- Downstream step is runnable (this line printing confirms it)"
 
-      echo "--- child-a state / outcome"
-      buildkite-agent step get state --step "child-a" || echo "(state lookup failed)"
-      buildkite-agent step get outcome --step "child-a" || echo "(outcome lookup failed)"
+      echo "--- Workaround: checking the real source step ('upstream') instead of the group key"
+      buildkite-agent step get state --step "upstream" || echo "(state lookup failed)"
+      buildkite-agent step get outcome --step "upstream" || echo "(outcome lookup failed)"
 
-      echo "--- child-b state / outcome"
-      buildkite-agent step get state --step "child-b" || echo "(state lookup failed)"
-      buildkite-agent step get outcome --step "child-b" || echo "(outcome lookup failed)"
-
-      echo "--- group state / outcome (first check)"
-      buildkite-agent step get state --step "group" || echo "(state lookup failed)"
-      buildkite-agent step get outcome --step "group" || echo "(outcome lookup failed)"
-
-      echo "--- Waiting 30s to check for delayed resolution"
-      sleep 30
-
-      echo "--- group state / outcome (after wait)"
+      echo "--- For comparison: group state / outcome (the known-stuck key, kept for reference)"
       buildkite-agent step get state --step "group" || echo "(state lookup failed)"
       buildkite-agent step get outcome --step "group" || echo "(outcome lookup failed)"
