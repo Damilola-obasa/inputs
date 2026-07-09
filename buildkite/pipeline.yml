@@ -20,7 +20,7 @@ steps:
       - "fetch-deps"
     command: "echo 'Building frontend'"
 
-  - label: "Build backensdd"
+  - label: "Build backendd"
     key: "build-backend"
     depends_on:
       - "setup-env"
