@@ -25,7 +25,7 @@ steps:
     depends_on:
       - "setup-env"
       - "fetch-deps"
-    command: "echo 'Building backesnd'"
+    command: "echo 'Building backend'"
 
   - label: "Build servicsdes"
     key: "build-services"
