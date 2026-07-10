@@ -37,5 +37,5 @@ steps:
     command: "exit 0"
   - label: "Job 19"
     command: "exit 0"
-  - label: "Job 20"
+  - label: "Jobs 20"
     command: "exit 0"
