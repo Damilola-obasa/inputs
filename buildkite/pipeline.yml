@@ -1,119 +1,99 @@
 steps:
-  # Stage 1 — parallel starts, no dependencies
-  - label: "Setup environment"
-    key: "setup-env"
-    command: "echo 'Setting up environment'"
+  - label: "Setup"
+    key: "setup"
+    command: "echo 'Setup'"
 
-  - label: "Fetch dependencies"
-    key: "fetch-deps"
-    command: "echo 'Fetching dependencies'"
+  - label: "Job 01"
+    key: "job-01"
+    depends_on: "setup"
+    command: "echo 'Running job 01'"
 
-  - label: "Validate config"
-    key: "validate-config"
-    command: "echo 'Validating config'"
+  - label: "Job 02"
+    key: "job-02"
+    depends_on: "setup"
+    command: "echo 'Running job 02'"
 
-  # Stage 2 — builds, depend on stage 1 in different combos
-  - label: "Build frontens"
-    key: "build-frontend"
+  - label: "Job 03"
+    key: "job-03"
+    depends_on: "setup"
+    command: "echo 'Running job 03'"
+
+  - label: "Job 04"
+    key: "job-04"
+    depends_on: "setup"
+    command: "echo 'Running job 04'"
+
+  - label: "Job 05"
+    key: "job-05"
+    depends_on: "setup"
+    command: "echo 'Running job 05'"
+
+  - label: "Job 06"
+    key: "job-06"
+    depends_on: "setup"
+    command: "echo 'Running job 06'"
+
+  - label: "Job 07"
+    key: "job-07"
+    depends_on: "setup"
+    command: "echo 'Running job 07'"
+
+  - label: "Job 08"
+    key: "job-08"
+    depends_on: "setup"
+    command: "echo 'Running job 08'"
+
+  - label: "Job 09"
+    key: "job-09"
+    depends_on: "setup"
+    command: "echo 'Running job 09'"
+
+  - label: "Job 10"
+    key: "job-10"
+    depends_on: "setup"
+    command: "echo 'Running job 10'"
+
+  - label: "Job 11"
+    key: "job-11"
+    depends_on: "setup"
+    command: "echo 'Running job 11'"
+
+  - label: "Job 12"
+    key: "job-12"
+    depends_on: "setup"
+    command: "echo 'Running job 12'"
+
+  - label: "Job 13"
+    key: "job-13"
+    depends_on: "setup"
+    command: "echo 'Running job 13'"
+
+  - label: "Job 14"
+    key: "job-14"
+    depends_on: "setup"
+    command: "echo 'Running job 14'"
+
+  - label: "Job 15"
+    key: "job-15"
+    depends_on: "setup"
+    command: "echo 'Running job 15'"
+
+  - label: "Finalize"
+    key: "finalize"
     depends_on:
-      - "setup-env"
-      - "fetch-deps"
-    command: "echo 'Building frontend'"
-
-  - label: "Build backensdd"
-    key: "build-backend"
-    depends_on:
-      - "setup-env"
-      - "fetch-deps"
-    command: "echo 'Building backend'"
-
-  - label: "Build servicsdes"
-    key: "build-services"
-    depends_on:
-      - "setup-env"
-      - "fetch-deps"
-      - "validate-config"
-    command: "echo 'Building services'"
-
-  # Stage 3 — tests, depend on different build steps
-  - label: "Unit tests frontend"
-    key: "unit-tests-frontend"
-    depends_on: "build-frontend"
-    command: "echo 'Running frontend unit tests'"
-
-  - label: "Unit tests backend"
-    key: "unit-tests-backend"
-    depends_on: "build-backend"
-    command: "echo 'Running backend unit tests'"
-
-  - label: "Integration tests"
-    key: "integration-tests"
-    depends_on:
-      - "build-frontend"
-      - "build-backend"
-      - "build-services"
-    command: "echo 'Running integration tests'"
-
-  - label: "Security scan"
-    key: "security-scan"
-    depends_on:
-      - "build-backend"
-      - "build-services"
-    command: "echo 'Running security scan'"
-
-  - label: "Performance tests"
-    key: "perf-tests"
-    depends_on:
-      - "build-frontend"
-      - "build-backend"
-    command: "echo 'Running performance tests'"
-
-  # Stage 3b — compliance group, depends on validate-config + security-scan
-  - group: "Compliance checks"
-    key: "compliance"
-    depends_on:
-      - "validate-config"
-      - "security-scan"
-    steps:
-      - label: "License check"
-        command: "echo 'Checking licenses'"
-      - label: "Policy check"
-        command: "echo 'Checking policies'"
-      - label: "Audit log check"
-        command: "echo 'Checking audit logs'"
-
-  # Stage 4 — staging deploy, depends on tests passing
-  - label: "Deploy to staging"
-    key: "deploy-staging"
-    depends_on:
-      - "unit-tests-frontend"
-      - "unit-tests-backend"
-      - "integration-tests"
-    command: "echo 'Deploying to staging'"
-
-  # Stage 5 — post-staging checks, both depend on deploy-staging
-  - label: "Smoke tests"
-    key: "smoke-tests"
-    depends_on: "deploy-staging"
-    command: "echo 'Running smoke tests'"
-
-  - label: "E2E tests"
-    key: "e2e-tests"
-    depends_on: "deploy-staging"
-    command: "echo 'Running E2E tests'"
-
-  # Stage 6 — production deploy, everything must pass
-  - label: "Deploy to production"
-    key: "deploy-prod"
-    depends_on:
-      - "smoke-tests"
-      - "e2e-tests"
-      - "compliance"
-      - "perf-tests"
-    command: "echo 'Deploying to production'"
-
-  # Final — notify after prod deploy
-  - label: "Notify team"
-    key: "notify"
-    depends_on: "deploy-prod"
-    command: "echo 'Notifying team of successful deployment'"
+      - "job-01"
+      - "job-02"
+      - "job-03"
+      - "job-04"
+      - "job-05"
+      - "job-06"
+      - "job-07"
+      - "job-08"
+      - "job-09"
+      - "job-10"
+      - "job-11"
+      - "job-12"
+      - "job-13"
+      - "job-14"
+      - "job-15"
+    command: "echo 'All jobs done'"
