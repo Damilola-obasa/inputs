@@ -13,7 +13,7 @@ steps:
     command: "echo 'Validating config'"
 
   # Stage 2 — builds, depend on stage 1 in different combos
-  - label: "Build frontend"
+  - label: "Build frontens"
     key: "build-frontend"
     depends_on:
       - "setup-env"
