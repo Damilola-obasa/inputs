@@ -5,7 +5,7 @@ steps:
 
   - wait
 
-  - command: echo "This runs once per build, one build at a time"
+  - command: echo "This one runs once per build, one build at a time"
 
   - wait
 
