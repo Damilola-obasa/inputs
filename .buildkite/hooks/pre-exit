@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "~~~ Cleaning up Terraform artifacts"
+
+if [ -d "${BUILDKITE_BUILD_CHECKOUT_PATH}" ]; then
+  find "${BUILDKITE_BUILD_CHECKOUT_PATH}" -type d -name ".terraform" -exec rm -rf {} + || {
+    echo "Warning, could not fully clean .terraform directories"
+  }
+
+  find "${BUILDKITE_BUILD_CHECKOUT_PATH}" -type f -name ".terraform.lock.hcl" -exec rm -f {} + || true
+fi
+
+echo "Cleanup complete"
+
+# Always exit 0 so this hook never affects the job result
+exit 0

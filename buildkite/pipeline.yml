@@ -1,14 +1,13 @@
 steps:
-  - command: echo "Open the gate"
-    concurrency_group: gate
-    concurrency: 1
+  - label: "Create fake Terraform artifacts"
+    command: |
+      echo "--- Creating fake Terraform artifacts"
+      mkdir -p .terraform/providers/registry.terraform.io/hashicorp/aws
+      dd if=/dev/urandom of=.terraform/providers/registry.terraform.io/hashicorp/aws/terraform-provider-aws bs=1M count=5
+      mkdir -p modules/example/.terraform
+      touch modules/example/.terraform/dummy-provider-file
+      echo "fake lock file content" > .terraform.lock.hcl
+      echo "fake lock file content" > modules/example/.terraform.lock.hcl
 
-  - wait
-
-  - command: echo "This one runs once per build, one build at a time"
-
-  - wait
-
-  - command: echo "Close the gate"
-    concurrency_group: gate
-    concurrency: 1
+      echo "--- Artifacts created, listing them"
+      find . -name ".terraform" -o -name ".terraform.lock.hcl" | grep -v ".git" | sort
