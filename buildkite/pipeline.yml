@@ -11,3 +11,16 @@ steps:
 
       echo "--- Artifacts created, listing them"
       find . -name ".terraform" -o -name ".terraform.lock.hcl" | grep -v ".git" | sort
+
+  - label: "Verify artifacts were cleaned up"
+    command: |
+      echo "--- Checking for leftover Terraform artifacts"
+      leftovers=$(find . \( -name ".terraform" -o -name ".terraform.lock.hcl" \) | grep -v ".git" | sort)
+
+      if [ -z "$leftovers" ]; then
+        echo "PASS: No Terraform artifacts found — cleanup worked"
+      else
+        echo "FAIL: Leftover artifacts found:"
+        echo "$leftovers"
+        exit 1
+      fi
