@@ -1,4 +1,6 @@
 steps:
-  - label: "Parallel job %n"
-    command: "echo 'Running batch %n of %c' && sleep 10"
+  - label: "Tests %N of %t"
+    command: |
+      echo "Running parallel job $BUILDKITE_PARALLEL_JOB of $BUILDKITE_PARALLEL_JOB_COUNT"
+      sleep 10
     parallelism: 5
