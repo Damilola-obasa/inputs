@@ -1,26 +1,4 @@
 steps:
-  - label: "Create fake Terraform artifacts"
-    command: |
-      echo "--- Creating fake Terraform artifacts"
-      mkdir -p .terraform/providers/registry.terraform.io/hashicorp/aws
-      dd if=/dev/urandom of=.terraform/providers/registry.terraform.io/hashicorp/aws/terraform-provider-aws bs=1M count=5
-      mkdir -p modules/example/.terraform
-      touch modules/example/.terraform/dummy-provider-file
-      echo "fake lock file content" > .terraform.lock.hcl
-      echo "fake lock file content" > modules/example/.terraform.lock.hcl
-
-      echo "--- Artifacts created, listing them"
-      find . -name ".terraform" -o -name ".terraform.lock.hcl" | grep -v ".git" | sort
-
-  - label: "Verify artifacts were cleaned up"
-    command: |
-      echo "--- Checking for leftover Terraform artifacts"
-      leftovers=$(find . \( -name ".terraform" -o -name ".terraform.lock.hcl" \) | grep -v ".git" | sort)
-
-      if [ -z "$leftovers" ]; then
-        echo "PASS: No Terraform artifacts found — cleanup worked"
-      else
-        echo "FAIL: Leftover artifacts found:"
-        echo "$leftovers"
-        exit 1
-      fi
+  - label: "Parallel job %n"
+    command: "echo 'Running batch %n of %c' && sleep 10"
+    parallelism: 5
