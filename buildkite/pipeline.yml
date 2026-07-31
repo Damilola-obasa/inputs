@@ -1,16 +1,22 @@
 steps:
   - label: "Run Tests"
-    key: "run-tests"
+    key: "s1"
     command: |
       echo "Running tests..."
       sleep 5
       echo "Tests passed!"
+    notify:
+      - github_commit_status:
+          context: "s1"
 
   - label: "Publish Coverage"
-    key: "publish-coverage"
+    key: "s2"
     command: |
       echo "Publishing coverage report..."
       sleep 30
       exit 1
-    depends_on: "run-tests"
+    depends_on: "s1"
     soft_fail: true
+    notify:
+      - github_commit_status:
+          context: "s2"
