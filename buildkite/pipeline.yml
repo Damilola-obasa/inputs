@@ -1,6 +1,16 @@
 steps:
-  - label: "Tests %N of %t"
+  - label: "Run Tests"
+    key: "run-tests"
     command: |
-      echo "Running parallels job $BUILDKITE_PARALLEL_JOB of $BUILDKITE_PARALLEL_JOB_COUNT"
+      echo "Running tests..."
+      sleep 5
+      echo "Tests passed!"
+
+  - label: "Publish Coverage"
+    key: "publish-coverage"
+    command: |
+      echo "Publishing coverage report..."
       sleep 10
-    parallelism: 5
+      echo "Coverage published!"
+    depends_on: "run-tests"
+    soft_fail: true
