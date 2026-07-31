@@ -10,7 +10,7 @@ steps:
     key: "publish-coverage"
     command: |
       echo "Publishing coverage report..."
-      sleep 10
-      echo "Coverage published!"
+      sleep 30
+      exit 1
     depends_on: "run-tests"
     soft_fail: true
