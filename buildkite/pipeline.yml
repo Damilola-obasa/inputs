@@ -1,16 +1,3 @@
 steps:
-  - label: "Run Tests"
-    key: "run-tests"
-    command: |
-      echo "Running tests..."
-      sleep 5
-      echo "Tests passed!"
-
-  - label: "Publish Coverage"
-    key: "publish-coverage"
-    command: |
-      echo "Publishing coverage report..."
-      sleep 30
-      exit 1
-    depends_on: "run-tests"
-    soft_fail: true
+  - label: "Test pre-command export with exit 0"
+    command: echo "Main command running"

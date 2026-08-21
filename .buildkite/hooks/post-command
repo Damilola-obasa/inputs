@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "--- Post-command hook running"
+echo "MY_TEST_VAR=$MY_TEST_VAR"
+
+if [ -z "$MY_TEST_VAR" ]; then
+  echo "BUG CONFIRMED: MY_TEST_VAR is empty - export did not survive exit 0 in pre-command"
+else
+  echo "OK: MY_TEST_VAR is set correctly"
+fi

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "--- Pre-command hook running"
+export MY_TEST_VAR="hello from pre-command"
+echo "Exported MY_TEST_VAR=$MY_TEST_VAR"
+echo "Now calling exit 0 early..."
+exit 0
