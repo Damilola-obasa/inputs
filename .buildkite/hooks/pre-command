@@ -3,4 +3,5 @@
 echo "--- Pre-command hook running"
 export MY_TEST_VAR="hello from pre-command"
 echo "Exported MY_TEST_VAR=$MY_TEST_VAR"
-echo "Hook running to completion (no exit 0)"
+echo "Now calling return 0 instead of exit 0..."
+return 0
