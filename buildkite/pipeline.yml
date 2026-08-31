@@ -1,16 +1,8 @@
 steps:
-  - label: "Run Tests"
-    key: "run-tests"
+  - label: "Generate artifact"
+    key: "generate-artifact"
     command: |
-      echo "Running tests..."
-      sleep 5
-      echo "Tests passed!"
-
-  - label: "Publish Coverage"
-    key: "publish-coverage"
-    command: |
-      echo "Publishing coverage report..."
-      sleep 30
-      exit 1
-    depends_on: "run-tests"
-    soft_fail: true
+      echo "generating artifact..."
+      echo "snapshot data from build $BUILDKITE_BUILD_NUMBER" > snapshot.json
+      buildkite-agent artifact upload snapshot.json
+      echo "artifact uploaded"
