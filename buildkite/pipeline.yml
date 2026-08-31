@@ -4,11 +4,11 @@ steps:
 
   - label: "Deploy to Staging"
     command: echo "Deploying to Staging"
-    if: build.branch == "master"
+    if: build.branch == "main"
 
   - label: "Deploy to QA"
     command: echo "Deploying to QA"
-    if: build.branch == "master"
+    if: build.branch == "main"
 
   - label: "Deploy to UAT"
     command: echo "Deploying to UAT"
