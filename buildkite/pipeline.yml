@@ -1,15 +1,33 @@
 steps:
-  - label: "Build"
-    command: echo "Building on branch $BUILDKITE_BRANCH"
+  - label: "Blocking Test A"
+    key: "blocking-a"
+    command: |
+      echo "Running blocking test A..."
+      sleep 5
+      echo "Blocking test A done!"
 
-  - label: "Deploy to Staging"
-    command: echo "Deploying to Staging"
-    if: build.branch == "main"
+  - label: "Blocking Test B"
+    key: "blocking-b"
+    command: |
+      echo "Running blocking test B..."
+      sleep 5
+      echo "Blocking test B done!"
 
-  - label: "Deploy to QA"
-    command: echo "Deploying to QA"
-    if: build.branch == "main"
+  - label: "Non-blocking slow test"
+    key: "nonblocking-slow"
+    command: |
+      echo "Running non-blocking slow test..."
+      sleep 120
+      echo "Non-blocking test done!"
+    soft_fail: true
 
-  - label: "Deploy to UAT"
-    command: echo "Deploying to UAT"
-    if: build.branch =~ /^release\//
+  - label: "Cancel non-blocking tests"
+    key: "cancel-nonblocking"
+    command: |
+      echo "Blocking tests done - cancelling non-blocking tests..."
+      buildkite-agent step cancel --step nonblocking-slow --force --force-grace-period-seconds 10
+      echo "Cancelled!"
+    depends_on:
+      - "blocking-a"
+      - "blocking-b"
+    allow_dependency_failure: true
