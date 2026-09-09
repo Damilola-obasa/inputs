@@ -1,33 +1,96 @@
 steps:
-  - label: "Blocking Test A"
-    key: "blocking-a"
-    command: |
-      echo "Running blocking test A..."
-      sleep 5
-      echo "Blocking test A done!"
+  # 7 passing steps
+  - label: "Pass 1"
+    command: echo "passing step 1"
 
-  - label: "Blocking Test B"
-    key: "blocking-b"
-    command: |
-      echo "Running blocking test B..."
-      sleep 5
-      echo "Blocking test B done!"
+  - label: "Pass 2"
+    command: echo "passing step 2"
 
-  - label: "Non-blocking slow test"
-    key: "nonblocking-slow"
-    command: |
-      echo "Running non-blocking slow test..."
-      sleep 120
-      echo "Non-blocking test done!"
+  - label: "Pass 3"
+    command: echo "passing step 3"
+
+  - label: "Pass 4"
+    command: echo "passing step 4"
+
+  - label: "Pass 5"
+    command: echo "passing step 5"
+
+  - label: "Pass 6"
+    command: echo "passing step 6"
+
+  - label: "Pass 7"
+    command: echo "passing step 7"
+
+  # 1 failing step
+  - label: "Failing Test"
+    command: exit 1
     soft_fail: true
 
-  - label: "Cancel non-blocking tests"
-    key: "cancel-nonblocking"
-    command: |
-      echo "Blocking tests done - cancelling non-blocking tests..."
-      buildkite-agent step cancel --step nonblocking-slow --force --force-grace-period-seconds 10
-      echo "Cancelled!"
-    depends_on:
-      - "blocking-a"
-      - "blocking-b"
-    allow_dependency_failure: true
+  # 10 skipped steps
+  - label: "Skip 1"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 2"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 3"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 4"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 5"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 6"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 7"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 8"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 9"
+    command: echo "skip"
+    skip: true
+
+  - label: "Skip 10"
+    command: echo "skip"
+    skip: true
+
+  # Block step - 8 steps after this will be in waiting state
+  - block: "Unblock to continue"
+
+  # 8 waiting steps
+  - label: "Waiting 1"
+    command: echo "waiting step 1"
+
+  - label: "Waiting 2"
+    command: echo "waiting step 2"
+
+  - label: "Waiting 3"
+    command: echo "waiting step 3"
+
+  - label: "Waiting 4"
+    command: echo "waiting step 4"
+
+  - label: "Waiting 5"
+    command: echo "waiting step 5"
+
+  - label: "Waiting 6"
+    command: echo "waiting step 6"
+
+  - label: "Waiting 7"
+    command: echo "waiting step 7"
+
+  - label: "Waiting 8"
+    command: echo "waiting step 8"
