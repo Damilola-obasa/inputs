@@ -1,96 +1,30 @@
 steps:
-  # 7 passing steps
-  - label: "Pass 1"
-    command: echo "passing step 1"
+  - label: ":docker: Control - no OCI builder"
+    key: "control"
+    command: |
+      echo "--- Docker config"
+      echo "DOCKER_CONFIG=${DOCKER_CONFIG:-not set}"
+      echo "BUILDX_BUILDER=${BUILDX_BUILDER:-not set}"
+      echo ""
+      echo "--- Available builders"
+      docker buildx ls
 
-  - label: "Pass 2"
-    command: echo "passing step 2"
-
-  - label: "Pass 3"
-    command: echo "passing step 3"
-
-  - label: "Pass 4"
-    command: echo "passing step 4"
-
-  - label: "Pass 5"
-    command: echo "passing step 5"
-
-  - label: "Pass 6"
-    command: echo "passing step 6"
-
-  - label: "Pass 7"
-    command: echo "passing step 7"
-
-  # 1 failing step
-  - label: "Failing Test"
-    command: exit 1
-    soft_fail: true
-
-  # 10 skipped steps
-  - label: "Skip 1"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 2"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 3"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 4"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 5"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 6"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 7"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 8"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 9"
-    command: echo "skip"
-    skip: true
-
-  - label: "Skip 10"
-    command: echo "skip"
-    skip: true
-
-  # Block step - 8 steps after this will be in waiting state
-  - block: "Unblock to continue"
-
-  # 8 waiting steps
-  - label: "Waiting 1"
-    command: echo "waiting step 1"
-
-  - label: "Waiting 2"
-    command: echo "waiting step 2"
-
-  - label: "Waiting 3"
-    command: echo "waiting step 3"
-
-  - label: "Waiting 4"
-    command: echo "waiting step 4"
-
-  - label: "Waiting 5"
-    command: echo "waiting step 5"
-
-  - label: "Waiting 6"
-    command: echo "waiting step 6"
-
-  - label: "Waiting 7"
-    command: echo "waiting step 7"
-
-  - label: "Waiting 8"
-    command: echo "waiting step 8"
+  - label: ":docker: Ephemeral OCI builder"
+    key: "oci-builder"
+    env:
+      USE_OCI_BUILDER: "true"
+    command: |
+      echo "--- Docker config"
+      echo "DOCKER_CONFIG=${DOCKER_CONFIG:-not set}"
+      echo "BUILDX_BUILDER=${BUILDX_BUILDER:-not set}"
+      echo ""
+      echo "--- Available builders (should show ocibuilder-* as active)"
+      docker buildx ls
+      echo ""
+      echo "--- Build a test image using the ephemeral builder"
+      echo 'FROM alpine:3.20
+      RUN echo "built with ephemeral OCI builder"' | docker buildx build \
+        --platform linux/amd64 \
+        --output type=image,push=false \
+        -f - .
+      echo "Build succeeded"

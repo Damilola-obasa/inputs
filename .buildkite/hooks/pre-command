@@ -1,0 +1,25 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ "${USE_OCI_BUILDER:-false}" != "true" ]]; then
+  return 0
+fi
+
+echo "--- :docker: Creating ephemeral buildx builder"
+
+BUILDER_NAME="ocibuilder-${BUILDKITE_BUILD_ID}"
+export BUILDX_BUILDER="$BUILDER_NAME"
+
+START=$(date +%s%N)
+
+docker buildx create \
+  --name "$BUILDER_NAME" \
+  --driver docker-container \
+  --use
+
+docker buildx inspect --bootstrap
+
+END=$(date +%s%N)
+ELAPSED=$(( (END - START) / 1000000 ))
+
+echo "Builder '${BUILDER_NAME}' ready in ${ELAPSED}ms"

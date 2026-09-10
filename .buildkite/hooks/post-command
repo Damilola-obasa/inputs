@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ "${USE_OCI_BUILDER:-false}" != "true" ]]; then
+  return 0
+fi
+
+echo "--- :docker: Removing ephemeral buildx builder"
+
+BUILDER_NAME="ocibuilder-${BUILDKITE_BUILD_ID}"
+
+if docker buildx inspect "$BUILDER_NAME" >/dev/null 2>&1; then
+  docker buildx rm "$BUILDER_NAME" --force
+  echo "Builder '${BUILDER_NAME}' removed"
+else
+  echo "Builder '${BUILDER_NAME}' not found, nothing to clean up"
+fi
