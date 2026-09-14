@@ -1,30 +1,335 @@
 steps:
-  - label: ":docker: Control - no OCI builder"
-    key: "control"
-    command: |
-      echo "--- Docker config"
-      echo "DOCKER_CONFIG=${DOCKER_CONFIG:-not set}"
-      echo "BUILDX_BUILDER=${BUILDX_BUILDER:-not set}"
-      echo ""
-      echo "--- Available builders"
-      docker buildx ls
+  - label: "Test suite 1"
+    command: echo "pass"
 
-  - label: ":docker: Ephemeral OCI builder"
-    key: "oci-builder"
-    env:
-      USE_OCI_BUILDER: "true"
-    command: |
-      echo "--- Docker config"
-      echo "DOCKER_CONFIG=${DOCKER_CONFIG:-not set}"
-      echo "BUILDX_BUILDER=${BUILDX_BUILDER:-not set}"
-      echo ""
-      echo "--- Available builders (should show ocibuilder-* as active)"
-      docker buildx ls
-      echo ""
-      echo "--- Build a test image using the ephemeral builder"
-      echo 'FROM alpine:3.20
-      RUN echo "built with ephemeral OCI builder"' | docker buildx build \
-        --platform linux/amd64 \
-        --output type=image,push=false \
-        -f - .
-      echo "Build succeeded"
+  - label: "Test suite 2"
+    command: sleep 25 && echo "done"
+
+  - label: "Test suite 3"
+    command: echo "pass"
+
+  - label: "Test suite 4"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 5"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 6"
+    command: sleep 40 && echo "done"
+
+  - label: "Test suite 7"
+    command: echo "pass"
+
+  - label: "Test suite 8"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 9"
+    command: echo "pass"
+
+  - label: "Test suite 10"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 11"
+    command: sleep 15 && echo "done"
+
+  - label: "Test suite 12"
+    command: echo "pass"
+
+  - label: "Test suite 13"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 14"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 15"
+    command: echo "pass"
+
+  - label: "Test suite 16"
+    command: sleep 50 && echo "done"
+
+  - label: "Test suite 17"
+    command: echo "pass"
+
+  - label: "Test suite 18"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 19"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 20"
+    command: echo "pass"
+
+  - label: "Test suite 21"
+    command: sleep 30 && echo "done"
+
+  - label: "Test suite 22"
+    command: echo "pass"
+
+  - label: "Test suite 23"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 24"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 25"
+    command: echo "pass"
+
+  - label: "Test suite 26"
+    command: sleep 20 && echo "done"
+
+  - label: "Test suite 27"
+    command: echo "pass"
+
+  - label: "Test suite 28"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 29"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 30"
+    command: echo "pass"
+
+  - label: "Test suite 31"
+    command: sleep 45 && echo "done"
+
+  - label: "Test suite 32"
+    command: echo "pass"
+
+  - label: "Test suite 33"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 34"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 35"
+    command: echo "pass"
+
+  - label: "Test suite 36"
+    command: sleep 10 && echo "done"
+
+  - label: "Test suite 37"
+    command: echo "pass"
+
+  - label: "Test suite 38"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 39"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 40"
+    command: echo "pass"
+
+  - label: "Test suite 41"
+    command: sleep 35 && echo "done"
+
+  - label: "Test suite 42"
+    command: echo "pass"
+
+  - label: "Test suite 43"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 44"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 45"
+    command: echo "pass"
+
+  - label: "Test suite 46"
+    command: sleep 55 && echo "done"
+
+  - label: "Test suite 47"
+    command: echo "pass"
+
+  - label: "Test suite 48"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 49"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 50"
+    command: echo "pass"
+
+  - label: "Test suite 51"
+    command: sleep 22 && echo "done"
+
+  - label: "Test suite 52"
+    command: echo "pass"
+
+  - label: "Test suite 53"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 54"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 55"
+    command: echo "pass"
+
+  - label: "Test suite 56"
+    command: sleep 18 && echo "done"
+
+  - label: "Test suite 57"
+    command: echo "pass"
+
+  - label: "Test suite 58"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 59"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 60"
+    command: echo "pass"
+
+  - label: "Test suite 61"
+    command: sleep 42 && echo "done"
+
+  - label: "Test suite 62"
+    command: echo "pass"
+
+  - label: "Test suite 63"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 64"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 65"
+    command: echo "pass"
+
+  - label: "Test suite 66"
+    command: sleep 28 && echo "done"
+
+  - label: "Test suite 67"
+    command: echo "pass"
+
+  - label: "Test suite 68"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 69"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 70"
+    command: echo "pass"
+
+  - label: "Test suite 71"
+    command: sleep 33 && echo "done"
+
+  - label: "Test suite 72"
+    command: echo "pass"
+
+  - label: "Test suite 73"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 74"
+    command: echo "pass"
+
+  - label: "Test suite 75"
+    command: sleep 48 && echo "done"
+
+  - label: "Test suite 76"
+    command: echo "pass"
+
+  - label: "Test suite 77"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 78"
+    command: echo "pass"
+
+  - label: "Test suite 79"
+    command: sleep 12 && echo "done"
+
+  - label: "Test suite 80"
+    command: echo "pass"
+
+  - label: "Test suite 81"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 82"
+    command: echo "pass"
+
+  - label: "Test suite 83"
+    command: sleep 38 && echo "done"
+
+  - label: "Test suite 84"
+    command: echo "pass"
+
+  - label: "Test suite 85"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 86"
+    command: echo "pass"
+
+  - label: "Test suite 87"
+    command: echo "pass"
+
+  - label: "Test suite 88"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 89"
+    command: echo "pass"
+
+  - label: "Test suite 90"
+    command: echo "pass"
+
+  - block: "Review results"
+
+  - label: "Test suite 91"
+    command: echo "pass"
+
+  - label: "Test suite 92"
+    command: echo "pass"
+
+  - label: "Test suite 93"
+    command: echo "pass"
+
+  - label: "Test suite 94"
+    command: echo "pass"
+
+  - label: "Test suite 95"
+    command: echo "pass"
+
+  - label: "Test suite 96"
+    command: echo "pass"
+
+  - label: "Test suite 97"
+    command: echo "pass"
+
+  - label: "Test suite 98"
+    command: echo "pass"
+
+  - label: "Test suite 99"
+    command: echo "pass"
+
+  - label: "Test suite 100"
+    command: echo "pass"
