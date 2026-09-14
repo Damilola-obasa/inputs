@@ -1,5 +1,5 @@
 steps:
-  # 15 failing steps first
+  # 15 fully failing steps
   - label: "Test suite 1"
     command: exit 1
 
@@ -45,7 +45,7 @@ steps:
   - label: "Test suite 15"
     command: exit 1
 
-  # mixed passing, slow, skipped
+  # mixed passing, slow, skipped, soft_fail
   - label: "Test suite 16"
     command: echo "pass"
 
@@ -53,7 +53,8 @@ steps:
     command: sleep 25 && echo "done"
 
   - label: "Test suite 18"
-    command: echo "pass"
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 19"
     command: echo "pass"
@@ -66,8 +67,8 @@ steps:
     command: echo "pass"
 
   - label: "Test suite 22"
-    command: echo "pass"
-    skip: true
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 23"
     command: sleep 15 && echo "done"
@@ -83,7 +84,8 @@ steps:
     command: sleep 50 && echo "done"
 
   - label: "Test suite 27"
-    command: echo "pass"
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 28"
     command: echo "pass"
@@ -103,7 +105,8 @@ steps:
     command: sleep 20 && echo "done"
 
   - label: "Test suite 33"
-    command: echo "pass"
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 34"
     command: echo "pass"
@@ -126,8 +129,8 @@ steps:
     command: echo "pass"
 
   - label: "Test suite 40"
-    command: echo "pass"
-    skip: true
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 41"
     command: sleep 35 && echo "done"
@@ -146,8 +149,8 @@ steps:
     command: echo "pass"
 
   - label: "Test suite 46"
-    command: echo "pass"
-    skip: true
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 47"
     command: sleep 22 && echo "done"
@@ -173,7 +176,8 @@ steps:
     command: sleep 42 && echo "done"
 
   - label: "Test suite 54"
-    command: echo "pass"
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 55"
     command: echo "pass"
@@ -206,8 +210,8 @@ steps:
     command: echo "pass"
 
   - label: "Test suite 64"
-    command: echo "pass"
-    skip: true
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 65"
     command: sleep 12 && echo "done"
@@ -233,7 +237,8 @@ steps:
     command: echo "pass"
 
   - label: "Test suite 72"
-    command: echo "pass"
+    command: exit 1
+    soft_fail: true
 
   - label: "Test suite 73"
     command: echo "pass"
@@ -359,6 +364,13 @@ steps:
 
   - label: "Test suite 120"
     command: echo "pass"
+
+  - label: "Test suite 121"
+    command: exit 1
+    soft_fail: true
+
+  - label: "Test suite 122"
+    command: sleep 17 && echo "done"
 
   - block: "Review results"
 
