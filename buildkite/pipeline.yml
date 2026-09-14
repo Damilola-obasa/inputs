@@ -295,6 +295,71 @@ steps:
   - label: "Test suite 90"
     command: echo "pass"
 
+  - label: "Test suite 101"
+    command: echo "pass"
+
+  - label: "Test suite 102"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 103"
+    command: sleep 20 && echo "done"
+
+  - label: "Test suite 104"
+    command: echo "pass"
+
+  - label: "Test suite 105"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 106"
+    command: echo "pass"
+
+  - label: "Test suite 107"
+    command: sleep 35 && echo "done"
+
+  - label: "Test suite 108"
+    command: echo "pass"
+
+  - label: "Test suite 109"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 110"
+    command: echo "pass"
+
+  - label: "Test suite 111"
+    command: sleep 15 && echo "done"
+
+  - label: "Test suite 112"
+    command: echo "pass"
+
+  - label: "Test suite 113"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 114"
+    command: echo "pass"
+
+  - label: "Test suite 115"
+    command: sleep 50 && echo "done"
+
+  - label: "Test suite 116"
+    command: echo "pass"
+
+  - label: "Test suite 117"
+    command: echo "pass"
+    skip: true
+
+  - label: "Test suite 118"
+    command: echo "pass"
+
+  - label: "Test suite 119"
+    command: sleep 28 && echo "done"
+
+  - label: "Test suite 120"
+    command: echo "pass"
+
   - block: "Review results"
 
   - label: "Test suite 91"
