@@ -1,405 +1,192 @@
 steps:
-  # 15 fully failing steps
-  - label: "Test suite 1"
-    command: exit 1
-
-  - label: "Test suite 2"
-    command: exit 1
-
-  - label: "Test suite 3"
-    command: exit 1
-
-  - label: "Test suite 4"
-    command: exit 1
-
-  - label: "Test suite 5"
-    command: exit 1
-
-  - label: "Test suite 6"
-    command: exit 1
-
-  - label: "Test suite 7"
-    command: exit 1
-
-  - label: "Test suite 8"
-    command: exit 1
-
-  - label: "Test suite 9"
-    command: exit 1
-
-  - label: "Test suite 10"
-    command: exit 1
-
-  - label: "Test suite 11"
-    command: exit 1
-
-  - label: "Test suite 12"
-    command: exit 1
-
-  - label: "Test suite 13"
-    command: exit 1
-
-  - label: "Test suite 14"
-    command: exit 1
-
-  - label: "Test suite 15"
-    command: exit 1
-
-  # mixed passing, slow, skipped, soft_fail
-  - label: "Test suite 16"
-    command: echo "pass"
-
-  - label: "Test suite 17"
-    command: sleep 25 && echo "done"
-
-  - label: "Test suite 18"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 19"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 20"
-    command: sleep 40 && echo "done"
-
-  - label: "Test suite 21"
-    command: echo "pass"
-
-  - label: "Test suite 22"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 23"
-    command: sleep 15 && echo "done"
-
-  - label: "Test suite 24"
-    command: echo "pass"
-
-  - label: "Test suite 25"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 26"
-    command: sleep 50 && echo "done"
-
-  - label: "Test suite 27"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 28"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 29"
-    command: sleep 30 && echo "done"
-
-  - label: "Test suite 30"
-    command: echo "pass"
-
-  - label: "Test suite 31"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 32"
-    command: sleep 20 && echo "done"
-
-  - label: "Test suite 33"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 34"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 35"
-    command: sleep 45 && echo "done"
-
-  - label: "Test suite 36"
-    command: echo "pass"
-
-  - label: "Test suite 37"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 38"
-    command: sleep 10 && echo "done"
-
-  - label: "Test suite 39"
-    command: echo "pass"
-
-  - label: "Test suite 40"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 41"
-    command: sleep 35 && echo "done"
-
-  - label: "Test suite 42"
-    command: echo "pass"
-
-  - label: "Test suite 43"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 44"
-    command: sleep 55 && echo "done"
-
-  - label: "Test suite 45"
-    command: echo "pass"
-
-  - label: "Test suite 46"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 47"
-    command: sleep 22 && echo "done"
-
-  - label: "Test suite 48"
-    command: echo "pass"
-
-  - label: "Test suite 49"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 50"
-    command: sleep 18 && echo "done"
-
-  - label: "Test suite 51"
-    command: echo "pass"
-
-  - label: "Test suite 52"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 53"
-    command: sleep 42 && echo "done"
-
-  - label: "Test suite 54"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 55"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 56"
-    command: sleep 28 && echo "done"
-
-  - label: "Test suite 57"
-    command: echo "pass"
-
-  - label: "Test suite 58"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 59"
-    command: sleep 33 && echo "done"
-
-  - label: "Test suite 60"
-    command: echo "pass"
-
-  - label: "Test suite 61"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 62"
-    command: sleep 48 && echo "done"
-
-  - label: "Test suite 63"
-    command: echo "pass"
-
-  - label: "Test suite 64"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 65"
-    command: sleep 12 && echo "done"
-
-  - label: "Test suite 66"
-    command: echo "pass"
-
-  - label: "Test suite 67"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 68"
-    command: sleep 38 && echo "done"
-
-  - label: "Test suite 69"
-    command: echo "pass"
-
-  - label: "Test suite 70"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 71"
-    command: echo "pass"
-
-  - label: "Test suite 72"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 73"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 74"
-    command: echo "pass"
-
-  - label: "Test suite 75"
-    command: echo "pass"
-
-  - label: "Test suite 76"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 77"
-    command: echo "pass"
-
-  - label: "Test suite 78"
-    command: echo "pass"
-
-  - label: "Test suite 79"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 80"
-    command: echo "pass"
-
-  - label: "Test suite 81"
-    command: echo "pass"
-
-  - label: "Test suite 82"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 83"
-    command: echo "pass"
-
-  - label: "Test suite 84"
-    command: echo "pass"
-
-  - label: "Test suite 85"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 86"
-    command: echo "pass"
-
-  - label: "Test suite 87"
-    command: echo "pass"
-
-  - label: "Test suite 88"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 89"
-    command: echo "pass"
-
-  - label: "Test suite 90"
-    command: echo "pass"
-
-  - label: "Test suite 101"
-    command: echo "pass"
-
-  - label: "Test suite 102"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 103"
-    command: sleep 20 && echo "done"
-
-  - label: "Test suite 104"
-    command: echo "pass"
-
-  - label: "Test suite 105"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 106"
-    command: echo "pass"
-
-  - label: "Test suite 107"
-    command: sleep 35 && echo "done"
-
-  - label: "Test suite 108"
-    command: echo "pass"
-
-  - label: "Test suite 109"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 110"
-    command: echo "pass"
-
-  - label: "Test suite 111"
-    command: sleep 15 && echo "done"
-
-  - label: "Test suite 112"
-    command: echo "pass"
-
-  - label: "Test suite 113"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 114"
-    command: echo "pass"
-
-  - label: "Test suite 115"
-    command: sleep 50 && echo "done"
-
-  - label: "Test suite 116"
-    command: echo "pass"
-
-  - label: "Test suite 117"
-    command: echo "pass"
-    skip: true
-
-  - label: "Test suite 118"
-    command: echo "pass"
-
-  - label: "Test suite 119"
-    command: sleep 28 && echo "done"
-
-  - label: "Test suite 120"
-    command: echo "pass"
-
-  - label: "Test suite 121"
-    command: exit 1
-    soft_fail: true
-
-  - label: "Test suite 122"
-    command: sleep 17 && echo "done"
-
-  - block: "Review results"
-
-  - label: "Test suite 91"
-    command: echo "pass"
-
-  - label: "Test suite 92"
-    command: echo "pass"
-
-  - label: "Test suite 93"
-    command: echo "pass"
-
-  - label: "Test suite 94"
-    command: echo "pass"
-
-  - label: "Test suite 95"
-    command: echo "pass"
-
-  - label: "Test suite 96"
-    command: echo "pass"
-
-  - label: "Test suite 97"
-    command: echo "pass"
-
-  - label: "Test suite 98"
-    command: echo "pass"
-
-  - label: "Test suite 99"
-    command: echo "pass"
-
-  - label: "Test suite 100"
-    command: echo "pass"
+  - label: "Run test suite and upload results"
+    command: |
+      echo "--- Generating test results"
+
+      cat > test-results.json << 'EOF'
+      [
+        {
+          "id": "test-001",
+          "scope": "Authentication",
+          "name": "logs in with valid credentials",
+          "location": "tests/auth_test.rb:10",
+          "file_name": "tests/auth_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.142, "start_at": 1700000000.0, "end_at": 1700000000.142 }
+        },
+        {
+          "id": "test-002",
+          "scope": "Authentication",
+          "name": "rejects invalid credentials",
+          "location": "tests/auth_test.rb:22",
+          "file_name": "tests/auth_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.089, "start_at": 1700000001.0, "end_at": 1700000001.089 }
+        },
+        {
+          "id": "test-003",
+          "scope": "Authentication",
+          "name": "handles expired session tokens",
+          "location": "tests/auth_test.rb:35",
+          "file_name": "tests/auth_test.rb",
+          "result": "failed",
+          "failure_reason": "Expected 401 but got 500",
+          "failure_expanded": [{ "expanded": ["Expected: 401\n  Got: 500\n  at tests/auth_test.rb:38"] }],
+          "history": { "duration": 0.203, "start_at": 1700000002.0, "end_at": 1700000002.203 }
+        },
+        {
+          "id": "test-004",
+          "scope": "Payments",
+          "name": "processes a successful payment",
+          "location": "tests/payments_test.rb:5",
+          "file_name": "tests/payments_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 1.52, "start_at": 1700000003.0, "end_at": 1700000004.52 }
+        },
+        {
+          "id": "test-005",
+          "scope": "Payments",
+          "name": "handles declined cards",
+          "location": "tests/payments_test.rb:18",
+          "file_name": "tests/payments_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.876, "start_at": 1700000005.0, "end_at": 1700000005.876 }
+        },
+        {
+          "id": "test-006",
+          "scope": "Payments",
+          "name": "retries on network timeout",
+          "location": "tests/payments_test.rb:30",
+          "file_name": "tests/payments_test.rb",
+          "result": "failed",
+          "failure_reason": "Timeout::Error: execution expired",
+          "failure_expanded": [{ "expanded": ["Timeout::Error: execution expired\n  at tests/payments_test.rb:34"] }],
+          "history": { "duration": 5.001, "start_at": 1700000006.0, "end_at": 1700000011.001 }
+        },
+        {
+          "id": "test-007",
+          "scope": "Payments",
+          "name": "sends receipt email after payment",
+          "location": "tests/payments_test.rb:45",
+          "file_name": "tests/payments_test.rb",
+          "result": "skipped",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.0, "start_at": 1700000012.0, "end_at": 1700000012.0 }
+        },
+        {
+          "id": "test-008",
+          "scope": "API",
+          "name": "returns 200 for valid requests",
+          "location": "tests/api_test.rb:8",
+          "file_name": "tests/api_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.311, "start_at": 1700000013.0, "end_at": 1700000013.311 }
+        },
+        {
+          "id": "test-009",
+          "scope": "API",
+          "name": "rate limits excessive requests",
+          "location": "tests/api_test.rb:20",
+          "file_name": "tests/api_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.458, "start_at": 1700000014.0, "end_at": 1700000014.458 }
+        },
+        {
+          "id": "test-010",
+          "scope": "API",
+          "name": "validates request schema",
+          "location": "tests/api_test.rb:33",
+          "file_name": "tests/api_test.rb",
+          "result": "failed",
+          "failure_reason": "Schema validation failed: missing required field 'user_id'",
+          "failure_expanded": [{ "expanded": ["Schema validation failed: missing required field 'user_id'\n  at tests/api_test.rb:37"] }],
+          "history": { "duration": 0.129, "start_at": 1700000015.0, "end_at": 1700000015.129 }
+        },
+        {
+          "id": "test-011",
+          "scope": "API",
+          "name": "handles malformed JSON body",
+          "location": "tests/api_test.rb:45",
+          "file_name": "tests/api_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.077, "start_at": 1700000016.0, "end_at": 1700000016.077 }
+        },
+        {
+          "id": "test-012",
+          "scope": "Database",
+          "name": "creates a user record",
+          "location": "tests/db_test.rb:5",
+          "file_name": "tests/db_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.234, "start_at": 1700000017.0, "end_at": 1700000017.234 }
+        },
+        {
+          "id": "test-013",
+          "scope": "Database",
+          "name": "rolls back on constraint violation",
+          "location": "tests/db_test.rb:18",
+          "file_name": "tests/db_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.198, "start_at": 1700000018.0, "end_at": 1700000018.198 }
+        },
+        {
+          "id": "test-014",
+          "scope": "Database",
+          "name": "handles connection pool exhaustion",
+          "location": "tests/db_test.rb:30",
+          "file_name": "tests/db_test.rb",
+          "result": "skipped",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 0.0, "start_at": 1700000019.0, "end_at": 1700000019.0 }
+        },
+        {
+          "id": "test-015",
+          "scope": "Database",
+          "name": "migrates schema without data loss",
+          "location": "tests/db_test.rb:42",
+          "file_name": "tests/db_test.rb",
+          "result": "passed",
+          "failure_reason": null,
+          "failure_expanded": [],
+          "history": { "duration": 2.871, "start_at": 1700000020.0, "end_at": 1700000022.871 }
+        }
+      ]
+      EOF
+
+      echo "--- Uploading to Buildkite Test Engine"
+
+      curl -X POST \
+        -H "Authorization: Token token=$BUILDKITE_ANALYTICS_TOKEN" \
+        -F "format=json" \
+        -F "data=@test-results.json" \
+        -F "run_env[CI]=buildkite" \
+        -F "run_env[key]=$BUILDKITE_BUILD_ID" \
+        -F "run_env[number]=$BUILDKITE_BUILD_NUMBER" \
+        -F "run_env[job_id]=$BUILDKITE_JOB_ID" \
+        -F "run_env[branch]=$BUILDKITE_BRANCH" \
+        -F "run_env[commit_sha]=$BUILDKITE_COMMIT" \
+        -F "run_env[message]=$BUILDKITE_MESSAGE" \
+        -F "run_env[url]=$BUILDKITE_BUILD_URL" \
+        https://analytics-api.buildkite.com/v1/uploads
+
+      echo "Upload complete"
