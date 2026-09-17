@@ -1,3 +1,30 @@
 steps:
-  - label: "Webhook test"
-    command: echo "hello"
+  - label: "Generate annotations"
+    command: |
+      buildkite-agent annotate --style "success" --context "deploy-status" << 'EOF'
+      **Deployment succeeded**
+      - Environment: production
+      - Version: v2.4.1
+      - Region: us-east-1
+      EOF
+
+      buildkite-agent annotate --style "error" --context "test-failures" << 'EOF'
+      **3 tests failed**
+      - `AuthTest#test_expired_token` — Expected 401 got 500
+      - `PaymentsTest#test_network_timeout` — Timeout::Error: execution expired
+      - `APITest#test_schema_validation` — Missing required field 'user_id'
+      EOF
+
+      buildkite-agent annotate --style "warning" --context "coverage" << 'EOF'
+      **Code coverage dropped below threshold**
+      Current coverage: 74.3% (threshold: 80%)
+      Files missing coverage: `src/payments/retry.rb`, `src/api/schema.rb`
+      EOF
+
+      buildkite-agent annotate --style "info" --context "build-info" << 'EOF'
+      **Build Info**
+      - Branch: `main`
+      - Triggered by: schedule
+      - Duration: 4m 32s
+      - Agent: `mac-agent-01`
+      EOF
