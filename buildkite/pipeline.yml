@@ -1,14 +1,8 @@
 steps:
-  - label: "Flaky test (auto retry)"
-    key: "flaky-test"
-    command: |
-      if [ "$BUILDKITE_RETRY_COUNT" -eq "0" ]; then
-        echo "First attempt failing..."
-        echo "This is the log from the original job that gets retried"
-        exit 1
-      fi
-      echo "Retry attempt passing"
-    retry:
-      automatic:
-        - exit_status: 1
-          limit: 1
+  - label: "Pass step"
+    key: "pass-step"
+    command: echo "this passes"
+
+  - label: "Fail step"
+    key: "fail-step"
+    command: exit 1
