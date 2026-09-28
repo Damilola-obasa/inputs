@@ -9,7 +9,6 @@ steps:
   - label: "Fail step"
     key: "fail-step"
     command: exit 1
-    soft_fail: true
     notify:
       - github_commit_status:
           context: "buildkite/fail-step"
