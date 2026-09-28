@@ -3,29 +3,8 @@ steps:
     key: "pass-step"
     command: echo "this passes"
 
-  - label: "Create failing GitHub check run"
-    key: "fail-check"
+  - label: "Fail step"
+    key: "fail-step"
     command: |
-      echo "--- Creating GitHub check run via Checks API"
-
-      REPO_OWNER="Damilola-obasa"
-      REPO_NAME="inputs"
-
-      # Create a check run with failed status
-      RESPONSE=$(curl -s -X POST \
-        -H "Authorization: token $GITHUB_TOKEN" \
-        -H "Accept: application/vnd.github.v3+json" \
-        "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/check-runs" \
-        -d "{
-          \"name\": \"buildkite/custom-check\",
-          \"head_sha\": \"$BUILDKITE_COMMIT\",
-          \"status\": \"completed\",
-          \"conclusion\": \"failure\",
-          \"output\": {
-            \"title\": \"Custom check failed\",
-            \"summary\": \"This check was created by the Buildkite pipeline to test the Re-run button\"
-          }
-        }")
-
-      echo "$RESPONSE" | jq '{id: .id, name: .name, conclusion: .conclusion, html_url: .html_url}'
-      echo "Check run created - go to GitHub checks tab and click Re-run on buildkite/custom-check"
+      echo "this will fail"
+      exit 1
