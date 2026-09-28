@@ -2,7 +2,14 @@ steps:
   - label: "Pass step"
     key: "pass-step"
     command: echo "this passes"
+    notify:
+      - github_commit_status:
+          context: "buildkite/pass-step"
 
   - label: "Fail step"
     key: "fail-step"
     command: exit 1
+    soft_fail: true
+    notify:
+      - github_commit_status:
+          context: "buildkite/fail-step"
