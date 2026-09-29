@@ -8,3 +8,8 @@ steps:
     command: |
       echo "this will fail"
       exit 1
+
+notify:
+  - github_commit_status:
+      context: "buildkite/ci-on-failure-only"
+    if: build.state != "passed"
