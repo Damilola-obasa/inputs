@@ -3,12 +3,6 @@ steps:
     key: "pass-step"
     command: echo "this passes"
 
-  - label: "Fail step"
-    key: "fail-step"
-    command: |
-      echo "this will fail"
-      exit 1
-
 notify:
   - github_commit_status:
       context: "buildkite/ci-on-failure-only"
