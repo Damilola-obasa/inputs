@@ -9,7 +9,7 @@ steps:
         -d '{"exit_status": 1, "reason": "test suite detected failures early"}' \
         "https://agent.buildkite.com/v3/jobs/$$BUILDKITE_JOB_ID/promise_failure")
       echo "Response: $RESPONSE"
-      echo "Promise declared. Sleeping 30s — check the Buildkite UI and GitHub status now..."
-      sleep 30
+      echo "Promise declared. Sleeping 90s — check the Buildkite UI and GitHub status now..."
+      sleep 90
       echo "--- Waking up, now exiting with actual failure"
       exit 1
