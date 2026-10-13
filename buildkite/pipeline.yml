@@ -1,10 +1,15 @@
 steps:
-  - label: "Pass step"
-    key: "pass-step"
-    command: echo "this passes"
-
-  - label: "Fail step"
-    key: "fail-step"
+  - label: "Promise failure step"
+    key: "promise-failure"
     command: |
-      echo "this will fail"
+      echo "--- Declaring promised failure via agent API"
+      RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X PUT \
+        -H "Authorization: Token $BUILDKITE_AGENT_ACCESS_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"exit_status": 1, "reason": "test suite detected failures early"}' \
+        "https://agent.buildkite.com/v3/jobs/$BUILDKITE_JOB_ID/promise_failure")
+      echo "Response: $RESPONSE"
+      echo "Promise declared. Sleeping 30s — check the Buildkite UI and GitHub status now..."
+      sleep 30
+      echo "--- Waking up, now exiting with actual failure"
       exit 1
