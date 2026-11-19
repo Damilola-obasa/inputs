@@ -1,22 +1,4 @@
+# Simple pipeline to confirm PR activity triggers a build.
 steps:
-  - label: "Promise failure step"
-    key: "promise-failure"
-    command: |
-      echo "--- Declaring promised failure via agent API"
-      RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X PUT \
-        -H "Authorization: Token $$BUILDKITE_AGENT_ACCESS_TOKEN" \
-        -H "Content-Type: application/json" \
-        -d '{"exit_status": 1, "reason": "test suite detected failures early"}' \
-        "https://agent.buildkite.com/v3/jobs/$$BUILDKITE_JOB_ID/promise_failure")
-      echo "Response: $RESPONSE"
-      echo "Promise declared. Sleeping 60s — check the Buildkite UI and GitHub status now..."
-      sleep 60
-      echo "--- Waking up, now exiting with actual failure"
-      exit 1
-    retry:
-      automatic:
-        - limit: 2
-          exit_status: -1
-          signal_reason: none
-        - limit: 2
-          signal_reason: agent_stop
+  - label: ":white_check_mark: PR trigger check"
+    command: 'echo "Triggered by PR #$$BUILDKITE_PULL_REQUEST on branch $$BUILDKITE_BRANCH (commit $$BUILDKITE_COMMIT)"'
