@@ -1,5 +1,4 @@
-# Minimal pipeline to demonstrate "Build when pull request is opened or updated".
-# No plugin, no runner dependency — just confirms PR activity creates a build.
+# Simple pipeline to confirm PR activity triggers a build.
 steps:
-  - label: ":wave: PR trigger check"
-    command: 'echo "Build for PR #$$BUILDKITE_PULL_REQUEST — $$BUILDKITE_MESSAGE"'
+  - label: ":white_check_mark: PR trigger check"
+    command: 'echo "Triggered by PR #$$BUILDKITE_PULL_REQUEST on branch $$BUILDKITE_BRANCH (commit $$BUILDKITE_COMMIT)"'
