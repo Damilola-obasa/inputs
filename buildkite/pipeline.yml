@@ -1,15 +1,11 @@
-# NOTE: On this test branch only, this is the github-actions plugin PR-title-lint
-# test. The bare `buildkite-agent pipeline upload` in the pipeline's UI step
-# auto-resolves to this file. (The promise-failure step remains on main.)
-#
-# The plugin's custom-importer path (explicit `workflow:`) requires the step to
-# have a `key` AND the agent to export BUILDKITE_STEP_KEY (buildkite-agent
-# >= v3.129). On older agents this step fails with:
-#   buildkite-gha: upload: BUILDKITE=true and BUILDKITE_STEP_KEY are required
+# Simple pipeline to verify PR activity triggers a build and runs green.
+# No plugins, no GitHub Actions import — just confirms triggering end-to-end.
 steps:
-  - label: ":github: GitHub Actions — PR title lint"
-    key: github-actions
-    plugins:
-      - github-actions#v0.17.0:
-          version: v0.136.0
-          workflow: .buildkite/gha/pr_title_lint.yml
+  - label: ":wave: Simple PR trigger test"
+    command: |
+      echo "--- Build triggered"
+      echo "PR number : $$BUILDKITE_PULL_REQUEST"
+      echo "Branch    : $$BUILDKITE_BRANCH"
+      echo "Commit    : $$BUILDKITE_COMMIT"
+      echo "Source    : $$BUILDKITE_SOURCE"
+      echo "This confirms PR activity triggers a build and the agent runs it to green."
