@@ -1,11 +1,8 @@
-# Simple pipeline to verify PR activity triggers a build and runs green.
-# No plugins, no GitHub Actions import — just confirms triggering end-to-end.
+# Recommended (server-selected) github-actions plugin form.
+# No key, no version pin, no explicit workflow — Buildkite selects workflows
+# from .github/workflows/ based on the triggering event. This mode does NOT
+# require BUILDKITE_STEP_KEY, so it avoids the earlier error entirely.
 steps:
-  - label: ":wave: Simple PR trigger test"
-    command: |
-      echo "--- Build triggered"
-      echo "PR number : $$BUILDKITE_PULL_REQUEST"
-      echo "Branch    : $$BUILDKITE_BRANCH"
-      echo "Commit    : $$BUILDKITE_COMMIT"
-      echo "Source    : $$BUILDKITE_SOURCE"
-      echo "This confirms PR activity triggers a build and the agent runs it to green."
+  - label: ":github: GitHub Actions"
+    plugins:
+      - github-actions
